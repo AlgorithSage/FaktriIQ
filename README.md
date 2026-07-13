@@ -72,4 +72,3 @@ flutter --version
 
 ## 👥 Authors
 * **Team AlgoZeniths** — IEM Kolkata
-  * Archisman "Zenith" Chakraborty and Team
