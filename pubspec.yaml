@@ -63,11 +63,11 @@ flutter:
   fonts:
     - family: Striper
       fonts:
-        - asset: Fonts/Striper-Regular.otf
+        - asset: assets/fonts/Striper-Regular.otf
     - family: Satoshi
       fonts:
-        - asset: Fonts/Satoshi-Medium.otf
+        - asset: assets/fonts/Satoshi-Medium.otf
           weight: 500
-        - asset: Fonts/Satoshi-Bold.otf
+        - asset: assets/fonts/Satoshi-Bold.otf
           weight: 700
 
