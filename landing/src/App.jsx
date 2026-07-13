@@ -1,0 +1,25 @@
+import NavBar from './components/NavBar.jsx';
+import Hero from './components/Hero.jsx';
+import CoreValueProposition from './components/CoreValueProposition.jsx';
+import ValuePillars from './components/ValuePillars.jsx';
+import TechnologyStrip from './components/TechnologyStrip.jsx';
+import CaseStudyCarousel from './components/CaseStudyCarousel.jsx';
+import RolesGrid from './components/RolesGrid.jsx';
+import Footer from './components/Footer.jsx';
+
+export default function App() {
+  return (
+    <>
+      <NavBar />
+      <main>
+        <Hero />
+        <CoreValueProposition />
+        <ValuePillars />
+        <TechnologyStrip />
+        <CaseStudyCarousel />
+        <RolesGrid />
+      </main>
+      <Footer />
+    </>
+  );
+}
