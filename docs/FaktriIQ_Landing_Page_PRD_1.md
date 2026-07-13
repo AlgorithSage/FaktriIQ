@@ -1,4 +1,4 @@
-# Product Requirements Document — Landing Page
+﻿# Product Requirements Document — Landing Page
 ## Industrial Knowledge Intelligence Copilot (product name: "FaktriIQ")
 
 **Purpose of this document:** This PRD is written to be handed directly to an AI website-builder (Claude Fable 5) to generate a landing page. It defines the product, the exact set of AI agents to represent (available now vs. coming soon), the narrative structure, tone, and constraints the landing page must follow. Everything stated here as "Available Now" must be presented as real and working. Everything stated as "Coming Soon" must be visually and textually distinguished as future roadmap — never implied to exist today.

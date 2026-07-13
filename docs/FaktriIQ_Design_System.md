@@ -1,4 +1,4 @@
-# FaktriIQ — UI/UX Design System
+﻿# FaktriIQ — UI/UX Design System
 ## Design Document for the Flutter App (Web + Mobile)
  
 **What changed from v1:** the previous version leaned into a bold, poster-like safety-yellow-and-black identity. This version replaces that with the visual language technicians and safety officers already expect from serious industrial/compliance software — closer to what they'd see from SAP, Siemens, or AVEVA. Quiet, legible, credible. Boldness is now reserved entirely for the two colors that carry real meaning: compliance flags and confirmations.
