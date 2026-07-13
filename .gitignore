@@ -1,0 +1,41 @@
+# https://dart.dev/guides/libraries/private-files
+# Standard Flutter .gitignore file
+
+# Tooling and build outputs
+.dart_tool/
+.packages
+.pub-cache/
+.pub/
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.metadata
+
+# Web build output and icons/compiled files if generated
+build/web/
+
+# Android related
+**/android/local.properties
+**/android/key.properties
+**/android/app/src/main/res/values/strings.xml
+
+# iOS related
+**/ios/Flutter/.flutter-plugins
+**/ios/Flutter/.flutter-plugins-dependencies
+**/ios/Flutter/Generated.xcconfig
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Runner/GeneratedPluginRegistrant.h
+**/ios/Runner/GeneratedPluginRegistrant.m
+
+# IDEs and editors
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+.history/
+
+# Operating System files
+.DS_Store
+Thumbs.db
+desktop.ini
