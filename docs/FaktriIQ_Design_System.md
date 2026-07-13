@@ -1,199 +1,191 @@
 # FaktriIQ — UI/UX Design System
 ## Design Document for the Flutter App (Web + Mobile)
-
-**Scope of this document:** This defines the visual identity, design tokens, layout patterns, component behavior, and screen-by-screen structure for the actual FaktriIQ product (the Flutter app used by technicians and safety officers) — not the marketing landing page, which has its own PRD. This document should be handed to whoever is building the Flutter UI, or fed to an AI coding assistant alongside the Master PRD's functional requirements (Section 8).
-
+ 
+**What changed from v1:** the previous version leaned into a bold, poster-like safety-yellow-and-black identity. This version replaces that with the visual language technicians and safety officers already expect from serious industrial/compliance software — closer to what they'd see from SAP, Siemens, or AVEVA. Quiet, legible, credible. Boldness is now reserved entirely for the two colors that carry real meaning: compliance flags and confirmations.
+ 
 ---
-
+ 
 ## 1. Design Brief & Grounding
-
-**Subject:** An AI copilot used inside a working industrial plant — by someone standing near machinery, possibly wearing gloves, glancing at a phone between tasks; and by a safety officer at a desk, cross-referencing regulation text against real procedures before an audit.
-
-**The single job each surface has to do:**
+ 
+**Subject:** an AI copilot used inside a working industrial plant — by a technician glancing at a phone between tasks, and by a safety officer cross-referencing regulation text against real procedures before an audit.
+ 
+**The job each surface has to do:**
 - Mobile (technician): get a trustworthy answer, fast, with minimal input.
 - Web (officer): see where a procedure falls short of a regulation, verify it, act on it.
-
-**Visual direction (locked):** Bold, high-contrast, poster-like — a saturated safety-yellow paired with a near-black (`#101820`), heavy rounded display type, and fully-rounded pill buttons. This is a deliberate departure from a quiet "instrument panel" look toward something loud and unmistakable — which, for this subject, is not a contradiction. Yellow-and-black is the literal color language of hazard signage, machine guarding, and floor-marking tape on a real plant floor. Turning that volume up, instead of keeping it quiet, makes the product feel like it belongs on the same floor as the equipment it's describing.
-
-**What this is not:** a generic AI-chatbot SaaS dashboard, a muted enterprise-grey B2B tool, or a soft consumer app palette. The boldness is the point — this should be instantly recognizable at a glance across a room, the way safety signage is designed to be.
-
+**Visual direction (revised):** a calm, neutral enterprise palette — deep slate/navy as the anchor color, white and light-grey working surfaces, restrained typography, and standard rounded-rectangle components rather than pill shapes. The product should read as trustworthy and unremarkable at first glance, the way audit software, ERP dashboards, and compliance tools are expected to look — and only draw the eye where something actually needs attention (a flagged gap, a confidence signal).
+ 
+**What this is not:** a consumer-facing brand moment, a safety-signage pastiche, or anything that competes visually with the content it's displaying. The interface should get out of the way.
+ 
 ---
-
+ 
 ## 2. Design Tokens
-
-### 2.1 Color palette (named, with hex values)
-
+ 
+### 2.1 Color palette
+ 
 | Token | Hex | Use |
 |---|---|---|
-| `volt` | `#FEE715` | Primary brand color — dominant background on hero/marketing surfaces and key highlight blocks in-app. Spent boldly, not sparingly — this is the brand, not just an accent |
-| `carbon` | `#101820` | Secondary/anchor color — near-black, used for panels, primary buttons, nav chrome, and all body text on `volt` or `paper` backgrounds |
-| `paper` | `#FFFFFF` | Working background for content-dense screens (document lists, chat threads, forms) where full-yellow would overwhelm reading |
-| `mist` | `#6B7280` | Tertiary text, metadata, disabled states — the one muted, quiet tone in an otherwise loud palette |
-| `line` | `#E5E1D3` | Hairline borders, dividers on `paper` backgrounds |
-| `flag` | `#E8453C` | Compliance gap flags, critical alerts — reserved exclusively for genuine flagged issues, never decorative |
-| `verify` | `#22C55E` | Confirmation, "compliant," success states — kept vivid to match the palette's overall boldness rather than muted |
-
-**Rule:** `volt` and `carbon` are the brand — every screen should read as unmistakably "this app" from these two alone, the way the reference composition uses a full-bleed yellow block against a black panel. `flag` and `verify` are functional-only colors laid on top for status; they must never be used decoratively or the compliance-flag signal loses meaning.
-
-**Where volt is full-bleed dominant vs. where it's an accent:** These are two different jobs for the same color, not a contradiction.
-- **Marketing/landing surfaces** (the public landing page, any hero/pitch material): `volt` is the dominant background — full-bleed across nav bars, hero sections, and feature blocks, exactly as in the reference composition. This is where the brand needs to be loud and instantly recognizable at a glance.
-- **In-app, content-dense screens** (document lists, chat threads, the compliance detail view): `paper`/`carbon` do the background work instead, with `volt` reserved for headers, primary buttons, chips, and the Confidence & Citation pill. A technician reading a long procedure answer, or an officer scanning a document library, needs a working surface — a full-bleed yellow background behind dense body text would fight readability rather than support it.
-
-Both are "the brand," applied at the intensity each surface's job calls for — landing pages sell the product in a glance; in-app screens are used for minutes at a time and need to stay legible.
-
-### 2.1.1 Dark mode (token flip)
-
-Dark mode is a direct flip of the two brand anchors, not a separate palette:
-
+| `ink` | `#0F172A` | Primary text, nav chrome, primary button fill — the anchor dark tone |
+| `slate` | `#1E293B` | Secondary panels, header bars, sidebar backgrounds |
+| `surface` | `#FFFFFF` | Default page background |
+| `subtle` | `#F8FAFC` | Secondary background for cards/sections that need light separation from `surface` |
+| `border` | `#E2E8F0` | Hairline borders, dividers, card outlines |
+| `muted` | `#64748B` | Secondary/tertiary text, metadata, disabled states |
+| `accent` | `#CA8A04` | Links, active states, selected nav items, focus rings, primary button fill — the brand color, muted to a dark gold rather than the raw safety-yellow of v1 |
+| `accent-light` | `#FEF9C3` | Light tint background for selected rows, highlighted cards, subtle hover states — a pale yellow wash instead of a solid fill |
+| `accent-mid` | `#FDE68A` | Secondary tint — badges, chips, tags, progress bars; one step darker than `accent-light` for a bit more presence without becoming loud |
+| `flag` | `#DC2626` | Compliance gap flags, critical alerts — reserved exclusively for genuine issues |
+| `verify` | `#16A34A` | Confirmation, "compliant," success states |
+| `warn` | `#D97706` | Medium-confidence or advisory states (e.g. "review recommended") — distinct from `accent` even though both sit in the amber family; `warn` is reserved strictly for status, `accent` for brand/interactive |
+ 
+**Rule:** `ink`, `slate`, `surface`, and `border` still do most of the structural work — panels, text, dividers stay neutral. Yellow now carries the brand identity, but as a family of tints rather than one flat block: `accent` for interactive elements and primary buttons, `accent-light`/`accent-mid` for backgrounds, highlights, and badges where a wash of color helps without shouting. `flag`, `verify`, and `warn` stay functional-only and never appear decoratively, so their meaning stays sharp the moment an officer scans a screen.
+ 
+There is still no full-bleed saturated yellow background anywhere in the product — that was the loud, poster-like part of v1 this version moves away from. Yellow shows up instead as: a solid `accent` fill on primary buttons and active nav states, and pale `accent-light`/`accent-mid` washes behind cards, chips, and selected rows. This reads as "warm, branded, professional" rather than "hazard signage."
+ 
+### 2.1.1 Dark mode
+ 
+A conventional dark-mode flip, not a token gimmick:
+ 
 | Token | Light mode | Dark mode |
 |---|---|---|
-| `volt` (`#FEE715`) | Used as accent/highlight | Stays exactly the same hex — never flips, it's the one color that must always read as "brand" in either mode |
-| `carbon` (`#101820`) | Text and panels on light surfaces | Becomes the **page background** |
-| `paper` (`#FFFFFF`) | Page background | Becomes a `carbon`-adjacent dark surface — content-dense screens sit on near-black instead of white |
-| Primary button | `carbon` fill, `volt`/white text | `volt` fill, `carbon` text — the button flips fully so it stays the highest-contrast element on screen either way |
-| Body text | `carbon` on light surfaces | `paper`/off-white on dark surfaces |
-| `mist`, `line` | as defined | shift to their light-on-dark equivalents — the role stays "quietest tone in the palette" in both modes, exact value tuned in implementation |
-| `flag`, `verify` | as defined | keep the same hue family, lightened slightly if needed for contrast against `carbon` — status colors stay recognizable across both modes, never flip meaning |
-
-The practical build rule: **any surface that is `carbon`-on-`volt`-or-`paper` in light mode becomes `volt`-on-`carbon` in dark mode.** The relationship (which color is figure vs. ground) flips — the palette itself does not.
-
+| `surface` | `#FFFFFF` | `#0B1120` (near-black) |
+| `subtle` | `#F8FAFC` | `#111827` |
+| `ink` (text role) | `#0F172A` on light | `#E5E7EB` (off-white) on dark |
+| `border` | `#E2E8F0` | `#1F2937` |
+| `accent` | `#CA8A04` | `#FACC15` (brightened for contrast, closer to the original brand yellow) |
+| `accent-light` / `accent-mid` | `#FEF9C3` / `#FDE68A` | `#3F3517` / `#544419` — dark, desaturated yellow-brown washes instead of pale tints, so the "highlighted card" role still reads on a near-black background |
+| `flag` / `verify` / `warn` | as defined | same hue family, lightened slightly for AA contrast on dark backgrounds |
+ 
+Standard practice: backgrounds and text invert, functional colors stay recognizable, no color changes role/meaning between modes.
+ 
 ### 2.2 Typography
-
+ 
 | Role | Typeface direction | Notes |
 |---|---|---|
-| Display / headings | A heavy, rounded-terminal grotesque, set in bold or extrabold weight (e.g. Poppins ExtraBold, Baloo 2, or similar rounded-geometric family) | This carries almost all of the brand's personality — big, confident, slightly playful-but-serious, matching the reference composition's headline treatment |
-| Body | A clean, neutral grotesque (e.g. Inter or similar) at regular/medium weight | Kept plain so the display type and color blocking do the visual work, not competing typographic flourishes |
-| Data / monospace | A monospace face (e.g. IBM Plex Mono or JetBrains Mono) | Reserved for clause numbers, equipment tags, timestamps, confidence values — anywhere a precise, verifiable value is shown |
-
-**Type scale (mobile-first, in logical px):** 13 / 15 / 17 / 22 / 28 / 36 / 48 — headline sizes run larger than a typical enterprise app, matching the poster-like confidence of the reference composition.
-
+| Display / headings | A single clean grotesque, semibold/bold weight (e.g. Inter, IBM Plex Sans) | No separate "display" family — headings are the same typeface as body, just heavier and larger. This is the biggest tonal change from v1: nothing shouts. |
+| Body | Same family, regular/medium weight | Plain, highly legible, no personality of its own |
+| Data / monospace | IBM Plex Mono or JetBrains Mono | Clause numbers, equipment tags, timestamps, confidence values — anywhere a precise value is shown |
+ 
+**Type scale (mobile-first, logical px):** 12 / 14 / 16 / 18 / 22 / 28 — a standard, restrained scale. Nothing needs to compete for attention at poster size.
+ 
 ### 2.3 Spacing & shape
-
-- Base spacing unit: 4px grid.
-- Corner radius: generous and consistent — 16–24px on cards and panels, fully rounded (pill) on all primary buttons, matching the reference composition exactly. This is a deliberate reversal from a tight-corner "instrument" look toward a warmer, bolder, more confident shape language.
-- Panels: large solid-color blocks (full `volt` or full `carbon` sections) rather than many small bordered cards — the reference composition's two-panel structure (bold color block on top, dark anchor bar below) is a pattern to reuse throughout, not a one-off hero treatment.
-- Elevation: flat color blocking does the separation work instead of shadows — a `carbon` panel next to a `paper` panel needs no drop shadow to read as distinct. Reserve soft shadow only for true floating/overlay elements (modals, the mobile chat input bar).
-
+ 
+- Base spacing unit: 8px grid.
+- Corner radius: 6–8px on cards, inputs, and buttons — a standard "enterprise SaaS" rounding, not fully pill-shaped.
+- Panels: thin `border`-outlined cards on `surface`/`subtle` backgrounds, rather than large solid color blocks. Separation comes from a hairline border and a very light shadow, not color blocking.
+- Elevation: a single subtle shadow level (`0 1px 2px rgba(0,0,0,0.06)`) for cards; a slightly stronger one for modals/overlays. Consistent and understated throughout.
 ---
-
-## 3. The Signature Element
-
-Per the design brief, one deliberate, memorable element should carry the product's identity, with everything else quiet around it.
-
-**Signature: the Confidence & Citation pill.** Every answer from either agent ends in a compact, bold pill-shaped badge — matching the reference composition's rounded pill button exactly in shape — set in `carbon` with white text, showing the source document and section in monospace, plus a short confidence word ("High confidence," "Medium," "Low") rather than a percentage or abstract meter. Where the reference composition uses a pill for a call-to-action, FaktriIQ reuses that exact same pill shape as its trust marker — so the one shape a user learns to associate with "primary action" elsewhere in the product also means "this is a verifiable, sourced claim" here. It appears identically on both the Compliance Agent and Knowledge Copilot outputs, becoming the product's visual signature.
-
-Keep everything else — cards, navigation, inputs — quiet and disciplined so this element stands out on every screen it appears.
-
+ 
+## 3. The Trust Signal (replaces the v1 "Signature Element")
+ 
+Every answer still ends in a small citation badge — but it's now a quiet, bordered chip rather than a bold branded pill: `subtle` background, `border` outline, `ink` text, source document and section in monospace, plus a text confidence label ("High confidence" in `verify`, "Medium" in `warn`, "Low" in `muted`). It should look like a standard metadata tag you'd see in any enterprise compliance tool — informative first, branded second.
+ 
+It appears identically on both the Compliance Agent and Knowledge Copilot outputs, so it's still the product's one consistent, learnable element — it just no longer has to be the loudest thing on the screen.
+ 
 ---
-
+ 
 ## 4. Layout Patterns
-
+ 
 ### 4.1 Mobile (technician-facing — primary surface)
-
-- Single-column, thumb-reachable layout. Primary input (ask a question) is anchored near the bottom third of the screen, not the top — reachable one-handed while standing.
-- Large touch targets: minimum 48x48px for any tappable element, generous spacing between them (gloves, low precision).
-- Minimal chrome: no persistent top app bar with many icons — a simple back affordance and a single overflow menu is enough.
-- Answers appear as a single focused card, not a scrolling chat thread by default — the technician usually wants one answer, not a conversation history in view. History is accessible but tucked away, not the default view.
-
+ 
+- Single-column, thumb-reachable layout. Primary input anchored near the bottom third of the screen, reachable one-handed while standing.
+- Touch targets: minimum 48x48px, generous spacing (gloves, low precision).
+- Minimal chrome: simple back affordance, single overflow menu — no dense icon row.
+- Answers appear as a single focused card on `surface`, bordered in `border`, not a scrolling chat thread by default. History is accessible but tucked away.
 ### 4.2 Web (officer-facing — secondary surface)
-
-- Two-pane layout: a left-hand document/procedure list, a right-hand detail pane showing clause matches and flags. This suits a desk-based, comparison-heavy workflow — the opposite of the mobile single-focus pattern.
-- Denser information display is acceptable here (smaller type steps, more visible metadata) since the user is seated and deliberate, not standing and glancing.
-- Compliance-gap flags use the `flag` red consistently in this view as the dominant visual signal — everything else recedes so flags are unmissable.
-
+ 
+- Two-pane layout: left-hand document/procedure list on `subtle`, right-hand detail pane on `surface` showing clause matches and flags.
+- Denser information display is fine here — smaller type steps, more visible metadata, standard data-table conventions (zebra striping optional, `border` row dividers).
+- Compliance-gap flags use `flag` red consistently as the one attention-grabbing color in this view — everything else stays neutral so flags are unmissable by contrast rather than by competing for volume.
 ### 4.3 Shared components across both surfaces
-
-- Agent identity: each agent (Compliance Agent, Knowledge Copilot) has a simple geometric mark — not an illustrated mascot — built from the same shape language (e.g., a small square/diamond motif with a one-letter or one-glyph mark), so the "team of agents" framing (per the Master PRD) is visually reinforced without adding illustration overhead in a 12-day build.
-- The Confidence & Citation pill (Section 3) appears identically wherever an agent answer is shown, on both mobile and web.
-- Web top nav bar: `carbon`-filled full-width bar, brand mark (a small `volt`-on-`carbon` square with a single letterform) on the left, the two agent names on the right with the currently-active agent shown in `volt` text and the inactive one in `mist`-on-dark, plus a simple initials avatar circle for the logged-in user on the far right. This is the one piece of persistent chrome shared across every web screen.
-
+ 
+- Agent identity: a small monogram/initial mark in `ink` on a `subtle` circular badge — no color-blocked geometric shapes, no illustration. Understated enough to sit next to any enterprise logo.
+- The citation chip (Section 3) appears identically wherever an agent answer is shown, on both mobile and web.
+- Web top nav bar: `slate`-filled bar, small wordmark on the left, the two agent names on the right with the active agent in `ink`/bold and the inactive one in `muted`, plus a simple initials avatar circle for the logged-in user on the far right — standard enterprise nav conventions throughout.
 ---
-
+ 
 ## 5. Core Screens (mapped to Master PRD Section 8 functional requirements)
-
+ 
 ### 5.1 Technician — Mobile
-
-1. **Home / Ask screen** — large input field, 3–4 example questions as tappable suggestion chips, minimal else. (Maps to KC-1, KC-8)
-2. **Answer screen** — the answer text, the Confidence & Citation pill, an expandable "view full section" affordance. (Maps to KC-3, KC-4, KC-5)
-3. **No-answer state** — a clear, non-alarming illustration-free message: what wasn't found, and an explicit "escalate to your supervisor" affordance. This screen should feel calm and instructive, not like an error page. (Maps to KC-6)
-4. **Query history** — a simple reverse-chronological list, secondary navigation, not a default view. (Maps to KC-7)
-
+ 
+1. **Home / Ask screen** — input field, 3–4 example questions as tappable suggestion chips (bordered, `accent-light` fill), minimal else. (Maps to KC-1, KC-8)
+2. **Answer screen** — answer text, the citation chip, an expandable "view full section" affordance. (Maps to KC-3, KC-4, KC-5)
+3. **No-answer state** — calm, direct message: what wasn't found, plus an explicit "escalate to your supervisor" affordance. (Maps to KC-6)
+4. **Query history** — reverse-chronological list, secondary navigation. (Maps to KC-7)
 ### 5.2 Safety Officer — Web
-
-5. **Document library** — list of ingested procedures/documents with structured metadata tags visible (equipment, dates, clause refs). Each document row/card carries a compact summary badge pair — a `flag`-red pill showing the count of flagged gaps and a `verify`-green pill showing the count of addressed clauses (e.g. "1 gap" / "3 ok") — so an officer can triage across the whole library at a glance without opening every document. This is the left-hand pane in the two-pane web layout (Section 4.2). (Maps to SH-1, SH-2)
-6. **Compliance detail view** — selected procedure on the left, matched clauses and flags on the right; flags rendered in `flag` red, verified/compliant items in `verify` green. (Maps to CA-1, CA-2, CA-3)
-7. **Clause drill-down (modal or side panel)** — the actual regulation text, with a persistent disclaimer strip ("System-generated flag. Confirm against the original regulation before acting.") — never dismissible-and-forgotten; it should reappear each time a flag is opened. On the web surface this disclaimer is rendered as a full-width `carbon` bar rather than a quiet inline note, since the surrounding page is light and it needs to hold its own as the page's one serious, non-negotiable statement. (Maps to CA-4, CA-5)
-8. **Export view** — a simple, clean list/table of flagged gaps for a document set, formatted plainly enough to paste into an email or print, triggered from a `carbon`-filled pill button ("Export summary") in the top-right of the detail view. (Maps to CA-6)
-
+ 
+5. **Document library** — list of ingested procedures with structured metadata tags (equipment, dates, clause refs). Each row carries a compact badge pair — a `flag`-red count of flagged gaps and a `verify`-green count of addressed clauses (e.g. "1 gap" / "3 ok") — for at-a-glance triage. Left-hand pane in the two-pane layout. (Maps to SH-1, SH-2)
+6. **Compliance detail view** — selected procedure on the left, matched clauses and flags on the right; flags in `flag` red, compliant items in `verify` green, everything else in neutral tones. (Maps to CA-1, CA-2, CA-3)
+7. **Clause drill-down (modal or side panel)** — the regulation text, with a persistent disclaimer strip ("System-generated flag. Confirm against the original regulation before acting.") rendered as a quiet bordered banner in `subtle`/`warn` text — present but not alarming, and it reappears each time a flag is opened. (Maps to CA-4, CA-5)
+8. **Export view** — a plain list/table of flagged gaps, formatted for email or print, triggered from a standard secondary button ("Export summary") in the top-right of the detail view. (Maps to CA-6)
 ### 5.3 Admin — Web (minimal)
-
-9. **Upload screen** — drag-and-drop or file-picker upload, a visible ingestion status (parsing → tagging → ready), and a confirmation view of extracted metadata tags. (Maps to SH-1, SH-2)
-
+ 
+9. **Upload screen** — drag-and-drop or file-picker upload, a visible ingestion status (parsing → tagging → ready), confirmation view of extracted metadata tags. (Maps to SH-1, SH-2)
 ---
-
+ 
 ## 6. States & Content Voice
-
-Per the frontend-design skill's writing guidance — words are functional material here, not decoration.
-
-- **Loading states:** plain, specific, never cute. "Searching your plant's documents…" not "Thinking…" or a spinning generic AI orb.
-- **Empty states:** an invitation to act, not a dead end. E.g., an empty document library says "No documents yet — upload your first manual or procedure to get started," with the upload action directly reachable from that message.
-- **Error/no-answer states:** never apologetic, never vague. State exactly what happened and what to do next. "No matching procedure found in the uploaded documents. Escalate to your supervisor if this is urgent." — not "Sorry, I couldn't find that!"
-- **Confirmation language:** actions keep consistent naming through the full flow — a button labeled "Flag for review" should produce a toast/confirmation that says "Flagged for review," never a mismatched synonym.
-- **The legal/compliance disclaimer** (Master PRD Section 15) must appear, in the same quiet but persistent visual treatment, on every screen where a compliance flag or clause match is shown — not just once at first use.
-
+ 
+Unchanged in substance from v1 — plain, specific, never cute:
+ 
+- **Loading states:** "Searching your plant's documents…" — not "Thinking…" or a spinner with personality.
+- **Empty states:** an invitation to act. "No documents yet — upload your first manual or procedure to get started," with the upload action directly reachable.
+- **Error/no-answer states:** state exactly what happened and what to do next. "No matching procedure found in the uploaded documents. Escalate to your supervisor if this is urgent."
+- **Confirmation language:** consistent naming through the full flow — "Flag for review" produces "Flagged for review," never a mismatched synonym.
+- **Legal/compliance disclaimer** (Master PRD Section 15) appears, in the same quiet but persistent treatment, on every screen where a compliance flag or clause match is shown.
 ---
-
+ 
 ## 7. Motion
-
-Motion should be minimal and purposeful, not ambient or decorative — the confidence comes from bold color and shape, not from busy animation.
-
-- The Confidence & Citation pill should animate a single quiet scale/fade-in on answer arrival (a few hundred milliseconds) — this is the one deliberate motion moment in the product, echoing the pill "arriving" the way a stamp or badge lands.
-- Screen transitions: simple, fast, directional (slide for forward/back navigation) — no bouncy easing, no elaborate page-transition choreography. The boldness lives in color and shape, not in movement.
-- Respect reduced-motion settings: all animation (including the signature pill fade-in) should degrade to an instant state change when the OS-level reduce-motion preference is on.
-
+ 
+Kept deliberately minimal — even more restrained than v1, since nothing here is meant to feel like a brand moment:
+ 
+- The citation chip fades in over ~150ms on answer arrival — a small, functional cue that the answer has finished loading, not a celebratory animation.
+- Screen transitions: simple, fast, directional (slide for forward/back) — standard platform-default transitions are acceptable here.
+- Respect reduced-motion settings: all animation degrades to an instant state change when the OS-level reduce-motion preference is on.
 ---
-
+ 
 ## 8. Accessibility & Quality Floor
-
-- Color is never the only signal: compliance flags pair the `flag` red with an icon and text label ("Gap flagged"), not color alone — important given red/green color-vision deficiency is common enough to matter in a safety product.
-- Minimum contrast ratio of 4.5:1 for body text against its background across all defined tokens — verify `mist` text usage stays restricted to non-critical metadata only, since it's a lower-contrast tone by design.
-- All interactive elements have a visible keyboard focus state (relevant for the web/officer surface especially).
-- Mobile layout must remain usable and legible down to a 360px-wide viewport without horizontal scrolling.
-- Touch targets: 48x48px minimum, as stated in Section 4.1 — this is a hard floor for the mobile surface given the gloves/field-use context.
-
+ 
+- Color is never the only signal: compliance flags pair `flag` red with an icon and text label ("Gap flagged"), not color alone.
+- Minimum contrast ratio of 4.5:1 for body text against its background across all tokens — `muted` text usage stays restricted to non-critical metadata.
+- All interactive elements have a visible keyboard focus state (`accent`-colored focus ring), especially on the web/officer surface.
+- Mobile layout remains usable and legible down to a 360px-wide viewport without horizontal scrolling.
+- Touch targets: 48x48px minimum on the mobile surface.
 ---
-
+ 
 ## 9. What This Design System Deliberately Does Not Include (12-day scope note)
-
-- No custom illustration set or mascot artwork for agents — geometric marks only (Section 4.3), to keep the design buildable in the available time.
-- Dark mode is now specified as a straight token flip (Section 2.1.1) rather than a separate design effort — cheap to implement if time allows, but still not a hard MVP requirement; light mode (`volt`/`paper`/`carbon`) is the default and the one that must be polished for the demo.
+ 
+- No custom illustration set or mascot artwork for agents — a small monogram mark only, to keep the design buildable in the available time.
+- Dark mode specified as a straightforward token flip (Section 2.1.1) — not a hard MVP requirement; light mode is the default and the one polished for the demo.
 - No animated onboarding sequence — a single static first-run screen explaining the two agents is sufficient for v1.
-- No dedicated design system component library (e.g., a full Figma kit) — this document plus the token table is the working reference for the 12-day build; a formal component library is a natural post-MVP investment, not a prerequisite to start building.
-
+- No dedicated design system component library — this document plus the token table is the working reference for the build.
 ---
-
+ 
 ## 10. Quick Reference — Token Summary
-
+ 
 ```
 Colors:
-  volt    #FEE715   primary brand — spend boldly, not sparingly (never flips in dark mode)
-  carbon  #101820   secondary/anchor — panels, primary buttons, body text (becomes bg in dark mode)
-  paper   #FFFFFF   working background for content-dense screens (becomes dark surface in dark mode)
-  mist    #6B7280   tertiary text / metadata (the one quiet tone)
-  line    #E5E1D3   borders / dividers on paper backgrounds
-  flag    #E8453C   compliance gap (reserved, never decorative)
-  verify  #22C55E   compliant / success
-
-Dark mode: flip carbon/paper roles — carbon becomes background, volt/white becomes
-foreground on primary buttons. volt itself never changes hex. See Section 2.1.1.
-
+  ink          #0F172A   primary text, nav chrome
+  slate        #1E293B   header bars, sidebar backgrounds
+  surface      #FFFFFF   default page background
+  subtle       #F8FAFC   secondary background for light separation
+  border       #E2E8F0   hairlines, dividers, card outlines
+  muted        #64748B   secondary/tertiary text, metadata, disabled
+  accent       #CA8A04   brand color — primary buttons, links, active states, focus rings
+  accent-light #FEF9C3   pale yellow wash — highlighted cards, chips, selected rows
+  accent-mid   #FDE68A   one step darker — badges, tags, progress bars
+  flag         #DC2626   compliance gap (reserved, never decorative)
+  verify       #16A34A   compliant / success
+  warn         #D97706   medium-confidence / advisory (amber, distinct role from accent)
+ 
+Dark mode: standard background/text inversion (Section 2.1.1); accent brightens toward
+the original brand yellow (#FACC15), accent-light/mid become dark yellow-brown washes,
+flag/verify/warn keep their hue family, lightened for contrast.
+ 
 Type:
-  Display   — heavy rounded-terminal grotesque, bold/extrabold (e.g. Poppins ExtraBold, Baloo 2)
-  Body      — clean neutral grotesque, regular/medium (e.g. Inter)
+  All roles — single clean grotesque (Inter / IBM Plex Sans), weight varies by role
   Data/Mono — IBM Plex Mono / JetBrains Mono (clause refs, tags, confidence)
-
-Spacing: 4px base grid
-Radius:  16–24px cards/panels, fully rounded (pill) on all primary buttons
-Elevation: flat color blocking over shadows; shadow reserved for floating/overlay only
+ 
+Spacing: 8px base grid
+Radius:  6–8px on cards, inputs, and buttons (no pill shapes)
+Elevation: single subtle shadow level for cards, slightly stronger for modals/overlays
 Touch target minimum: 48x48px
 ```
