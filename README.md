@@ -1,35 +1,33 @@
 # FaktriIQ 🏭💡
 
-**FaktriIQ** is an Industrial Knowledge Intelligence Platform (Full-Stack SaaS) designed to serve as a Unified Asset & Operations Brain for industrial plants (Oil & Gas, Chemical, Pharma, and Process Manufacturing).
+**FaktriIQ** is an Industrial Knowledge Intelligence Platform designed to serve as a Unified Asset & Operations Brain for industrial plants (Oil & Gas, Chemical, Pharma, and Process Manufacturing).
 
-Built for technicians on the shop floor and safety officers at their desks, FaktriIQ provides mobile-first, natural-language AI agents that unify fragmented documentation systems and ensure proactive compliance with Indian statutory standards.
+Built for technicians on the shop floor and safety officers at their desks, FaktriIQ provides a mobile-first, natural-language AI interface that unifies fragmented documentation systems and ensures proactive compliance with Indian statutory standards (Factories Act 1948, OISD, PESO).
 
 ---
 
-## 🚀 Key Features
+## 🚀 Key Roles & Features
 
-### 👮‍♂️ Agent 1: The Compliance Agent
+### 🧭 1. Field Technician (Knowledge Copilot)
+* **Natural-Language Q&A**: Ask plain-language questions across the plant's operating manuals, safety SOPs, and maintenance records.
+* **Verifiable Citations**: Every answer includes the exact source document, chapter, and section.
+* **Confidence Indicators**: Shows match confidence (High/Medium/Low) for transparency.
+* **Zero Hallucination Fallback**: Strictly responds with *"I don't know"* instead of generating fake/unsupported answers if no relevant documents are found.
+* **Context Suggestions**: Offers quick suggestion chips for common plant queries.
+
+### 👮‍♂️ 2. Compliance Agent (Safety Officer Station)
 * **Clause-Mapping Lookup**: Automatically matches plant procedures to governing Indian regulations (**Factories Act 1948**, **OISD**, and **PESO** standards).
 * **Compliance-Gap Flagging**: Identifies and flags gaps where plant procedures do not address statutory requirements.
 * **Clause Drill-Down**: Deep-dive into specific regulatory text with human-in-the-loop validation.
-* **Compliance Export**: Export summary lists of flagged gaps for audit preparation.
-
-### 🧭 Agent 2: The Knowledge Copilot
-* **Natural-Language Q&A**: Ask plain-language questions across the plant's operating manuals, SOPs, and maintenance records.
-* **Verifiable Citations**: Every answer includes the exact source document, chapter, and section.
-* **Confidence Indicators**: Shows match confidence (High/Medium/Low) for transparency.
-* **Zero Hallucination Fallback**: Strictly responds with *"I don't know"* instead of generating fake answers if no relevant documents are found.
-
-### 🌐 Integrated Landing Page
-* A responsive, high-fidelity landing page with theme switching (Volt & Carbon / Light Mode).
-* Built-in pilot request form to capture user interest directly from the web app.
+* **Compliance Export**: View and track summary lists of flagged gaps for audit preparation.
+* **Document Ingestion**: View ingested manuals, SOPs, and safety guidelines with metadata tags (equipment tags, dates, and clause references).
 
 ---
 
 ## 🛠️ Technology Stack & Design System
 
-* **Framework**: Flutter (Dart) — one codebase for Web, Android, iOS, and Desktop.
-* **Styling & UI**: Custom premium visual theme using the **Volt & Carbon** color palette.
+* **Framework**: Flutter (Dart) — cross-platform support for Web and Mobile.
+* **Styling & UI**: Custom premium visual theme using the **Volt & Carbon** color palette (High-contrast industrial design).
 * **Typography**: Beautiful custom typefaces:
   * **Satoshi**: Modern sans-serif for reading logs, content, and dashboard items.
   * **Striper**: Industrial-themed display font for titles and branding.
@@ -63,7 +61,7 @@ flutter --version
      ```bash
      flutter run -d chrome
      ```
-   * **For Mobile / Emulator**:
+   * **For Mobile / Emulator / Desktop**:
      ```bash
      flutter run
      ```
