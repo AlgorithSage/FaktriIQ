@@ -141,24 +141,24 @@ export default function TechnologyStrip() {
             boxShadow: '0 24px 60px rgba(30, 35, 40, 0.04)',
           }}
         >
-          <div className="grid gap-6 lg:grid-cols-3 lg:gap-8 items-stretch" id="architecture">
+          <div className="grid gap-8 lg:grid-cols-1 items-stretch" id="architecture">
             {TIERS.map((tier) => (
               <article 
                 key={tier.title} 
-                className="tech__card flex flex-col items-center text-center justify-between"
+                className="tech__card flex flex-col lg:flex-row items-stretch lg:items-center text-center lg:text-left justify-between gap-8 lg:gap-12"
                 style={{
                   background: 'var(--color-subtle)',
                   border: '1px solid var(--color-border)',
                   borderRadius: '1.75rem',
-                  padding: '2.25rem 2rem',
                   boxShadow: 'var(--shadow)',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}
               >
-                <div className="w-full flex flex-col items-center">
-                  {/* Inside Centered Modal for Icons */}
+                {/* Left side: branding and tags (widescreen) */}
+                <div className="w-full lg:w-[38%] flex flex-col items-center lg:items-start">
+                  {/* Centered Modal for Icons */}
                   <div 
-                    className="flex items-center justify-center gap-3 px-4 py-2 border shadow-[0_2px_8px_rgba(30,35,40,0.04)] mb-6" 
+                    className="flex items-center justify-center gap-3 px-4 py-2 border shadow-[0_2px_8px_rgba(30,35,40,0.04)] mb-5" 
                     style={{
                       background: '#FFFFFF',
                       borderColor: 'var(--color-border)',
@@ -173,17 +173,17 @@ export default function TechnologyStrip() {
                   </div>
 
                   {/* Label */}
-                  <p className="font-mono text-[9px] font-bold uppercase tracking-wider text-[rgba(30,35,40,0.65)] mb-1.5">
+                  <p className="font-mono text-[9px] font-bold uppercase tracking-wider text-[rgba(30,35,40,0.65)] mb-2">
                     {tier.label}
                   </p>
 
                   {/* Heading */}
-                  <h3 className="text-[19px] font-extrabold text-[var(--color-ink)] leading-tight px-1">
+                  <h3 className="text-[21px] font-extrabold text-[var(--color-ink)] leading-tight mb-4">
                     {tier.title}
                   </h3>
 
-                  {/* Tech stack tags - increased top/bottom margins and row gap */}
-                  <div className="flex flex-wrap justify-center gap-x-2 gap-y-2.5 mt-4 mb-6 w-full">
+                  {/* Tech stack tags */}
+                  <div className="flex flex-wrap justify-center lg:justify-start gap-x-2 gap-y-2 mt-2 w-full">
                     {tier.tech.split(' · ').map((techItem) => (
                       <span
                         key={techItem}
@@ -197,19 +197,21 @@ export default function TechnologyStrip() {
                       </span>
                     ))}
                   </div>
+                </div>
 
-                  {/* Feature Points (nested modal-in-modals) - increased gap and reset mt */}
-                  <ul className="flex flex-col gap-4 w-full mt-0">
+                {/* Right side: white nested points list */}
+                <div className="w-full lg:w-[58%] flex flex-col justify-center">
+                  <ul className="flex flex-col gap-3.5 w-full">
                     {tier.points.map((point) => (
                       <li 
                         key={point} 
-                        className="text-[13px] leading-snug text-[var(--color-ink)] p-4 border shadow-[0_2px_8px_rgba(30,35,40,0.04)] flex items-center justify-center text-center"
+                        className="text-[13.5px] leading-snug text-[var(--color-ink)] px-6 py-4.5 border shadow-[0_2px_8px_rgba(30,35,40,0.04)] flex items-center justify-center lg:justify-start text-center lg:text-left"
                         style={{ 
                           fontWeight: 600,
                           background: '#FFFFFF',
                           borderColor: 'var(--color-border)',
                           borderRadius: '1rem',
-                          minHeight: '68px',
+                          minHeight: '60px',
                         }}
                       >
                         {point}

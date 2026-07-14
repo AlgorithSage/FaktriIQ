@@ -1254,6 +1254,16 @@ code {
   transition: var(--transition);
 }
 
+.tech__card {
+  padding: 2.25rem 2rem !important;
+}
+
+@media (min-width: 1024px) {
+  .tech__card {
+    padding: 2.75rem 3.5rem !important;
+  }
+}
+
 .tech__card:hover {
   transform: translateY(-4px) scale(1.015);
   box-shadow: 0 16px 38px rgba(30, 35, 40, 0.08) !important;
