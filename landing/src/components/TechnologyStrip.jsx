@@ -153,7 +153,6 @@ export default function TechnologyStrip() {
                   padding: '2.25rem 2rem',
                   boxShadow: 'var(--shadow)',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  height: '100%',
                 }}
               >
                 <div className="w-full flex flex-col items-center">
