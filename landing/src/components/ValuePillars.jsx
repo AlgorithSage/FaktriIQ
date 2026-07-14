@@ -23,8 +23,10 @@ const PILLARS = [
   },
 ];
 
+const ROTATIONS = [225, 315, 135, 45];
+
 /* Understated line cluster radiating from a central focus point. The rays
-   rotate subtly as the active tab changes. */
+   rotate dynamically to point at the active quadrant. */
 function LineCluster({ activeIndex }) {
   const rays = 12;
   const cx = 180;
@@ -35,7 +37,7 @@ function LineCluster({ activeIndex }) {
       viewBox="0 0 360 360"
       role="img"
       aria-label={`Diagram highlighting ${PILLARS[activeIndex].title}`}
-      style={{ '--cluster-rotation': `${activeIndex * 15}deg` }}
+      style={{ '--cluster-rotation': `${ROTATIONS[activeIndex]}deg` }}
     >
       <g className="pillars__cluster-rays">
         {Array.from({ length: rays }, (_, i) => {
@@ -78,8 +80,15 @@ function LineCluster({ activeIndex }) {
 export default function ValuePillars() {
   const [activeIndex, setActiveIndex] = useState(0);
 
+  const cardClasses = [
+    'is-tl', // Card 0: Top-Left
+    'is-tr', // Card 1: Top-Right
+    'is-bl', // Card 2: Bottom-Left
+    'is-br', // Card 3: Bottom-Right
+  ];
+
   return (
-    <section className="pillars section section--warm" id="agents">
+    <section className="pillars section section--warm" id="platform">
       <div className="container">
         <div className="pillars__header">
           <p className="overline">The Power of FaktriIQ</p>
@@ -91,40 +100,29 @@ export default function ValuePillars() {
           </p>
         </div>
 
-        <div className="pillars__grid">
-          <div className="pillars__tabs" role="tablist" aria-orientation="vertical">
-            {PILLARS.map((pillar, index) => {
-              const isActive = index === activeIndex;
-              return (
-                <button
-                  key={pillar.title}
-                  type="button"
-                  role="tab"
-                  aria-selected={isActive}
-                  aria-controls="pillars-visual"
-                  className={`pillars__tab ${isActive ? 'is-active' : ''}`}
-                  onClick={() => setActiveIndex(index)}
-                >
-                  <span className="pillars__tab-title">{pillar.title}</span>
-                  <span className="pillars__tab-description">{pillar.description}</span>
-                </button>
-              );
-            })}
-          </div>
+        <div className="pillars__puzzle">
+          {PILLARS.map((pillar, index) => {
+            const isActive = index === activeIndex;
+            return (
+              <div
+                key={pillar.title}
+                className={`pillars__puzzle-card ${cardClasses[index]} ${isActive ? 'is-active' : ''}`}
+                onMouseEnter={() => setActiveIndex(index)}
+                onClick={() => setActiveIndex(index)}
+              >
+                <div className="pillars__card-border">
+                  <div className="pillars__card-inner">
+                    <span className="pillars__card-badge">0{index + 1}</span>
+                    <h3 className="pillars__card-title">{pillar.title}</h3>
+                    <p className="pillars__card-desc">{pillar.description}</p>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
 
-          <div className="pillars__visual card" id="pillars-visual">
+          <div className="pillars__puzzle-center" id="pillars-visual">
             <LineCluster activeIndex={activeIndex} />
-            <div className="pillars__dots" aria-hidden="true">
-              {PILLARS.map((pillar, index) => (
-                <button
-                  key={pillar.title}
-                  type="button"
-                  tabIndex={-1}
-                  className={`pillars__dot ${index === activeIndex ? 'is-active' : ''}`}
-                  onClick={() => setActiveIndex(index)}
-                />
-              ))}
-            </div>
           </div>
         </div>
       </div>

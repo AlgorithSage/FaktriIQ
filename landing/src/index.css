@@ -502,6 +502,8 @@ code {
   margin-top: 36px;
 }
 
+/* ---------- Interactive Statutory Standards (Social Proof Tooltips) ---------- */
+
 .social-proof {
   position: relative;
   margin-top: 88px;
@@ -522,10 +524,18 @@ code {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 12px 14px;
+  gap: 16px 20px;
+}
+
+.social-proof__badge-container {
+  position: relative;
+  display: inline-block;
 }
 
 .social-proof__badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   padding: 9px 18px;
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
@@ -536,11 +546,128 @@ code {
   text-transform: uppercase;
   color: var(--color-slate);
   transition: var(--transition);
+  cursor: pointer;
+}
+
+.social-proof__badge-icon {
+  color: var(--color-muted);
+  transition: var(--transition);
 }
 
 .social-proof__badge:hover {
   border-color: var(--sky);
   background: var(--sky-soft);
+  color: var(--color-ink);
+  transform: translateY(-2px);
+}
+
+.social-proof__badge:hover .social-proof__badge-icon {
+  color: var(--color-accent);
+}
+
+.social-proof__tooltip {
+  position: absolute;
+  bottom: 130%;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  width: 290px;
+  padding: 16px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(8px);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-soft);
+  z-index: 100;
+  text-align: left;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1),
+              transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.social-proof__badge-container:hover .social-proof__tooltip {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Tooltip arrow */
+.social-proof__tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 6px;
+  border-style: solid;
+  border-color: var(--color-border) transparent transparent transparent;
+}
+
+.social-proof__tooltip::before {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border-width: 5px;
+  border-style: solid;
+  border-color: #ffffff transparent transparent transparent;
+  z-index: 1;
+}
+
+.social-proof__tooltip-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.social-proof__tooltip-tag {
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  letter-spacing: 0.05em;
+}
+
+.social-proof__tooltip-status {
+  font-size: 9.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--color-verify);
+  background: var(--cyan-soft);
+  padding: 2px 6px;
+  border-radius: 4px;
+  border: 1px solid rgba(47, 163, 107, 0.15);
+}
+
+.social-proof__tooltip-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--color-ink);
+  margin: 0 0 6px 0;
+}
+
+.social-proof__tooltip-desc {
+  font-size: 12px;
+  color: var(--color-muted);
+  line-height: 1.45;
+  margin: 0 0 12px 0;
+}
+
+.social-proof__tooltip-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 10px 0;
+}
+
+.social-proof__tooltip-meta {
+  font-size: 11px;
+  color: var(--color-slate);
+  line-height: 1.5;
+}
+
+.social-proof__tooltip-meta-item strong {
   color: var(--color-ink);
 }
 
@@ -876,113 +1003,195 @@ code {
   color: var(--color-warn);
 }
 
-/* ---------- Value pillars ---------- */
+/* ---------- Value pillars (Puzzle Grid) ---------- */
+
+:root {
+  --pillars-gap: 32px;
+  --center-size: 240px;
+  --cutout: calc((var(--center-size) / 2) - (var(--pillars-gap) / 2));
+}
 
 .pillars__header {
   max-width: 640px;
   margin-bottom: 56px;
 }
 
-.pillars__grid {
+.pillars__puzzle {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 6fr) minmax(0, 6fr);
-  gap: 40px;
-  align-items: stretch;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
+  gap: var(--pillars-gap);
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
-.pillars__tabs {
-  display: grid;
-  gap: 12px;
-  align-content: start;
-}
-
-.pillars__tab {
-  text-align: left;
-  padding: 18px 22px;
-  background: var(--color-surface);
+.pillars__puzzle-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: var(--center-size);
+  height: var(--center-size);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--color-border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  transition: var(--transition);
-}
-
-.pillars__tab:hover {
-  border-color: var(--color-muted);
-}
-
-.pillars__tab.is-active {
-  border-color: var(--color-accent-mid);
-  background: linear-gradient(100deg, var(--color-accent-light) 0%, var(--color-surface) 60%);
-  box-shadow: var(--shadow-gold);
-}
-
-.pillars__tab-title {
-  display: block;
-  font-size: 16.5px;
-  font-weight: 700;
-  color: var(--color-ink);
-}
-
-/* Description unfolds when the tab is active. */
-.pillars__tab-description {
-  display: block;
-  overflow: hidden;
-  max-height: 0;
-  opacity: 0;
-  font-size: 14.5px;
-  font-weight: 500;
-  color: var(--color-muted);
-  transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-    opacity 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-    margin-top 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.pillars__tab.is-active .pillars__tab-description {
-  max-height: 90px;
-  opacity: 1;
-  margin-top: 8px;
-}
-
-.pillars__visual {
-  position: relative;
+  box-shadow: var(--shadow-soft);
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 32px;
-  min-height: 380px;
+  transition: var(--transition);
+}
+
+.pillars__puzzle-center:hover {
+  box-shadow: var(--shadow-gold);
+  border-color: var(--sky);
 }
 
 .pillars__cluster {
-  width: min(340px, 80%);
-  height: auto;
+  width: 90%;
+  height: 90%;
 }
 
 .pillars__cluster-rays {
   transform-origin: 180px 180px;
   transform: rotate(var(--cluster-rotation, 0deg));
-  transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.pillars__dots {
-  position: absolute;
-  right: 22px;
-  top: 50%;
-  transform: translateY(-50%);
-  display: grid;
-  gap: 12px;
+.pillars__puzzle-card {
+  position: relative;
+  filter: drop-shadow(0 4px 12px rgba(17, 17, 17, 0.05));
+  transition: var(--transition);
+  cursor: pointer;
+  min-height: 190px;
+  display: flex;
 }
 
-.pillars__dot {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
+.pillars__puzzle-card:hover {
+  filter: drop-shadow(0 12px 24px rgba(17, 17, 17, 0.09));
+  transform: translateY(-2px);
+}
+
+.pillars__puzzle-card.is-active {
+  filter: drop-shadow(0 16px 36px rgba(169, 216, 255, 0.35));
+}
+
+.pillars__card-border {
+  width: 100%;
+  height: 100%;
   background: var(--color-border);
+  padding: 1px;
   transition: var(--transition);
 }
 
-.pillars__dot.is-active {
-  background: var(--color-accent);
-  transform: scale(1.25);
+.pillars__puzzle-card:hover .pillars__card-border {
+  background: var(--color-muted);
+}
+
+.pillars__puzzle-card.is-active .pillars__card-border {
+  background: var(--color-accent-mid);
+}
+
+.pillars__card-inner {
+  width: 100%;
+  height: 100%;
+  background: var(--color-surface);
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  transition: var(--transition);
+}
+
+.pillars__puzzle-card.is-active .pillars__card-inner {
+  background: linear-gradient(135deg, var(--color-accent-light) 0%, var(--color-surface) 100%);
+}
+
+.pillars__card-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-muted);
+  background: var(--color-subtle);
+  padding: 2px 8px;
+  border-radius: 4px;
+  border: 1px solid var(--color-border);
+  width: fit-content;
+  margin-bottom: 12px;
+}
+
+.pillars__puzzle-card.is-active .pillars__card-badge {
+  color: var(--color-accent);
+  background: var(--sky-soft);
+  border-color: var(--sky);
+}
+
+.pillars__card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--color-ink);
+  margin: 0 0 8px 0;
+}
+
+.pillars__card-desc {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--color-muted);
+  line-height: 1.45;
+  margin: 0;
+}
+
+/* Card Clip-Paths (L-shapes) */
+.pillars__puzzle-card.is-tl .pillars__card-border,
+.pillars__puzzle-card.is-tl .pillars__card-inner {
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--cutout)),
+    calc(100% - var(--cutout)) calc(100% - var(--cutout)),
+    calc(100% - var(--cutout)) 100%,
+    0 100%
+  );
+}
+
+.pillars__puzzle-card.is-tr .pillars__card-border,
+.pillars__puzzle-card.is-tr .pillars__card-inner {
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% 100%,
+    var(--cutout) 100%,
+    var(--cutout) calc(100% - var(--cutout)),
+    0 calc(100% - var(--cutout))
+  );
+}
+
+.pillars__puzzle-card.is-bl .pillars__card-border,
+.pillars__puzzle-card.is-bl .pillars__card-inner {
+  clip-path: polygon(
+    0 0,
+    calc(100% - var(--cutout)) 0,
+    calc(100% - var(--cutout)) var(--cutout),
+    100% var(--cutout),
+    100% 100%,
+    0 100%
+  );
+}
+
+.pillars__puzzle-card.is-br .pillars__card-border,
+.pillars__puzzle-card.is-br .pillars__card-inner {
+  clip-path: polygon(
+    var(--cutout) 0,
+    100% 0,
+    100% 100%,
+    0 100%,
+    0 var(--cutout),
+    var(--cutout) var(--cutout)
+  );
 }
 
 /* ---------- Technology strip ---------- */
@@ -1370,12 +1579,30 @@ code {
     position: static;
   }
 
-  .pillars__grid {
+  .pillars__puzzle {
     grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    gap: 16px;
   }
 
-  .pillars__visual {
-    min-height: 320px;
+  .pillars__puzzle-center {
+    position: static;
+    transform: none;
+    width: 100%;
+    max-width: 320px;
+    height: 320px;
+    margin: 20px auto 0;
+  }
+
+  .pillars__puzzle-card .pillars__card-border,
+  .pillars__puzzle-card .pillars__card-inner {
+    clip-path: none !important;
+    padding: 20px;
+  }
+
+  .pillars__puzzle-card {
+    filter: drop-shadow(0 2px 8px rgba(17, 17, 17, 0.05)) !important;
+    min-height: auto;
   }
 
   .tech__grid {
