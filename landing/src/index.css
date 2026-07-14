@@ -235,6 +235,7 @@ code {
   text-transform: uppercase;
   color: var(--color-muted);
   margin-bottom: 14px;
+  text-decoration: none !important;
 }
 
 .overline--accent {
