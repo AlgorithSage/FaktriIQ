@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState } from 'react';
 
 const PILLARS = [
   {
@@ -282,39 +282,9 @@ function RoundedCardBg({ quadrant, size, isActive }) {
 
 export default function ValuePillars() {
   const [activeIndex, setActiveIndex] = useState(null);
-  const [mouseAngle, setMouseAngle] = useState(0);
-  const centerRef = useRef(null);
 
-  // Mouse move listener to track heading angle
-  useEffect(() => {
-    const handleMouseMove = (e) => {
-      if (activeIndex !== null) return; // Snapped onto card angle
-      if (!centerRef.current) return;
-
-      const rect = centerRef.current.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-
-      const dx = e.clientX - centerX;
-      const dy = e.clientY - centerY;
-
-      const angleRad = Math.atan2(dy, dx);
-      let angleDeg = angleRad * (180 / Math.PI);
-
-      // Convert from standard angle (East is 0) to rotation angle relative to North (12 o'clock)
-      let rotation = angleDeg + 90;
-      if (rotation < 0) {
-        rotation += 360;
-      }
-
-      setMouseAngle(rotation);
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, [activeIndex]);
-
-  const activeAngle = activeIndex !== null ? SNAP_ROTATIONS[activeIndex] : mouseAngle;
+  // Needle rests at North (0°) when idle, snaps to card angle on hover
+  const activeAngle = activeIndex !== null ? SNAP_ROTATIONS[activeIndex] : 0;
   const isLocked = activeIndex !== null;
 
   const cardLayouts = ['tl', 'tr', 'bl', 'br'];
@@ -407,7 +377,6 @@ export default function ValuePillars() {
 
           {/* Symmetrical central floating compass panel */}
           <div
-            ref={centerRef}
             className="pillars__puzzle-center flex items-center justify-center border"
             id="pillars-visual"
             style={{

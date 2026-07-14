@@ -42,6 +42,15 @@
   font-display: swap;
 }
 
+/* Same font file, registered as normal style so browser loads it without requiring font-style:italic */
+@font-face {
+  font-family: 'AnthropicSerifUpright';
+  src: url('/fonts/AnthropicSerif-Display-SemiboldItalic-Static.otf') format('opentype');
+  font-weight: 400 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   /* Base surfaces & text */
   --color-bg: #FFFDF5;
@@ -431,8 +440,9 @@ code {
 }
 
 .brand-text-style {
-  font-family: 'AnthropicSerif', var(--font-body);
-  font-weight: 700;
+  font-family: 'AnthropicSerifUpright', var(--font-body);
+  font-weight: 600;
+  font-style: normal;
   display: inline-block;
   transform: skewX(-11.5deg);
   letter-spacing: -0.01em;
