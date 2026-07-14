@@ -183,12 +183,12 @@ export default function TechnologyStrip() {
                     {tier.title}
                   </h3>
 
-                  {/* Tech stack tags */}
-                  <div className="flex flex-wrap justify-center gap-1.5 mt-3 w-full">
+                  {/* Tech stack tags - increased top/bottom margins and row gap */}
+                  <div className="flex flex-wrap justify-center gap-x-2 gap-y-2.5 mt-4 mb-6 w-full">
                     {tier.tech.split(' · ').map((techItem) => (
                       <span
                         key={techItem}
-                        className="px-2 py-0.5 border font-mono text-[9.5px] font-bold text-[var(--color-ink)] bg-white/70 shadow-[0_1px_3px_rgba(30,35,40,0.03)]"
+                        className="px-2.5 py-1 border font-mono text-[9.5px] font-bold text-[var(--color-ink)] bg-white/70 shadow-[0_1px_3px_rgba(30,35,40,0.03)]"
                         style={{
                           borderColor: 'var(--color-border)',
                           borderRadius: '0.375rem',
@@ -199,8 +199,8 @@ export default function TechnologyStrip() {
                     ))}
                   </div>
 
-                  {/* Feature Points (nested modal-in-modals) */}
-                  <ul className="flex flex-col gap-3 w-full mt-6">
+                  {/* Feature Points (nested modal-in-modals) - increased gap and reset mt */}
+                  <ul className="flex flex-col gap-4 w-full mt-0">
                     {tier.points.map((point) => (
                       <li 
                         key={point} 
