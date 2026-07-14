@@ -237,17 +237,6 @@ code {
   margin-bottom: 14px;
 }
 
-/* Signature accent line — lemon → peach → sky gradient bar. */
-.overline::after {
-  content: '';
-  display: block;
-  width: 44px;
-  height: 3px;
-  margin-top: 10px;
-  border-radius: 3px;
-  background: var(--gradient-line);
-}
-
 .overline--accent {
   color: var(--color-ink);
 }
@@ -1008,7 +997,8 @@ code {
 :root {
   --pillars-gap: 32px;
   --center-size: 240px;
-  --cutout: calc((var(--center-size) / 2) - (var(--pillars-gap) / 2));
+  --cutout-gap: 16px;
+  --cutout: calc((var(--center-size) / 2) - (var(--pillars-gap) / 2) + var(--cutout-gap));
 }
 
 .pillars__header {
@@ -1192,6 +1182,17 @@ code {
     0 var(--cutout),
     var(--cutout) var(--cutout)
   );
+}
+
+/* Card padding adjustments to avoid overlapping the central visual */
+.pillars__puzzle-card.is-tl .pillars__card-inner,
+.pillars__puzzle-card.is-bl .pillars__card-inner {
+  padding-right: calc(28px + var(--cutout));
+}
+
+.pillars__puzzle-card.is-tr .pillars__card-inner,
+.pillars__puzzle-card.is-br .pillars__card-inner {
+  padding-left: calc(28px + var(--cutout));
 }
 
 /* ---------- Technology strip ---------- */
@@ -1503,10 +1504,6 @@ code {
   text-align: center;
 }
 
-.footer__cta-block .overline::after {
-  margin-inline: auto;
-}
-
 .footer__heading {
   font-family: var(--font-body);
   font-weight: 700;
@@ -1597,7 +1594,7 @@ code {
   .pillars__puzzle-card .pillars__card-border,
   .pillars__puzzle-card .pillars__card-inner {
     clip-path: none !important;
-    padding: 20px;
+    padding: 20px !important;
   }
 
   .pillars__puzzle-card {
