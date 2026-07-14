@@ -1,6 +1,7 @@
 import HeroReveal from './HeroReveal.jsx';
 import { ShinyButton } from './ui/ShinyButton';
 import { Highlighter } from './ui/highlighter';
+import { ShaderBackground } from './ui/ShaderBackground.jsx';
 
 const STATUTORY_DETAILS = {
   'Factories Act 1948': {
@@ -65,19 +66,9 @@ const STATUTORY_DETAILS = {
 export default function Hero() {
   return (
     <section className="hero" id="top" style={{ position: "relative" }}>
-      {/* Noise Texture (Darker Dots) Background */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          zIndex: 0,
-          background: "#ffffff",
-          backgroundImage: "radial-gradient(circle at 1px 1px, rgba(0, 0, 0, 0.35) 1px, transparent 0)",
-          backgroundSize: "20px 20px",
-          pointerEvents: "none",
-        }}
-      />
-      <div className="hero__content container" style={{ position: "relative", zIndex: 1 }}>
+      {/* WebGL Silk Shader Background (interactive, theme matched) */}
+      <ShaderBackground className="absolute inset-0 z-0 pointer-events-none" />
+      <div className="hero__content container" style={{ position: "relative", zIndex: 1, marginBottom: "clamp(2rem, 4vw, 3rem)" }}>
         <h1 className="hero__heading">
           Catch{' '}
           <Highlighter isView={true} color="rgba(6, 182, 212, 0.25)" strokeWidth={3.5}>

@@ -56,7 +56,7 @@ export default function StatutoryStandards() {
       <div className="container">
         <div className="grid gap-12 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-20">
           {/* Intro column */}
-          <div className="lg:sticky lg:top-[calc(var(--nav-height)+40px)] lg:self-start">
+          <div className="lg:sticky lg:top-[calc(var(--nav-height)+40px)] lg:self-center">
             <p className="overline">Compliance Coverage</p>
             <h2 className="section-heading">
               Aligned with the standards your auditors actually cite

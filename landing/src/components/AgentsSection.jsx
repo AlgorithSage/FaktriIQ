@@ -222,7 +222,8 @@ export default function AgentsSection() {
                 aria-pressed={isActive}
                 className={`agents__tab${isActive ? ' agents__tab--active' : ''}`}
                 style={{
-                  borderColor: isActive ? tabAccent.mid : undefined,
+                  borderColor: 'var(--color-border)',
+                  background: isActive ? 'var(--color-subtle)' : undefined,
                 }}
               >
                 <span

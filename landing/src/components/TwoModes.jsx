@@ -20,14 +20,14 @@ import {
 
 function Check({ children, icon: Icon, soft }) {
   return (
-    <li className="flex gap-3">
+    <li className="flex items-start gap-3.5">
       <span
-        className="mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-[7px]"
+        className="mt-1 flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px]"
         style={{ background: soft }}
       >
-        <Icon className="h-[16px] w-[16px]" strokeWidth={1.7} style={{ color: 'var(--color-ink)' }} />
+        <Icon className="h-[15px] w-[15px]" strokeWidth={1.8} style={{ color: 'var(--color-ink)' }} />
       </span>
-      <span className="text-[14px] leading-snug" style={{ color: 'var(--color-slate)' }}>
+      <span className="text-[14.5px] leading-relaxed pt-0.5" style={{ color: 'var(--color-slate)' }}>
         {children}
       </span>
     </li>
@@ -38,7 +38,7 @@ function Check({ children, icon: Icon, soft }) {
 function PhoneMock() {
   return (
     <div
-      className="mx-auto w-[248px] rounded-[30px] border p-2.5"
+      className="mx-auto w-[248px] rounded-[30px] border p-2"
       style={{ background: 'var(--color-ink)', borderColor: 'var(--color-ink)', boxShadow: 'var(--shadow-soft)' }}
     >
       <div className="overflow-hidden rounded-[22px]" style={{ background: 'var(--color-subtle)' }}>
@@ -64,8 +64,8 @@ function PhoneMock() {
           </div>
 
           <div
-            className="rounded-[12px] rounded-bl-sm border bg-white px-3 py-2.5"
-            style={{ borderColor: 'var(--color-border)' }}
+            className="rounded-[12px] rounded-bl-sm border px-3 py-2.5"
+            style={{ borderColor: 'var(--color-border)', background: 'var(--color-surface)' }}
           >
             <p className="text-[12px] leading-snug" style={{ color: 'var(--color-slate)' }}>
               Flame-resistant coveralls, a hard hat, and an H₂S-rated respirator. See the
@@ -89,8 +89,8 @@ function PhoneMock() {
         {/* input */}
         <div className="px-3.5 pb-3.5 pt-1.5">
           <div
-            className="flex items-center gap-2 rounded-full border bg-white px-3 py-2"
-            style={{ borderColor: 'var(--color-border)' }}
+            className="flex items-center gap-2 rounded-full border px-3 py-2"
+            style={{ borderColor: 'var(--color-border)', background: 'var(--color-surface)' }}
           >
             <span className="text-[11.5px]" style={{ color: 'var(--color-muted)' }}>
               Ask about a procedure…
@@ -114,11 +114,13 @@ function ConsoleMock() {
     { name: 'Boiler-Maintenance v4', gap: 2, ok: 6 },
     { name: 'Hot-Work Permit SOP', gap: 0, ok: 8 },
     { name: 'PH2 Entry Procedure', gap: 1, ok: 5 },
+    { name: 'Electrical-Safety SOP', gap: 0, ok: 7 },
   ];
   const clauses = [
     { code: 'Factories Act §7A(2)', status: 'ok' },
     { code: 'OISD-STD-105 · §4.3', status: 'ok' },
     { code: 'PESO SMPV(U) · R.19', status: 'gap' },
+    { code: 'IS-14489 Audit Code', status: 'ok' },
   ];
   return (
     <div
@@ -229,93 +231,99 @@ export default function TwoModes() {
           </p>
         </div>
 
-        <div className="grid gap-6 lg:grid-cols-2">
+        <div className="flex flex-col gap-10">
           {/* Technician mode */}
-          <article className="card flex flex-col p-6 md:p-8">
-            <div className="mb-6 flex items-center gap-3">
-              <span
-                className="flex h-11 w-11 items-center justify-center rounded-[10px] border"
-                style={{ background: 'var(--cyan-soft)', borderColor: 'var(--cyan)' }}
-              >
-                <Smartphone className="h-[22px] w-[22px]" strokeWidth={1.7} style={{ color: 'var(--color-ink)' }} />
-              </span>
-              <div>
-                <h3 className="text-[19px] font-bold leading-tight" style={{ color: 'var(--color-ink)' }}>
-                  Field Technician
-                </h3>
-                <p className="font-mono text-[11px] font-bold uppercase tracking-[0.12em]" style={{ color: 'var(--color-muted)' }}>
-                  Knowledge Copilot · Mobile
-                </p>
+          <article className="card grid gap-8 p-6 md:p-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:gap-12">
+            <div className="flex flex-col">
+              <div className="mb-5 flex items-center gap-3">
+                <span
+                  className="flex h-11 w-11 items-center justify-center rounded-[10px] border"
+                  style={{ background: 'var(--cyan-soft)', borderColor: 'var(--cyan)' }}
+                >
+                  <Smartphone className="h-[22px] w-[22px]" strokeWidth={1.7} style={{ color: 'var(--color-ink)' }} />
+                </span>
+                <div>
+                  <h3 className="text-[20px] font-bold leading-tight" style={{ color: 'var(--color-ink)' }}>
+                    Field Technician
+                  </h3>
+                  <p className="font-mono text-[11px] font-bold uppercase tracking-[0.12em]" style={{ color: 'var(--color-muted)' }}>
+                    Knowledge Copilot · Mobile
+                  </p>
+                </div>
               </div>
+
+              <p className="mb-5 text-[15px] leading-relaxed" style={{ color: 'var(--color-slate)' }}>
+                A single-question, single-answer copilot built for gloves and glances — the answer
+                arrives as one focused, cited card, and it never needs a network.
+              </p>
+
+              <ul className="flex flex-col gap-3.5">
+                <Check icon={WifiOff} soft="var(--cyan-soft)">
+                  <strong>100% Offline Inference</strong>: Operates directly on edge hardware with zero network dependency.
+                </Check>
+                <Check icon={Fingerprint} soft="var(--cyan-soft)">
+                  <strong>Ergonomic Design</strong>: Glove-friendly, thumb-reachable interface with 48px touch targets.
+                </Check>
+                <Check icon={BadgeCheck} soft="var(--cyan-soft)">
+                  <strong>Grounded Citations</strong>: Every retrieved answer carries a clear compliance citation and confidence score.
+                </Check>
+                <Check icon={FileSearch} soft="var(--cyan-soft)">
+                  <strong>Context Fallback</strong>: Instantly reveals raw SOP passages when confidence falls below safe thresholds.
+                </Check>
+              </ul>
             </div>
 
-            <div className="mb-7">
+            <div className="flex items-center justify-center min-h-[360px] rounded-2xl p-4 border" style={{ background: 'var(--color-bg)', borderColor: 'var(--color-border)' }}>
               <PhoneMock />
             </div>
-
-            <p className="mb-5 text-[15px] leading-relaxed" style={{ color: 'var(--color-slate)' }}>
-              A single-question, single-answer copilot built for gloves and glances — the answer
-              arrives as one focused, cited card, and it never needs a network.
-            </p>
-
-            <ul className="mt-auto flex flex-col gap-3.5">
-              <Check icon={WifiOff} soft="var(--cyan-soft)">
-                Runs 100% on-device — works with no signal on the floor.
-              </Check>
-              <Check icon={Fingerprint} soft="var(--cyan-soft)">
-                Thumb-reachable, glove-friendly layout with 48px touch targets.
-              </Check>
-              <Check icon={BadgeCheck} soft="var(--cyan-soft)">
-                Every answer carries a citation and a confidence signal.
-              </Check>
-              <Check icon={FileSearch} soft="var(--cyan-soft)">
-                Shows the raw SOP snippet whenever confidence is low.
-              </Check>
-            </ul>
           </article>
 
           {/* Officer mode */}
-          <article className="card flex flex-col p-6 md:p-8">
-            <div className="mb-6 flex items-center gap-3">
-              <span
-                className="flex h-11 w-11 items-center justify-center rounded-[10px] border"
-                style={{ background: 'var(--sky-soft)', borderColor: 'var(--sky)' }}
-              >
-                <Monitor className="h-[22px] w-[22px]" strokeWidth={1.7} style={{ color: 'var(--color-ink)' }} />
-              </span>
-              <div>
-                <h3 className="text-[19px] font-bold leading-tight" style={{ color: 'var(--color-ink)' }}>
-                  Safety Officer
-                </h3>
-                <p className="font-mono text-[11px] font-bold uppercase tracking-[0.12em]" style={{ color: 'var(--color-muted)' }}>
-                  Compliance Console · Web
-                </p>
+          <article className="card grid gap-8 p-6 md:p-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:gap-12">
+            <div className="flex flex-col">
+              <div className="mb-5 flex items-center gap-3">
+                <span
+                  className="flex h-11 w-11 items-center justify-center rounded-[10px] border"
+                  style={{ background: 'var(--sky-soft)', borderColor: 'var(--sky)' }}
+                >
+                  <Monitor className="h-[22px] w-[22px]" strokeWidth={1.7} style={{ color: 'var(--color-ink)' }} />
+                </span>
+                <div>
+                  <h3 className="text-[20px] font-bold leading-tight" style={{ color: 'var(--color-ink)' }}>
+                    Safety Officer
+                  </h3>
+                  <p className="font-mono text-[11px] font-bold uppercase tracking-[0.12em]" style={{ color: 'var(--color-muted)' }}>
+                    Compliance Console · Web
+                  </p>
+                </div>
+              </div>
+
+              <p className="mb-5 text-[15px] leading-relaxed" style={{ color: 'var(--color-slate)' }}>
+                A dense, information-rich workspace for triage — procedures on the left, matched
+                clauses and flags on the right, with red reserved for genuine gaps.
+              </p>
+
+              <ul className="flex flex-col gap-3.5">
+                <Check icon={LayoutPanelLeft} soft="var(--sky-soft)">
+                  <strong>Two-Pane Workspace</strong>: Side-by-side view of active documents and matched statutory clauses.
+                </Check>
+                <Check icon={ScanSearch} soft="var(--sky-soft)">
+                  <strong>Automatic Alignment</strong>: Maps plant procedures directly to Factories Act, OISD, and PESO clauses.
+                </Check>
+                <Check icon={CircleAlert} soft="var(--sky-soft)">
+                  <strong>Color-Coded Triage</strong>: Visual gap indicators (red/green) highlight compliance status instantly.
+                </Check>
+                <Check icon={Download} soft="var(--sky-soft)">
+                  <strong>Rapid Reporting</strong>: Export formatted gap audits to PDF, print, or email in a single click.
+                </Check>
+              </ul>
+            </div>
+
+            <div className="flex items-center justify-center min-h-[360px] rounded-2xl p-4 border" style={{ background: 'var(--color-bg)', borderColor: 'var(--color-border)' }}>
+              <div className="w-full max-w-[420px]">
+                <ConsoleMock />
               </div>
             </div>
-
-            <div className="mb-7">
-              <ConsoleMock />
-            </div>
-
-            <p className="mb-5 text-[15px] leading-relaxed" style={{ color: 'var(--color-slate)' }}>
-              A dense, information-rich workspace for triage — procedures on the left, matched
-              clauses and flags on the right, with red reserved for genuine gaps.
-            </p>
-
-            <ul className="mt-auto flex flex-col gap-3.5">
-              <Check icon={LayoutPanelLeft} soft="var(--sky-soft)">
-                Two-pane triage — documents left, clause matches right.
-              </Check>
-              <Check icon={ScanSearch} soft="var(--sky-soft)">
-                Automatic clause mapping to Factories Act, OISD &amp; PESO.
-              </Check>
-              <Check icon={CircleAlert} soft="var(--sky-soft)">
-                Gap flags in red, compliant clauses in green — unmissable.
-              </Check>
-              <Check icon={Download} soft="var(--sky-soft)">
-                Export a formatted gap summary for email or print.
-              </Check>
-            </ul>
           </article>
         </div>
       </div>

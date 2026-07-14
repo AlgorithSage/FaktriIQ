@@ -20,8 +20,8 @@ export default function App() {
         <StatutoryStandards />
         <TwoModes />
         <ValuePillars />
-        <TechnologyStrip />
         <RolesGrid />
+        <TechnologyStrip />
       </main>
       <Footer />
     </>
