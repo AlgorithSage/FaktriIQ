@@ -44,13 +44,20 @@
 
 :root {
   /* Base surfaces & text */
-  --color-bg: #FFFDF8;           /* Warm cream page background */
-  --color-ink: #111111;          /* Near-black — text, headings, primary CTA */
-  --color-slate: #2A3340;        /* Dark neutral for secondary emphasis */
-  --color-surface: #FFFFFF;      /* Card / panel surface */
-  --color-subtle: #F7FAFC;       /* Soft cool-gray section background */
-  --color-border: #E7EAF0;       /* Hairline borders, dividers */
-  --color-muted: #5B6472;        /* Secondary / muted text */
+  --color-bg: #FFFDF8;
+  /* Warm cream page background */
+  --color-ink: #111111;
+  /* Near-black — text, headings, primary CTA */
+  --color-slate: #2A3340;
+  /* Dark neutral for secondary emphasis */
+  --color-surface: #FFFFFF;
+  /* Card / panel surface */
+  --color-subtle: #F7FAFC;
+  /* Soft cool-gray section background */
+  --color-border: #E7EAF0;
+  /* Hairline borders, dividers */
+  --color-muted: #5B6472;
+  /* Secondary / muted text */
 
   /* Pastel accent set */
   --peach: #F7C6B8;
@@ -70,18 +77,23 @@
   --color-accent-mid: var(--sky);
 
   /* Compliance semantics — functional, kept unambiguous within the palette */
-  --color-flag: #E0483D;         /* Gap / alert — clearly red */
-  --color-verify: #2FA36B;       /* Compliant — clearly green */
-  --color-warn: #E0913A;         /* Advisory / medium confidence */
+  --color-flag: #E0483D;
+  /* Gap / alert — clearly red */
+  --color-verify: #2FA36B;
+  /* Compliant — clearly green */
+  --color-warn: #E0913A;
+  /* Advisory / medium confidence */
 
   /* Warm band tokens */
   --color-warm: #FFFDF8;
   --color-warm-subtle: #FFF6C7;
 
-  --radius: 0.625rem;                 /* Standard corner radius */
+  --radius: 0.625rem;
+  /* Standard corner radius */
   --shadow: 0 1px 2px rgba(17, 17, 17, 0.05);
   --shadow-soft: 0 12px 30px rgba(17, 17, 17, 0.08);
-  --shadow-gold: 0 12px 30px rgba(169, 216, 255, 0.4);   /* soft sky glow */
+  --shadow-gold: 0 12px 30px rgba(169, 216, 255, 0.4);
+  /* soft sky glow */
   --gradient-hero: linear-gradient(135deg, #FFFDF8 0%, #E8F4FF 35%, #E3FBFA 70%, #FCE8E2 100%);
   --gradient-line: linear-gradient(90deg, #F8E36A, #F7C6B8, #A9D8FF);
   --glow-soft: radial-gradient(circle at top left, rgba(169, 216, 255, 0.35), transparent 45%);
@@ -148,7 +160,14 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3, h4, p, dl, dd, figure {
+h1,
+h2,
+h3,
+h4,
+p,
+dl,
+dd,
+figure {
   margin: 0;
 }
 
@@ -183,12 +202,14 @@ code {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
   }
+
   html {
     scroll-behavior: auto;
   }
@@ -451,9 +472,6 @@ code {
 .hero {
   position: relative;
   padding-top: 168px;
-  background:
-    var(--glow-soft),
-    var(--gradient-hero);
 }
 
 .hero__backdrop {
@@ -572,7 +590,7 @@ code {
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.22s cubic-bezier(0.4, 0, 0.2, 1),
-              transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+    transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .social-proof__badge-container:hover .social-proof__tooltip {
@@ -773,6 +791,7 @@ code {
   .reveal__scroll {
     min-height: 0;
   }
+
   .reveal__sticky {
     position: static;
     height: auto;
@@ -1139,50 +1158,42 @@ code {
 /* Card Clip-Paths (L-shapes) */
 .pillars__puzzle-card.is-tl .pillars__card-border,
 .pillars__puzzle-card.is-tl .pillars__card-inner {
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% calc(100% - var(--cutout)),
-    calc(100% - var(--cutout)) calc(100% - var(--cutout)),
-    calc(100% - var(--cutout)) 100%,
-    0 100%
-  );
+  clip-path: polygon(0 0,
+      100% 0,
+      100% calc(100% - var(--cutout)),
+      calc(100% - var(--cutout)) calc(100% - var(--cutout)),
+      calc(100% - var(--cutout)) 100%,
+      0 100%);
 }
 
 .pillars__puzzle-card.is-tr .pillars__card-border,
 .pillars__puzzle-card.is-tr .pillars__card-inner {
-  clip-path: polygon(
-    0 0,
-    100% 0,
-    100% 100%,
-    var(--cutout) 100%,
-    var(--cutout) calc(100% - var(--cutout)),
-    0 calc(100% - var(--cutout))
-  );
+  clip-path: polygon(0 0,
+      100% 0,
+      100% 100%,
+      var(--cutout) 100%,
+      var(--cutout) calc(100% - var(--cutout)),
+      0 calc(100% - var(--cutout)));
 }
 
 .pillars__puzzle-card.is-bl .pillars__card-border,
 .pillars__puzzle-card.is-bl .pillars__card-inner {
-  clip-path: polygon(
-    0 0,
-    calc(100% - var(--cutout)) 0,
-    calc(100% - var(--cutout)) var(--cutout),
-    100% var(--cutout),
-    100% 100%,
-    0 100%
-  );
+  clip-path: polygon(0 0,
+      calc(100% - var(--cutout)) 0,
+      calc(100% - var(--cutout)) var(--cutout),
+      100% var(--cutout),
+      100% 100%,
+      0 100%);
 }
 
 .pillars__puzzle-card.is-br .pillars__card-border,
 .pillars__puzzle-card.is-br .pillars__card-inner {
-  clip-path: polygon(
-    var(--cutout) 0,
-    100% 0,
-    100% 100%,
-    0 100%,
-    0 var(--cutout),
-    var(--cutout) var(--cutout)
-  );
+  clip-path: polygon(var(--cutout) 0,
+      100% 0,
+      100% 100%,
+      0 100%,
+      0 var(--cutout),
+      var(--cutout) var(--cutout));
 }
 
 /* Card padding adjustments to avoid overlapping the central visual */
@@ -1272,6 +1283,138 @@ code {
   border: 1px solid var(--cyan);
 }
 
+/* ---------- Case study carousel ---------- */
+
+.case-study__card {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  overflow: hidden;
+}
+
+.case-study__content {
+  padding: 44px;
+  display: flex;
+  flex-direction: column;
+  animation: slide-in 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.case-study__partner {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  color: var(--color-ink);
+}
+
+.case-study__heading {
+  margin-top: 16px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: clamp(22px, 2.6vw, 30px);
+  line-height: 1.22;
+  letter-spacing: -0.015em;
+}
+
+.case-study__description {
+  margin-top: 16px;
+  font-size: 15.5px;
+  color: var(--color-muted);
+}
+
+.case-study__metrics {
+  margin-top: 30px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.case-study__metric {
+  padding: 16px;
+  border: 1px solid var(--peach);
+  border-radius: var(--radius);
+  background: linear-gradient(160deg, var(--lemon-soft) 0%, var(--peach-soft) 100%);
+}
+
+.case-study__metric-value {
+  font-family: var(--font-mono);
+  font-size: clamp(19px, 2vw, 24px);
+  font-weight: 700;
+  color: var(--color-ink);
+  white-space: nowrap;
+}
+
+.case-study__metric-label {
+  margin-top: 6px;
+  font-size: 12.5px;
+  line-height: 1.4;
+  color: var(--color-muted);
+}
+
+.case-study__footer {
+  margin-top: auto;
+  padding-top: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.case-study__controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.case-study__arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  transition: var(--transition);
+}
+
+.case-study__arrow:hover {
+  border-color: var(--sky);
+  background: var(--sky-soft);
+}
+
+.case-study__count {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--color-muted);
+  min-width: 40px;
+  text-align: center;
+}
+
+.case-study__visual {
+  border-left: 1px solid var(--color-border);
+  min-height: 320px;
+}
+
+.case-study__scene {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 /* ---------- Roles grid ---------- */
 
 .roles__header {
@@ -1315,14 +1458,17 @@ code {
   background: var(--sky-soft);
   border-color: var(--sky);
 }
+
 .roles__card:nth-child(2) .roles__icon {
   background: var(--cyan-soft);
   border-color: var(--cyan);
 }
+
 .roles__card:nth-child(3) .roles__icon {
   background: var(--peach-soft);
   border-color: var(--peach);
 }
+
 .roles__card:nth-child(4) .roles__icon {
   background: var(--lemon-soft);
   border-color: var(--lemon);
@@ -1500,6 +1646,7 @@ code {
     opacity: 0;
     transform: translateY(12px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1642,16 +1789,28 @@ code {
   border-color: var(--color-muted);
 }
 
-.agents__cap-card:nth-child(1) { animation-delay: 0.05s; }
-.agents__cap-card:nth-child(2) { animation-delay: 0.12s; }
-.agents__cap-card:nth-child(3) { animation-delay: 0.19s; }
-.agents__cap-card:nth-child(4) { animation-delay: 0.26s; }
+.agents__cap-card:nth-child(1) {
+  animation-delay: 0.05s;
+}
+
+.agents__cap-card:nth-child(2) {
+  animation-delay: 0.12s;
+}
+
+.agents__cap-card:nth-child(3) {
+  animation-delay: 0.19s;
+}
+
+.agents__cap-card:nth-child(4) {
+  animation-delay: 0.26s;
+}
 
 @keyframes agents-cardStagger {
   from {
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -1728,9 +1887,17 @@ code {
   border-radius: 50%;
 }
 
-.agents__chat-dot:nth-child(1) { background: var(--peach); }
-.agents__chat-dot:nth-child(2) { background: var(--lemon); }
-.agents__chat-dot:nth-child(3) { background: var(--cyan); }
+.agents__chat-dot:nth-child(1) {
+  background: var(--peach);
+}
+
+.agents__chat-dot:nth-child(2) {
+  background: var(--lemon);
+}
+
+.agents__chat-dot:nth-child(3) {
+  background: var(--cyan);
+}
 
 .agents__chat-title {
   font-size: 12px;
@@ -2052,7 +2219,8 @@ code {
     display: none;
   }
 
-  .nav, .nav.is-scrolled {
+  .nav,
+  .nav.is-scrolled {
     width: calc(100% - 32px);
     max-width: 100%;
     top: 10px;
@@ -2184,9 +2352,11 @@ code {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     @apply font-sans;
   }
