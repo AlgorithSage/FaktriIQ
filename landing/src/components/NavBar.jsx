@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { RadialGlowButton } from './ui/RadialGlowButton';
+import { PushButton } from './ui/PushButton';
 
 const MENU_ITEMS = [
   'Agents',
@@ -235,9 +235,9 @@ export default function NavBar() {
                   />
                 </svg>
               </button>
-              <RadialGlowButton onClick={() => window.location.hash = 'book-a-demo'}>
+              <PushButton onClick={() => window.location.hash = 'book-a-demo'} className="nav__demo-push">
                 Book a Demo
-              </RadialGlowButton>
+              </PushButton>
               <button
                 className="nav__burger"
                 type="button"

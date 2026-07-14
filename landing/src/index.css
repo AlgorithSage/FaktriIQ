@@ -283,6 +283,47 @@ code {
   max-width: 56ch;
 }
 
+.push-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 48px;
+  padding: 12px 26px;
+  border-radius: 12px;
+  background: var(--color-ink);
+  color: #FFFFFF;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  box-shadow: 0 6px 0 #0d1012;
+  transition: transform 0.06s ease, box-shadow 0.06s ease;
+  cursor: pointer;
+  border: none;
+}
+
+.push-btn:hover {
+  background: var(--color-slate);
+}
+
+.push-btn:active {
+  transform: translateY(5px);
+  box-shadow: 0 1px 0 #0d1012;
+}
+
+.nav__demo-push {
+  min-height: 40px !important;
+  padding: 6px 18px !important;
+  font-size: 13px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 4px 0 #0d1012 !important;
+}
+
+.nav__demo-push:active {
+  transform: translateY(3px) !important;
+  box-shadow: 0 1px 0 #0d1012 !important;
+}
+
 .btn {
   display: inline-flex;
   align-items: center;
@@ -1537,14 +1578,24 @@ code {
   border-color: var(--color-muted);
 }
 
+/* Active tab flips to the inverse (black) theme: ink fill, white text. */
 .agents__tab--active {
-  border-color: var(--color-border) !important;
-  box-shadow: var(--shadow-soft) !important;
+  border-color: var(--color-ink) !important;
+  background: var(--color-ink);
+  box-shadow: 0 10px 26px rgba(30, 35, 40, 0.28) !important;
   transform: scale(1.02);
 }
 
 .agents__tab--active:hover {
   transform: scale(1.02);
+}
+
+.agents__tab--active .agents__tab-name {
+  color: #FFFFFF;
+}
+
+.agents__tab--active .agents__tab-tagline {
+  color: rgba(255, 255, 255, 0.72);
 }
 
 .agents__tab-icon {
@@ -2186,8 +2237,9 @@ code {
     display: flex;
   }
 
-  .nav .btn--demo {
-    display: none;
+  .nav .btn--demo,
+  .nav__demo-push {
+    display: none !important;
   }
 
   .nav,

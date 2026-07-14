@@ -1,3 +1,5 @@
+import { PushButton } from './ui/PushButton';
+
 export default function Footer() {
   return (
     <footer className="footer" id="book-a-demo">
@@ -5,12 +7,12 @@ export default function Footer() {
         <p className="overline">Outcome-Driven Solutions: How we help</p>
         <h2 className="footer__heading">Ready to see FaktriIQ inside your plant?</h2>
         <div className="footer__actions">
-          <a className="btn btn--primary" href="#top">
+          <PushButton href="#top">
             See our Platform
-          </a>
-          <a className="btn btn--demo" href="mailto:hello@faktriiq.example">
+          </PushButton>
+          <PushButton href="mailto:hello@faktriiq.example">
             Book a Demo
-          </a>
+          </PushButton>
         </div>
       </div>
 

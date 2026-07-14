@@ -1,5 +1,5 @@
 import HeroReveal from './HeroReveal.jsx';
-import { ShinyButton } from './ui/ShinyButton';
+import { PushButton } from './ui/PushButton';
 import { Highlighter } from './ui/highlighter';
 import { ShaderBackground } from './ui/ShaderBackground.jsx';
 
@@ -81,9 +81,9 @@ export default function Hero() {
           Indian regulations&mdash;delivering traceable, cited answers for technicians
           on the floor and safety officers at their desks.
         </p>
-        <ShinyButton onClick={() => window.location.hash = 'agents'} className="hero__cta">
+        <PushButton onClick={() => window.location.hash = 'agents'} className="hero__cta">
           See our Platform
-        </ShinyButton>
+        </PushButton>
       </div>
 
       <HeroReveal videoSrc="/lp_video.mp4" />

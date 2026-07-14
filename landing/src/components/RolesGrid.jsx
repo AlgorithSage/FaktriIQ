@@ -98,7 +98,7 @@ export default function RolesGrid() {
   const ActiveIcon = activeRole.icon;
 
   return (
-    <section className="section section--bordered" id="resources" style={{ overflow: 'hidden' }}>
+    <section className="section section--subtle section--bordered" id="resources" style={{ overflow: 'hidden' }}>
       <div className="container">
         
         {/* Section Header */}

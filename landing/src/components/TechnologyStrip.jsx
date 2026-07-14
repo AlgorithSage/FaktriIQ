@@ -183,21 +183,35 @@ export default function TechnologyStrip() {
                     {tier.title}
                   </h3>
 
-                  {/* Tech stack description */}
-                  <span className="inline-block mt-2 font-mono text-[10.5px] font-bold text-[rgba(30,35,40,0.75)]">
-                    {tier.tech}
-                  </span>
+                  {/* Tech stack tags */}
+                  <div className="flex flex-wrap justify-center gap-1.5 mt-3 w-full">
+                    {tier.tech.split(' · ').map((techItem) => (
+                      <span
+                        key={techItem}
+                        className="px-2 py-0.5 border font-mono text-[9.5px] font-bold text-[var(--color-ink)] bg-white/70 shadow-[0_1px_3px_rgba(30,35,40,0.03)]"
+                        style={{
+                          borderColor: 'var(--color-border)',
+                          borderRadius: '0.375rem',
+                        }}
+                      >
+                        {techItem}
+                      </span>
+                    ))}
+                  </div>
 
-                  {/* Divider separating heading from points */}
-                  <div className="my-5 w-12 h-[1.5px] bg-[rgba(30,35,40,0.12)]" />
-
-                  {/* Feature Points (centered) */}
-                  <ul className="flex flex-col gap-3.5 text-center px-1">
+                  {/* Feature Points (nested modal-in-modals) */}
+                  <ul className="flex flex-col gap-3 w-full mt-6">
                     {tier.points.map((point) => (
                       <li 
                         key={point} 
-                        className="text-[13.5px] leading-relaxed text-[var(--color-ink)]"
-                        style={{ fontWeight: 500 }}
+                        className="text-[13px] leading-snug text-[var(--color-ink)] p-4 border shadow-[0_2px_8px_rgba(30,35,40,0.04)] flex items-center justify-center text-center"
+                        style={{ 
+                          fontWeight: 600,
+                          background: '#FFFFFF',
+                          borderColor: 'var(--color-border)',
+                          borderRadius: '1rem',
+                          minHeight: '68px',
+                        }}
                       >
                         {point}
                       </li>

@@ -1,4 +1,5 @@
 import { Scale, Flame, Fuel, Factory, HeartPulse, BadgeCheck } from 'lucide-react';
+import { PushButton } from './ui/PushButton';
 
 /* The Indian statutory frameworks the Compliance Agent grounds its answers in.
    Presented in the two-column "features title" layout: intro on the left,
@@ -84,9 +85,9 @@ export default function StatutoryStandards() {
               ))}
             </div>
 
-            <a className="btn btn--primary mt-8" href="#agents">
+            <PushButton className="mt-8" href="#agents">
               See the Compliance Agent
-            </a>
+            </PushButton>
           </div>
 
           {/* Framework grid */}
