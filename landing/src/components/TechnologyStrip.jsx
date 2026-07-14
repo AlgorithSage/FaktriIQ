@@ -141,84 +141,97 @@ export default function TechnologyStrip() {
             boxShadow: '0 24px 60px rgba(30, 35, 40, 0.04)',
           }}
         >
-          <div className="grid gap-8 lg:grid-cols-1 items-stretch" id="architecture">
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-stretch" id="architecture">
             {TIERS.map((tier) => (
-              <article 
-                key={tier.title} 
-                className="tech__card flex flex-col lg:flex-row items-stretch lg:items-center text-center lg:text-left justify-between gap-8 lg:gap-12"
+              <article
+                key={tier.title}
+                className="tech__card flex flex-col items-center text-center"
                 style={{
                   background: 'var(--color-subtle)',
                   border: '1px solid var(--color-border)',
                   borderRadius: '1.75rem',
                   boxShadow: 'var(--shadow)',
+                  padding: '2rem 1.75rem',
                   transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 }}
               >
-                {/* Left side: branding and tags (widescreen) */}
-                <div className="w-full lg:w-[38%] flex flex-col items-center lg:items-start">
-                  {/* Centered Modal for Icons */}
-                  <div 
-                    className="flex items-center justify-center gap-3 px-4 py-2 border shadow-[0_2px_8px_rgba(30,35,40,0.04)] mb-5" 
-                    style={{
-                      background: '#FFFFFF',
-                      borderColor: 'var(--color-border)',
-                      borderRadius: '0.875rem',
-                      width: 'fit-content',
-                      height: '42px',
-                    }}
-                  >
-                    <div className="flex items-center gap-3.5 text-[var(--color-ink)]">
-                      {tier.logos}
-                    </div>
+                {/* Icon row pill */}
+                <div
+                  className="flex items-center justify-center gap-3 px-4 py-2 border shadow-[0_2px_8px_rgba(30,35,40,0.04)] mb-5"
+                  style={{
+                    background: '#FFFFFF',
+                    borderColor: 'var(--color-border)',
+                    borderRadius: '0.875rem',
+                    width: 'fit-content',
+                    height: '42px',
+                  }}
+                >
+                  <div className="flex items-center gap-3.5 text-(--color-ink)">
+                    {tier.logos}
                   </div>
+                </div>
 
-                  {/* Label */}
-                  <p className="font-mono text-[9px] font-bold uppercase tracking-wider text-[rgba(30,35,40,0.65)] mb-2">
-                    {tier.label}
-                  </p>
+                {/* Label — height reserved for 2 lines so every card's title
+                    starts at the same y regardless of how the label wraps. */}
+                <p
+                  className="flex items-center justify-center font-mono text-[9px] font-bold uppercase tracking-wider mb-2"
+                  style={{ color: 'rgba(217, 119, 6, 0.85)', minHeight: '26px', lineHeight: 1.4 }}
+                >
+                  {tier.label}
+                </p>
 
-                  {/* Heading */}
-                  <h3 className="text-[21px] font-extrabold text-[var(--color-ink)] leading-tight mb-4">
-                    {tier.title}
-                  </h3>
+                {/* Heading — height reserved for 2 lines so the tags row below
+                    starts at the same y whether the title wraps or not. */}
+                <h3
+                  className="flex items-center justify-center text-[19px] font-extrabold text-(--color-ink) leading-tight mb-4"
+                  style={{ minHeight: '46px' }}
+                >
+                  {tier.title}
+                </h3>
 
-                  {/* Tech stack tags */}
-                  <div className="flex flex-wrap justify-center lg:justify-start gap-x-2 gap-y-2 mt-2 w-full">
-                    {tier.tech.split(' · ').map((techItem) => (
+                {/* Tech stack tags — every tier has exactly 4, so a fixed 2x2
+                    grid keeps the wrap identical and symmetric across cards
+                    (avoids the lopsided "3 then 1 alone" wrap). */}
+                <div className="grid grid-cols-2 gap-2 w-full max-w-[230px] mb-6">
+                  {tier.tech.split(' · ').map((techItem) => (
+                    <span
+                      key={techItem}
+                      className="px-2.5 py-1.5 border font-mono text-[9.5px] font-bold text-(--color-ink) bg-white/70 shadow-[0_1px_3px_rgba(30,35,40,0.03)] truncate"
+                      style={{
+                        borderColor: 'var(--color-border)',
+                        borderRadius: '0.375rem',
+                      }}
+                    >
+                      {techItem}
+                    </span>
+                  ))}
+                </div>
+
+                {/* Points — stacked in series (one after another), each a short
+                    horizontal strip rather than a tall padded box, so the card
+                    doesn't elongate vertically. */}
+                <ul className="flex flex-col gap-2 w-full">
+                  {tier.points.map((point) => (
+                    <li
+                      key={point}
+                      className="flex items-start gap-2.5 text-[12.5px] leading-snug text-left border"
+                      style={{
+                        fontWeight: 600,
+                        color: 'var(--color-ink)',
+                        background: '#FFFFFF',
+                        borderColor: 'var(--color-border)',
+                        borderRadius: '0.75rem',
+                        padding: '10px 12px',
+                      }}
+                    >
                       <span
-                        key={techItem}
-                        className="px-2.5 py-1 border font-mono text-[9.5px] font-bold text-[var(--color-ink)] bg-white/70 shadow-[0_1px_3px_rgba(30,35,40,0.03)]"
-                        style={{
-                          borderColor: 'var(--color-border)',
-                          borderRadius: '0.375rem',
-                        }}
-                      >
-                        {techItem}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Right side: white nested points list */}
-                <div className="w-full lg:w-[58%] flex flex-col justify-center">
-                  <ul className="flex flex-col gap-3.5 w-full">
-                    {tier.points.map((point) => (
-                      <li 
-                        key={point} 
-                        className="text-[13.5px] leading-snug text-[var(--color-ink)] px-6 py-4.5 border shadow-[0_2px_8px_rgba(30,35,40,0.04)] flex items-center justify-center lg:justify-start text-center lg:text-left"
-                        style={{ 
-                          fontWeight: 600,
-                          background: '#FFFFFF',
-                          borderColor: 'var(--color-border)',
-                          borderRadius: '1rem',
-                          minHeight: '60px',
-                        }}
-                      >
-                        {point}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                        className="mt-[5px] h-1.5 w-1.5 shrink-0 rounded-full"
+                        style={{ background: 'var(--orange)' }}
+                      />
+                      <span>{point}</span>
+                    </li>
+                  ))}
+                </ul>
               </article>
             ))}
           </div>

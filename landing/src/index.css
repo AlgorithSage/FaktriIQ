@@ -292,7 +292,14 @@ code {
   max-width: 56ch;
 }
 
+/* Liquid-glass black pill — the site's single button primitive. A translucent
+   ink-black glass surface (backdrop blur + noise-based refraction) sits on
+   top of the existing chunky "press down" 3D shadow, with a pointer-tracked
+   specular highlight and a bright top rim to sell the glass edge. */
 .push-btn {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -300,37 +307,84 @@ code {
   min-height: 48px;
   padding: 12px 26px;
   border-radius: 12px;
-  background: var(--color-ink);
+  background: color-mix(in srgb, var(--color-ink) 86%, transparent);
+  backdrop-filter: blur(10px) saturate(160%);
+  -webkit-backdrop-filter: blur(10px) saturate(160%);
   color: #FFFFFF;
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 0.01em;
-  box-shadow: 0 6px 0 #0d1012;
-  transition: transform 0.06s ease, box-shadow 0.06s ease;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -10px 16px -8px rgba(255, 255, 255, 0.06),
+    0 6px 0 #0d1012;
+  transition: transform 0.06s ease, box-shadow 0.06s ease, background 0.2s ease;
   cursor: pointer;
-  border: none;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  --glow-x: 30%;
+  --glow-y: -30%;
+}
+
+.push-btn__glass {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.02);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+.push-btn__specular {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(
+    120px 90px at var(--glow-x) var(--glow-y),
+    rgba(255, 255, 255, 0.38),
+    transparent 70%
+  );
+  mix-blend-mode: screen;
+  transition: background 0.15s ease;
+}
+
+.push-btn__label {
+  position: relative;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .push-btn:hover {
-  background: var(--color-slate);
+  background: color-mix(in srgb, var(--color-slate) 88%, transparent);
 }
 
 .push-btn:active {
   transform: translateY(5px);
-  box-shadow: 0 1px 0 #0d1012;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 1px 0 #0d1012;
 }
 
 .nav__demo-push {
-  min-height: 40px !important;
-  padding: 6px 18px !important;
-  font-size: 13px !important;
-  border-radius: 10px !important;
-  box-shadow: 0 4px 0 #0d1012 !important;
+  min-height: 34px !important;
+  padding: 4px 14px !important;
+  font-size: 12px !important;
+  border-radius: 9px !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.22),
+    inset 0 -6px 10px -5px rgba(255, 255, 255, 0.06),
+    0 3px 0 #0d1012 !important;
 }
 
 .nav__demo-push:active {
-  transform: translateY(3px) !important;
-  box-shadow: 0 1px 0 #0d1012 !important;
+  transform: translateY(2px) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    0 1px 0 #0d1012 !important;
 }
 
 .btn {
