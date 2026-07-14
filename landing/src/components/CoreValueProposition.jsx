@@ -77,7 +77,7 @@ function ComplianceDiagram() {
 
 export default function CoreValueProposition() {
   return (
-    <section className="value-prop section" id="compliance">
+    <section className="value-prop section" id="overview">
       <div className="container value-prop__grid">
         <div className="value-prop__intro">
           <p className="overline">FaktriIQ Operations Brain</p>

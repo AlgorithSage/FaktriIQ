@@ -11,9 +11,7 @@ import {
   Sparkles,
   Quote,
   Cpu,
-  ArrowRight,
 } from 'lucide-react';
-import { cn } from '@/lib/utils';
 
 /* Accent → palette CSS variables (kept as vars so light/pastel theming stays central). */
 const ACCENTS = {
@@ -73,7 +71,7 @@ const AGENTS = [
     icon: MessageSquareText,
     accent: 'cyan',
     summary:
-      'Answers plain-language questions about plant procedures on the shop floor — fully offline, on-device, with a citation on every answer and an honest “I don’t know” instead of a guess.',
+      'Answers plain-language questions about plant procedures on the shop floor — fully offline, on-device, with a citation on every answer and an honest "I don\'t know" instead of a guess.',
     capabilities: [
       {
         icon: WifiOff,
@@ -159,14 +157,29 @@ function StatusChip({ status, cite }) {
   const color = isGap ? 'var(--color-flag)' : 'var(--color-verify)';
   return (
     <span
-      className="inline-flex items-center gap-2 rounded-md border px-2.5 py-1 font-mono text-[11.5px]"
+      className="agents__chat-status"
       style={{
-        color,
-        borderColor: isGap ? 'rgba(224,72,61,0.38)' : 'rgba(47,163,107,0.35)',
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '8px',
+        borderRadius: '6px',
+        border: `1px solid ${isGap ? 'rgba(224,72,61,0.38)' : 'rgba(47,163,107,0.35)'}`,
         background: isGap ? 'rgba(224,72,61,0.08)' : 'rgba(47,163,107,0.1)',
+        padding: '4px 10px',
+        fontFamily: 'var(--font-mono)',
+        fontSize: '11.5px',
+        color,
       }}
     >
-      <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: color }} />
+      <span
+        style={{
+          display: 'inline-block',
+          width: '6px',
+          height: '6px',
+          borderRadius: '50%',
+          background: color,
+        }}
+      />
       {isGap ? 'GAP' : 'OK'} · {cite}
     </span>
   );
@@ -181,180 +194,155 @@ export default function AgentsSection() {
   return (
     <section id="agents" className="section section--subtle">
       <div className="container">
-        <div className="mb-12 max-w-[660px] md:mb-16">
+        {/* ── Zone 1: Centred header ── */}
+        <div className="agents__header">
           <p className="overline">The Agents</p>
-          <h2 className="section-heading">Purpose-built agents, one grounded brain</h2>
+          <h2 className="section-heading">
+            Purpose-built agents, one grounded brain
+          </h2>
           <p className="section-subheading">
-            Every FaktriIQ answer is produced by a dedicated agent — grounded in your own
-            documents, cited to the clause, and deployed exactly where the work happens,
-            from an offline phone on the floor to an EHS desk preparing for audit.
+            Every FaktriIQ answer is produced by a dedicated agent — grounded in
+            your own documents, cited to the clause, and deployed exactly where
+            the work happens, from an offline phone on the floor to an EHS desk
+            preparing for audit.
           </p>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-[minmax(0,320px)_minmax(0,1fr)] lg:gap-8">
-          {/* Agent selector */}
-          <div className="flex flex-col gap-3">
-            {AGENTS.map((item, idx) => {
-              const isActive = idx === activeIdx;
-              const TabIcon = item.icon;
-              const tabAccent = ACCENTS[item.accent];
-              return (
-                <button
-                  key={item.id}
-                  type="button"
-                  onClick={() => setActiveIdx(idx)}
-                  aria-pressed={isActive}
-                  className={cn(
-                    'group flex items-center gap-4 rounded-[10px] border bg-white p-4 text-left transition-all duration-200',
-                    isActive ? 'shadow-[var(--shadow-gold)]' : 'hover:-translate-y-0.5'
-                  )}
-                  style={{ borderColor: isActive ? tabAccent.mid : 'var(--color-border)' }}
+        {/* ── Zone 2: Horizontal tab strip ── */}
+        <div className="agents__tabs">
+          {AGENTS.map((item, idx) => {
+            const isActive = idx === activeIdx;
+            const TabIcon = item.icon;
+            const tabAccent = ACCENTS[item.accent];
+            return (
+              <button
+                key={item.id}
+                type="button"
+                onClick={() => setActiveIdx(idx)}
+                aria-pressed={isActive}
+                className={`agents__tab${isActive ? ' agents__tab--active' : ''}`}
+                style={{
+                  borderColor: isActive ? tabAccent.mid : undefined,
+                }}
+              >
+                <span
+                  className="agents__tab-icon"
+                  style={{
+                    background: tabAccent.soft,
+                    borderColor: tabAccent.mid,
+                  }}
                 >
-                  <span
-                    className="flex h-12 w-12 shrink-0 items-center justify-center rounded-[10px] border"
-                    style={{ background: tabAccent.soft, borderColor: tabAccent.mid }}
-                  >
-                    <TabIcon className="h-6 w-6" strokeWidth={1.6} style={{ color: 'var(--color-ink)' }} />
-                  </span>
-                  <span className="flex min-w-0 flex-col">
-                    <span className="text-[15px] font-bold" style={{ color: 'var(--color-ink)' }}>
-                      {item.name}
-                    </span>
-                    <span className="text-[13px]" style={{ color: 'var(--color-muted)' }}>
-                      {item.tagline}
-                    </span>
-                  </span>
-                  <ArrowRight
-                    className={cn(
-                      'ml-auto h-4 w-4 shrink-0 transition-all duration-200',
-                      isActive ? 'opacity-100' : 'opacity-0 group-hover:opacity-60'
-                    )}
+                  <TabIcon
+                    size={22}
+                    strokeWidth={1.6}
                     style={{ color: 'var(--color-ink)' }}
                   />
-                </button>
+                </span>
+                <span className="agents__tab-text">
+                  <span className="agents__tab-name">{item.name}</span>
+                  <span className="agents__tab-tagline">{item.tagline}</span>
+                </span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* ── Zone 3: Full-width 3-column detail panel ── */}
+        <div className="agents__panel" key={agent.id}>
+          {/* Left: Profile */}
+          <div className="agents__profile">
+            <span
+              className="agents__profile-icon"
+              style={{ background: accent.soft, borderColor: accent.mid }}
+            >
+              <PanelIcon
+                size={30}
+                strokeWidth={1.6}
+                style={{ color: 'var(--color-ink)' }}
+              />
+            </span>
+            <h3 className="agents__profile-name">{agent.name}</h3>
+            <p className="agents__profile-tagline">{agent.tagline}</p>
+            <p className="agents__profile-summary">{agent.summary}</p>
+
+            <div className="agents__engines">
+              <p className="agents__engines-label">Runs on</p>
+              <div className="agents__engines-list">
+                {agent.engines.map((engine) => (
+                  <code key={engine} className="agents__engine-badge">
+                    {engine}
+                  </code>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Centre: Capabilities 2×2 */}
+          <div className="agents__capabilities">
+            {agent.capabilities.map((cap) => {
+              const CapIcon = cap.icon;
+              return (
+                <div
+                  key={cap.title}
+                  className="agents__cap-card"
+                  style={{ '--cap-accent': accent.mid }}
+                >
+                  <span
+                    className="agents__cap-icon"
+                    style={{ background: accent.soft }}
+                  >
+                    <CapIcon
+                      size={18}
+                      strokeWidth={1.7}
+                      style={{ color: 'var(--color-ink)' }}
+                    />
+                  </span>
+                  <div>
+                    <p className="agents__cap-title">{cap.title}</p>
+                    <p className="agents__cap-text">{cap.text}</p>
+                  </div>
+                </div>
               );
             })}
           </div>
 
-          {/* Detail panel */}
-          <article
-            key={agent.id}
-            className="animate-in fade-in-0 slide-in-from-bottom-2 rounded-[10px] border bg-white p-6 duration-300 md:p-8"
-            style={{ borderColor: 'var(--color-border)', boxShadow: 'var(--shadow)' }}
-          >
-            <div className="flex items-start gap-4">
-              <span
-                className="flex h-14 w-14 shrink-0 items-center justify-center rounded-[12px] border"
-                style={{ background: accent.soft, borderColor: accent.mid }}
-              >
-                <PanelIcon className="h-7 w-7" strokeWidth={1.6} style={{ color: 'var(--color-ink)' }} />
-              </span>
-              <div>
-                <h3 className="text-[22px] font-bold leading-tight" style={{ color: 'var(--color-ink)' }}>
-                  {agent.name}
-                </h3>
-                <p
-                  className="mt-1 font-mono text-[12px] font-bold uppercase tracking-[0.12em]"
-                  style={{ color: 'var(--color-muted)' }}
-                >
-                  {agent.tagline}
-                </p>
+          {/* Right: Demo + Stats */}
+          <div className="agents__demo">
+            {/* Chat window */}
+            <div className="agents__chat">
+              <div className="agents__chat-titlebar">
+                <div className="agents__chat-dots">
+                  <span className="agents__chat-dot" />
+                  <span className="agents__chat-dot" />
+                  <span className="agents__chat-dot" />
+                </div>
+                <span className="agents__chat-title">{agent.name}</span>
               </div>
-            </div>
-
-            <p className="mt-5 text-[16px] leading-relaxed" style={{ color: 'var(--color-slate)' }}>
-              {agent.summary}
-            </p>
-
-            {/* Capabilities */}
-            <div className="mt-7 grid gap-x-6 gap-y-5 sm:grid-cols-2">
-              {agent.capabilities.map((cap) => {
-                const CapIcon = cap.icon;
-                return (
-                  <div key={cap.title} className="flex gap-3">
-                    <span
-                      className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-[8px]"
-                      style={{ background: accent.soft }}
-                    >
-                      <CapIcon className="h-[18px] w-[18px]" strokeWidth={1.7} style={{ color: 'var(--color-ink)' }} />
-                    </span>
-                    <div>
-                      <p className="text-[14.5px] font-bold" style={{ color: 'var(--color-ink)' }}>
-                        {cap.title}
-                      </p>
-                      <p className="mt-0.5 text-[13.5px] leading-snug" style={{ color: 'var(--color-muted)' }}>
-                        {cap.text}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-
-            {/* Example interaction */}
-            <div
-              className="mt-7 rounded-[10px] border p-4"
-              style={{ borderColor: 'var(--color-border)', background: 'var(--color-subtle)' }}
-            >
-              <div className="flex justify-end">
-                <p
-                  className="max-w-[80%] rounded-[10px] rounded-br-sm px-3.5 py-2 text-[13.5px] font-medium"
-                  style={{ background: accent.soft, color: 'var(--color-ink)' }}
+              <div className="agents__chat-body">
+                <div
+                  className="agents__chat-q"
+                  style={{ background: accent.soft }}
                 >
                   {agent.example.q}
-                </p>
-              </div>
-              <div className="mt-3 flex flex-col items-start gap-2">
-                <p
-                  className="max-w-[88%] rounded-[10px] rounded-bl-sm border bg-white px-3.5 py-2 text-[13.5px] leading-snug"
-                  style={{ borderColor: 'var(--color-border)', color: 'var(--color-slate)' }}
-                >
-                  {agent.example.a}
-                </p>
-                <StatusChip status={agent.example.status} cite={agent.example.cite} />
-              </div>
-            </div>
-
-            {/* Engines + stats */}
-            <div className="mt-7 flex flex-col gap-6 border-t pt-6 lg:flex-row lg:items-center lg:justify-between" style={{ borderColor: 'var(--color-border)' }}>
-              <div>
-                <p className="mb-2.5 text-[11px] font-bold uppercase tracking-[0.14em]" style={{ color: 'var(--color-muted)' }}>
-                  Runs on
-                </p>
-                <div className="flex flex-wrap gap-2">
-                  {agent.engines.map((engine) => (
-                    <code
-                      key={engine}
-                      className="rounded-md border px-2.5 py-1 text-[12px]"
-                      style={{ borderColor: 'var(--sky)', background: 'var(--sky-soft)', color: 'var(--color-slate)' }}
-                    >
-                      {engine}
-                    </code>
-                  ))}
                 </div>
-              </div>
-
-              <div className="grid grid-cols-3 gap-3">
-                {agent.stats.map((stat) => (
-                  <div
-                    key={stat.label}
-                    className="rounded-[10px] border px-3 py-2.5 text-center"
-                    style={{
-                      borderColor: 'var(--peach)',
-                      background: 'linear-gradient(160deg, var(--lemon-soft) 0%, var(--peach-soft) 100%)',
-                    }}
-                  >
-                    <p className="font-mono text-[17px] font-bold leading-none" style={{ color: 'var(--color-ink)' }}>
-                      {stat.value}
-                    </p>
-                    <p className="mt-1.5 text-[11px] leading-tight" style={{ color: 'var(--color-muted)' }}>
-                      {stat.label}
-                    </p>
-                  </div>
-                ))}
+                <div className="agents__chat-a">{agent.example.a}</div>
+                <StatusChip
+                  status={agent.example.status}
+                  cite={agent.example.cite}
+                />
               </div>
             </div>
-          </article>
+
+            {/* Stats row */}
+            <div className="agents__stats">
+              {agent.stats.map((stat) => (
+                <div key={stat.label} className="agents__stat">
+                  <p className="agents__stat-value">{stat.value}</p>
+                  <p className="agents__stat-label">{stat.label}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </section>

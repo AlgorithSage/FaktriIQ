@@ -2,6 +2,7 @@ import NavBar from './components/NavBar.jsx';
 import Hero from './components/Hero.jsx';
 import CoreValueProposition from './components/CoreValueProposition.jsx';
 import AgentsSection from './components/AgentsSection.jsx';
+import StatutoryStandards from './components/StatutoryStandards.jsx';
 import ValuePillars from './components/ValuePillars.jsx';
 import TechnologyStrip from './components/TechnologyStrip.jsx';
 import CaseStudyCarousel from './components/CaseStudyCarousel.jsx';
@@ -16,6 +17,7 @@ export default function App() {
         <Hero />
         <CoreValueProposition />
         <AgentsSection />
+        <StatutoryStandards />
         <ValuePillars />
         <TechnologyStrip />
         <CaseStudyCarousel />
