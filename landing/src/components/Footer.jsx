@@ -18,7 +18,8 @@ export default function Footer() {
 
       <div className="container footer__base">
         <p className="footer__logo">
-          Faktri<span>IQ</span>
+          <img src="/aktr.png" alt="FaktriIQ Logo" className="footer__logo-img" />
+          <span>Faktri<span>IQ</span></span>
         </p>
         <ul className="footer__links">
           <li><a href="#agents">Agents</a></li>

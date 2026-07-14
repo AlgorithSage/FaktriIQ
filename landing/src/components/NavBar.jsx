@@ -169,7 +169,8 @@ export default function NavBar() {
         <LiquidGlassNavWrapper isScrolled={isScrolled} className="rounded-full h-full">
           <div className="nav__inner container">
             <a className="nav__logo" href="#top" aria-label="FaktriIQ home">
-              Faktri<span className="nav__logo-iq">IQ</span>
+              <img src="/aktr.png" alt="FaktriIQ Logo" className="nav__logo-img" />
+              <span>Faktri<span className="nav__logo-iq">IQ</span></span>
             </a>
 
             <nav
