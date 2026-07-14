@@ -1,4 +1,6 @@
 import HeroReveal from './HeroReveal.jsx';
+import { ShinyButton } from './ui/ShinyButton';
+import { Highlighter } from './ui/highlighter';
 
 const STATUTORY_LOGOS = [
   'Factories Act 1948',
@@ -49,16 +51,20 @@ export default function Hero() {
       <GridBackdrop />
       <div className="hero__content container">
         <h1 className="hero__heading">
-          Catch compliance gaps before your next audit does.
+          Catch{' '}
+          <Highlighter isView={true} color="rgba(6, 182, 212, 0.25)" strokeWidth={3.5}>
+            compliance gaps
+          </Highlighter>{' '}
+          before your next audit does.
         </h1>
         <p className="hero__subheading">
           A unified AI asset &amp; operations brain mapping plant procedures against
           Indian regulations&mdash;delivering traceable, cited answers for technicians
           on the floor and safety officers at their desks.
         </p>
-        <a className="btn btn--primary hero__cta" href="#agents">
+        <ShinyButton onClick={() => window.location.hash = 'agents'} className="hero__cta">
           See our Platform
-        </a>
+        </ShinyButton>
       </div>
 
       <HeroReveal videoSrc="/lp_video.mp4" />
