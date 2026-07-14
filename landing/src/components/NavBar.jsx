@@ -170,7 +170,7 @@ export default function NavBar() {
           <div className="nav__inner container">
             <a className="nav__logo" href="#top" aria-label="FaktriIQ home">
               <img src="/aktr.png" alt="FaktriIQ Logo" className="nav__logo-img" />
-              <span>Faktri<span className="nav__logo-iq">IQ</span></span>
+              <span className="brand-text-style">Faktri<span className="nav__logo-iq">IQ</span></span>
             </a>
 
             <nav
