@@ -44,13 +44,20 @@
 
 :root {
   /* Base surfaces & text */
-  --color-bg: #FFFDF8;           /* Warm cream page background */
-  --color-ink: #111111;          /* Near-black — text, headings, primary CTA */
-  --color-slate: #2A3340;        /* Dark neutral for secondary emphasis */
-  --color-surface: #FFFFFF;      /* Card / panel surface */
-  --color-subtle: #F7FAFC;       /* Soft cool-gray section background */
-  --color-border: #E7EAF0;       /* Hairline borders, dividers */
-  --color-muted: #5B6472;        /* Secondary / muted text */
+  --color-bg: #FFFDF8;
+  /* Warm cream page background */
+  --color-ink: #111111;
+  /* Near-black — text, headings, primary CTA */
+  --color-slate: #2A3340;
+  /* Dark neutral for secondary emphasis */
+  --color-surface: #FFFFFF;
+  /* Card / panel surface */
+  --color-subtle: #F7FAFC;
+  /* Soft cool-gray section background */
+  --color-border: #E7EAF0;
+  /* Hairline borders, dividers */
+  --color-muted: #5B6472;
+  /* Secondary / muted text */
 
   /* Pastel accent set */
   --peach: #F7C6B8;
@@ -70,18 +77,23 @@
   --color-accent-mid: var(--sky);
 
   /* Compliance semantics — functional, kept unambiguous within the palette */
-  --color-flag: #E0483D;         /* Gap / alert — clearly red */
-  --color-verify: #2FA36B;       /* Compliant — clearly green */
-  --color-warn: #E0913A;         /* Advisory / medium confidence */
+  --color-flag: #E0483D;
+  /* Gap / alert — clearly red */
+  --color-verify: #2FA36B;
+  /* Compliant — clearly green */
+  --color-warn: #E0913A;
+  /* Advisory / medium confidence */
 
   /* Warm band tokens */
   --color-warm: #FFFDF8;
   --color-warm-subtle: #FFF6C7;
 
-  --radius: 0.625rem;                 /* Standard corner radius */
+  --radius: 0.625rem;
+  /* Standard corner radius */
   --shadow: 0 1px 2px rgba(17, 17, 17, 0.05);
   --shadow-soft: 0 12px 30px rgba(17, 17, 17, 0.08);
-  --shadow-gold: 0 12px 30px rgba(169, 216, 255, 0.4);   /* soft sky glow */
+  --shadow-gold: 0 12px 30px rgba(169, 216, 255, 0.4);
+  /* soft sky glow */
   --gradient-hero: linear-gradient(135deg, #FFFDF8 0%, #E8F4FF 35%, #E3FBFA 70%, #FCE8E2 100%);
   --gradient-line: linear-gradient(90deg, #F8E36A, #F7C6B8, #A9D8FF);
   --glow-soft: radial-gradient(circle at top left, rgba(169, 216, 255, 0.35), transparent 45%);
@@ -148,7 +160,14 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3, h4, p, dl, dd, figure {
+h1,
+h2,
+h3,
+h4,
+p,
+dl,
+dd,
+figure {
   margin: 0;
 }
 
@@ -183,12 +202,14 @@ code {
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   *,
   *::before,
   *::after {
     transition-duration: 0.01ms !important;
     animation-duration: 0.01ms !important;
   }
+
   html {
     scroll-behavior: auto;
   }
@@ -461,9 +482,6 @@ code {
 .hero {
   position: relative;
   padding-top: 168px;
-  background:
-    var(--glow-soft),
-    var(--gradient-hero);
 }
 
 .hero__backdrop {
@@ -656,6 +674,7 @@ code {
   .reveal__scroll {
     min-height: 0;
   }
+
   .reveal__sticky {
     position: static;
     height: auto;
@@ -1081,6 +1100,7 @@ code {
     opacity: 0;
     transform: translateX(18px);
   }
+
   to {
     opacity: 1;
     transform: translateX(0);
@@ -1235,14 +1255,17 @@ code {
   background: var(--sky-soft);
   border-color: var(--sky);
 }
+
 .roles__card:nth-child(2) .roles__icon {
   background: var(--cyan-soft);
   border-color: var(--cyan);
 }
+
 .roles__card:nth-child(3) .roles__icon {
   background: var(--peach-soft);
   border-color: var(--peach);
 }
+
 .roles__card:nth-child(4) .roles__icon {
   background: var(--lemon-soft);
   border-color: var(--lemon);
@@ -1452,7 +1475,8 @@ code {
     display: none;
   }
 
-  .nav, .nav.is-scrolled {
+  .nav,
+  .nav.is-scrolled {
     width: calc(100% - 32px);
     max-width: 100%;
     top: 10px;
@@ -1591,9 +1615,11 @@ code {
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   html {
     @apply font-sans;
   }
