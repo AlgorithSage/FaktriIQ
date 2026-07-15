@@ -76,7 +76,7 @@
   /* Dark slate neutral for secondary emphasis */
   --color-surface: #F9F6EE;
   /* Card / panel surface: warm ecru off-white */
-  --color-subtle: #FFEA00;
+  --color-subtle: #FFF4BD;
   /* Soft gold section background */
   --color-border: #3B3F46;
   /* Dark charcoal borders, dividers */
@@ -110,7 +110,7 @@
 
   /* Warm band tokens */
   --color-warm: #FFFDF5;
-  --color-warm-subtle: #FFEA00;
+  --color-warm-subtle: #FFF4BD;
 
   --radius: 0.625rem;
   /* Standard corner radius */
@@ -262,7 +262,7 @@ code {
   pointer-events: none;
   opacity: 0.08;
   background-repeat: repeat;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch' result='noise'/%3E%3CfeColorMatrix type='matrix' values='0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.35' numOctaves='3' stitchTiles='stitch' result='noise'/%3E%3CfeColorMatrix type='matrix' values='0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0.33 0.33 0.33 0 0 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
 }
 
 
