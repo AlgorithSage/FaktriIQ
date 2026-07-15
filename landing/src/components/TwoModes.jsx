@@ -41,7 +41,7 @@ function PhoneMock() {
       className="mx-auto w-[248px] rounded-[30px] border p-2"
       style={{ background: 'var(--color-ink)', borderColor: 'var(--color-ink)', boxShadow: 'var(--shadow-soft)' }}
     >
-      <div className="overflow-hidden rounded-[22px]" style={{ background: 'var(--lemon)' }}>
+      <div className="overflow-hidden rounded-[22px]" style={{ background: 'var(--color-subtle)' }}>
         {/* status bar */}
         <div className="flex items-center justify-between px-4 pb-2 pt-3">
           <span className="font-mono text-[10px]" style={{ color: 'var(--color-muted)' }}>
@@ -74,7 +74,7 @@ function PhoneMock() {
             <div className="mt-2 flex flex-wrap items-center gap-2">
               <code
                 className="rounded-md border px-2 py-0.5 text-[10px]"
-                style={{ borderColor: 'var(--color-border)', background: 'var(--lemon)', color: 'var(--color-ink)' }}
+                style={{ borderColor: 'var(--color-border)', background: 'var(--color-subtle)', color: 'var(--color-ink)' }}
               >
                 Manual PH2-Entry · §3
               </code>
@@ -128,7 +128,7 @@ function ConsoleMock() {
       style={{ borderColor: 'var(--color-border)', background: 'var(--color-surface)', boxShadow: 'var(--shadow-soft)' }}
     >
       {/* title bar */}
-      <div className="flex items-center gap-2 border-b px-3 py-2.5" style={{ borderColor: 'var(--color-border)', background: 'var(--lemon)' }}>
+      <div className="flex items-center gap-2 border-b px-3 py-2.5" style={{ borderColor: 'var(--color-border)', background: 'var(--color-subtle)' }}>
         <span className="flex gap-1.5">
           <span className="h-2.5 w-2.5 rounded-full" style={{ background: '#E7EAF0' }} />
           <span className="h-2.5 w-2.5 rounded-full" style={{ background: '#E7EAF0' }} />
@@ -144,7 +144,7 @@ function ConsoleMock() {
 
       {/* two panes */}
       <div className="grid grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
-        <div className="border-r p-3" style={{ borderColor: 'var(--color-border)', background: 'var(--lemon)' }}>
+        <div className="border-r p-3" style={{ borderColor: 'var(--color-border)', background: 'var(--color-subtle)' }}>
           <p className="mb-2 font-mono text-[9.5px] font-bold uppercase tracking-[0.1em]" style={{ color: 'var(--color-muted)' }}>
             Documents
           </p>

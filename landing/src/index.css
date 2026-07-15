@@ -76,7 +76,8 @@
   /* Dark slate neutral for secondary emphasis */
   --color-surface: #F9F6EE;
   /* Card / panel surface: warm ecru off-white */
-  --color-subtle: #FFF4BD;
+  --color-subtle: #FFEA00;
+  --color-subtle-light: #FFF4BD;
   /* Soft gold section background */
   --color-border: #3B3F46;
   /* Dark charcoal borders, dividers */
@@ -110,7 +111,8 @@
 
   /* Warm band tokens */
   --color-warm: #FFFDF5;
-  --color-warm-subtle: #FFF4BD;
+  --color-warm-subtle: #FFEA00;
+  --color-warm-subtle-light: #FFF4BD;
 
   --radius: 0.625rem;
   /* Standard corner radius */
@@ -275,14 +277,14 @@ code {
 
 
 .section--subtle {
-  background: var(--color-subtle);
+  background: var(--color-subtle-light);
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
 }
 
 /* Soft pastel band — sky fading into cyan. */
 .section--warm {
-  background: var(--color-warm-subtle);
+  background: var(--color-warm-subtle-light);
   border-top: 1px solid var(--color-border);
   border-bottom: 1px solid var(--color-border);
 }
@@ -2219,7 +2221,7 @@ code {
 
 .footer {
   border-top: 1px solid var(--color-border);
-  background: var(--color-subtle);
+  background: var(--color-subtle-light);
   position: relative;
 }
 
