@@ -12,7 +12,8 @@ Enhance the visual appeal and clarity of two critical parts of the FaktriIQ land
 2. **Innovative Interlocking Grid Layout** — Replace the current two-column tabs layout in the Value Pillars section with an interlocking 2x2 grid wrapping around a central square star pattern modal.
 3. **Corner-cut (L-Shaped) Quadrant Modals** — Modify the 4 corner cards so their inner corners are dynamically cut out to cradle the central square modal, forming a solid rectangular puzzle without symmetry loss.
 4. **Context-Aware Visual Rotation** — Connect card interaction (hover/click) to the central star pattern SVG, causing the highlighted lead ray to rotate dynamically and point directly to the active quadrant.
-5. **Global Mesh (Grained) Gradient Background** — Move the interactive WebGL mesh shader background to be a global backdrop fixed behind the entire landing page. Make the default section backgrounds transparent and the styled sections (e.g. subtle, warm) and the footer semi-transparent so the grained mesh gradient flows seamlessly behind all page elements.
+
+5. **Textured Grained Overlay** — Add a subtle, high-fidelity textured monochrome grain overlay to all page backgrounds (sections and footer) except the Hero section. This will create a tactile, premium print-like texture across the landing page.
 
 ## Non-Goals (Out of Scope)
 - Creating new backend API endpoints or mock logic for these sections.
@@ -29,9 +30,8 @@ Enhance the visual appeal and clarity of two critical parts of the FaktriIQ land
 - [ ] Visual intersection of the 4 cards is perfectly cut out, accommodating the central square modal.
 - [ ] Hovering/clicking any corner card highlights its border/background and rotates the central SVG's active line to point towards it.
 - [ ] Mobile view renders a clean vertical list of features, disabling the complex 2x2 grid layout.
-- [ ] Interactive WebGL mesh gradient is rendered as a fixed background covering the entire page.
-- [ ] The duplicate shader context in Hero section is removed to optimize WebGL resources.
-- [ ] Styled section backgrounds (subtle, warm) and the footer background are semi-transparent, letting the mesh gradient overlay show through.
+- [ ] Textured grained overlay renders across all sections and the footer, while the Hero section remains smooth/unaffected.
+- [ ] Text and interactive elements inside the textured sections remain crisp and readable, not obscured or overlayed by the grain.
 
 ---
 
