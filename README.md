@@ -69,4 +69,4 @@ flutter --version
 ---
 
 ## 👥 Authors
-* **Team AlgoZeniths** — IEM Kolkatas
+* **Team AlgoZeniths** — IEM Kolkata
