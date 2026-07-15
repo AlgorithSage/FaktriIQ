@@ -71,7 +71,7 @@ export default function Hero() {
       <div className="hero__content container" style={{ position: "relative", zIndex: 1, marginBottom: "clamp(2rem, 4vw, 3rem)" }}>
         <h1 className="hero__heading">
           Catch{' '}
-          <Highlighter isView={true} color="rgba(6, 182, 212, 0.25)" strokeWidth={3.5}>
+          <Highlighter isView={true} color="rgba(6, 182, 212, 0.25)" strokeWidth={3.5} iterations={1}>
             compliance gaps
           </Highlighter>{' '}
           before your next audit does.
