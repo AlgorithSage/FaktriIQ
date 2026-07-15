@@ -145,7 +145,7 @@ export default function TechnologyStrip() {
             {TIERS.map((tier) => (
               <article
                 key={tier.title}
-                className="tech__card flex flex-col items-center text-center"
+                className="tech__card flex flex-col items-center text-center grain-bg-parent"
                 style={{
                   background: 'var(--color-subtle)',
                   border: '1px solid var(--color-border)',

@@ -195,7 +195,7 @@ export default function CoreValueProposition() {
 
         {/* ── Large yellow container wrapping both columns ── */}
         <div
-          className="overflow-hidden border"
+          className="overflow-hidden border grain-bg-parent"
           style={{
             borderRadius: '2rem',
             background: 'var(--color-subtle)',
