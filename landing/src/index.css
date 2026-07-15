@@ -36,17 +36,32 @@
 
 @font-face {
   font-family: 'AnthropicSerif';
-  src: url('/fonts/AnthropicSerif-Display-SemiboldItalic-Static.otf') format('opentype');
+  src: url('/fonts/AnthropicSerif-Display-Semibold.woff2') format('woff2');
   font-weight: 600;
-  font-style: italic;
+  font-style: normal;
   font-display: swap;
 }
 
-/* Same font file, registered as normal style so browser loads it without requiring font-style:italic */
+@font-face {
+  font-family: 'AnthropicSerif';
+  src: url('/fonts/AnthropicSerif-Display-Bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 @font-face {
   font-family: 'AnthropicSerifUpright';
-  src: url('/fonts/AnthropicSerif-Display-SemiboldItalic-Static.otf') format('opentype');
-  font-weight: 400 800;
+  src: url('/fonts/AnthropicSerif-Display-Semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'AnthropicSerifUpright';
+  src: url('/fonts/AnthropicSerif-Display-Bold.woff2') format('woff2');
+  font-weight: 700;
   font-style: normal;
   font-display: swap;
 }
@@ -498,7 +513,6 @@ code {
   font-weight: 600;
   font-style: normal;
   display: inline-block;
-  transform: skewX(-11.5deg);
   letter-spacing: -0.01em;
 }
 
