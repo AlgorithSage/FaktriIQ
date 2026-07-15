@@ -1,9 +1,21 @@
 import { PushButton } from './ui/PushButton';
+import { StarsBackground } from './ui/stars-background';
+import { useTheme } from 'next-themes';
+import { cn } from '@/lib/utils';
 
 export default function Footer() {
+  const themeContext = useTheme();
+  const resolvedTheme = themeContext?.resolvedTheme || 'light';
+
   return (
-    <footer className="footer" id="book-a-demo">
-      <div className="container footer__cta-block">
+    <footer className="footer relative overflow-hidden" id="book-a-demo">
+      {/* Animated Stars Background */}
+      <StarsBackground
+        starColor="#FFF"
+        className="absolute inset-0 pointer-events-none z-0 bg-[radial-gradient(ellipse_at_bottom,_#161920_0%,_#090a0f_100%)]"
+      />
+
+      <div className="container footer__cta-block relative z-10">
         <p className="overline">Outcome-Driven Solutions: How we help</p>
         <h2 className="footer__heading">Ready to see FaktriIQ inside your plant?</h2>
         <div className="footer__actions">
@@ -16,7 +28,7 @@ export default function Footer() {
         </div>
       </div>
 
-      <div className="container footer__base">
+      <div className="container footer__base relative z-10">
         <p className="footer__logo">
           <img 
             src="/aktr.png" 
