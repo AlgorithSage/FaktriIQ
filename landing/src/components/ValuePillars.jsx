@@ -360,10 +360,10 @@ export default function ValuePillars() {
   return (
     <section className="pillars section" id="platform" style={{ overflow: 'hidden' }}>
       <div className="container">
-        <div className="pillars__header">
+        <div className="pillars__header mx-auto text-center max-w-[720px] mb-16">
           <p className="overline">The Power of FaktriIQ</p>
           <h2 className="section-heading">Audit-ready and floor-focused from day one</h2>
-          <p className="section-subheading">
+          <p className="section-subheading" style={{ marginInline: 'auto' }}>
             Industrial facilities and safety departments deploy our multi-agent
             platform to resolve safety questions on the floor and detect regulatory
             gaps at EHS desks.

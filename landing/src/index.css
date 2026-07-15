@@ -265,6 +265,7 @@ code {
   inset: 0;
   z-index: -1;
   pointer-events: none;
+  border-radius: inherit;
   opacity: 0.17;
   background-repeat: repeat;
   background-size: 79px 79px;
