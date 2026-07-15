@@ -66,13 +66,21 @@ export function Highlighter({
       annotation = currentAnnotation
       currentAnnotation.show()
 
+      let lastWidth = element.offsetWidth
+      let lastHeight = element.offsetHeight
+
       resizeObserver = new ResizeObserver(() => {
-        currentAnnotation.hide()
-        currentAnnotation.show()
+        const currentWidth = element.offsetWidth
+        const currentHeight = element.offsetHeight
+        if (currentWidth !== lastWidth || currentHeight !== lastHeight) {
+          lastWidth = currentWidth
+          lastHeight = currentHeight
+          currentAnnotation.hide()
+          currentAnnotation.show()
+        }
       })
 
       resizeObserver.observe(element)
-      resizeObserver.observe(document.body)
     }
 
     return () => {
