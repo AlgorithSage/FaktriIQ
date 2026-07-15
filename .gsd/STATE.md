@@ -9,12 +9,10 @@
 
 ## Last Action
 
-Redesigned the `.tech__card` components in `TechnologyStrip.jsx` to stack in a 1-column layout on desktop screens, giving them a wide landscape orientation:
-1. Changed `lg:grid-cols-3` to `lg:grid-cols-1` on the grid parent wrapper.
-2. Added responsive flexbox (`flex-col lg:flex-row`) to the article element.
-3. Created left and right sub-columns inside each card (left for logos, labels, and tags; right for nested feature boxes).
-4. Relocated padding rules to `index.css` to responsively increase card padding to `2.75rem 3.5rem` on widescreen layouts.
-5. Successfully verified build and committed work.
+Revised the button corner styles in `landing/src/index.css` per user request:
+1. Reverted `.push-btn` (other buttons) to their standard `12px` border-radius.
+2. Set `.nav__demo-push` ("Book a Demo" button) to `9999px !important;` border-radius to give it a fully rounded, curvy pill shape.
+3. Verified the build successfully with `bun run build`.
 
 ## Next Steps
 
