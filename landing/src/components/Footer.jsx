@@ -18,7 +18,13 @@ export default function Footer() {
 
       <div className="container footer__base">
         <p className="footer__logo">
-          <img src="/aktr.png" alt="FaktriIQ Logo" className="footer__logo-img" />
+          <img 
+            src="/aktr.png" 
+            alt="FaktriIQ Logo" 
+            className="footer__logo-img" 
+            draggable={false} 
+            onContextMenu={(e) => e.preventDefault()}
+          />
           <span className="brand-text-style">Faktri<span>IQ</span></span>
         </p>
         <ul className="footer__links">

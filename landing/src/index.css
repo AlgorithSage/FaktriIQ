@@ -528,6 +528,9 @@ code {
   width: auto;
   border-radius: 6px;
   object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .brand-text-style {
@@ -2264,6 +2267,9 @@ code {
   width: auto;
   border-radius: 6px;
   object-fit: contain;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .footer__logo span {
