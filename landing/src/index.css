@@ -666,31 +666,7 @@ code {
   line-height: 1.1;
   letter-spacing: -0.02em;
   max-width: 18ch;
-  background: linear-gradient(100deg,
-    var(--color-ink) 30%,
-    var(--peach) 45%,
-    var(--lemon) 50%,
-    var(--peach) 55%,
-    var(--color-ink) 70%);
-  background-size: 250% 100%;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  -webkit-text-fill-color: transparent;
-  animation: hero-shimmer 5s linear infinite;
-}
-
-@keyframes hero-shimmer {
-  to {
-    background-position: -250% 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero__heading {
-    animation: none;
-    background-position: 0 0;
-  }
+  color: var(--color-ink);
 }
 
 .hero__subheading {
