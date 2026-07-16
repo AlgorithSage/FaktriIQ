@@ -15,16 +15,16 @@ const ACCENTS = {
     glow: 'rgba(119, 230, 224, 0.35)',
   },
   peach: {
-    tile: 'linear-gradient(135deg, var(--peach) 0%, var(--orange) 100%)',
-    soft: 'var(--peach-soft)',
-    mid: 'var(--peach)',
-    glow: 'rgba(247, 198, 184, 0.45)',
+    tile: 'linear-gradient(135deg, var(--sky) 0%, var(--cyan) 100%)',
+    soft: 'var(--cyan-soft)',
+    mid: 'var(--sky)',
+    glow: 'rgba(169, 216, 255, 0.4)',
   },
   lemon: {
-    tile: 'linear-gradient(135deg, var(--lemon) 0%, var(--orange) 100%)',
-    soft: 'var(--lemon-soft)',
-    mid: 'var(--lemon)',
-    glow: 'rgba(248, 227, 106, 0.4)',
+    tile: 'linear-gradient(135deg, var(--sky) 0%, var(--cyan) 100%)',
+    soft: 'var(--sky-soft)',
+    mid: 'var(--sky)',
+    glow: 'rgba(169, 216, 255, 0.4)',
   },
 };
 
@@ -52,7 +52,7 @@ const ROLES = [
     title: 'Field Technicians',
     deployment: 'Mobile · offline',
     description:
-      'Get instant, cited answers from plant manuals and SOPs on the floor — accelerated on-device, even with no signal.',
+      'Get instant, cited answers from plant manuals and SOPs on the floor - accelerated on-device, even with no signal.',
     checklist: [
       '100% offline llama.cpp Vulkan inference',
       'Thumb-reachable EHS console interface',
@@ -117,7 +117,7 @@ export default function RolesGrid() {
           <h2 className="section-heading">Built for everyone on the plant</h2>
           <p className="section-subheading" style={{ marginInline: 'auto' }}>
             From the shop floor to the server room, every role gets the same grounded, cited
-            intelligence — shaped to exactly how, and where, they work.
+            intelligence - shaped to exactly how, and where, they work.
           </p>
         </div>
 

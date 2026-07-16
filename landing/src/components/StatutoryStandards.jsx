@@ -17,7 +17,7 @@ const FRAMEWORKS = [
     name: 'OISD Standards',
     code: 'OISD-STD series',
     description:
-      'Oil Industry Safety Directorate standards for hydrocarbon operations — hot-work permits, fire-protection systems, and equipment-integrity inspections.',
+      'Oil Industry Safety Directorate standards for hydrocarbon operations - hot-work permits, fire-protection systems, and equipment-integrity inspections.',
   },
   {
     icon: Fuel,
@@ -63,7 +63,7 @@ export default function StatutoryStandards() {
               Aligned with the standards your auditors actually cite
             </h2>
             <p className="section-subheading">
-              FaktriIQ doesn’t just “do compliance” — it grounds every answer in the exact
+              FaktriIQ doesn’t just “do compliance” - it grounds every answer in the exact
               Indian statutory frameworks that govern your plant. Each one below is built into
               the Compliance Agent, so a flagged gap always points back to a real clause you
               can open and verify.
@@ -106,13 +106,13 @@ export default function StatutoryStandards() {
                     <Icon className="h-[26px] w-[26px]" strokeWidth={1.6} style={{ color: 'var(--color-ink)' }} />
                   </span>
 
-                  <h3 className="mt-4 text-[17px] font-bold leading-tight" style={{ color: 'var(--color-ink)' }}>
+                  <h3 className="mt-5 text-[17px] font-bold leading-tight" style={{ color: 'var(--color-ink)' }}>
                     {framework.name}
                   </h3>
-                  <code className="mt-1 text-[12px]" style={{ color: 'var(--color-muted)' }}>
+                  <code className="mt-2 text-[12px]" style={{ color: 'var(--color-muted)' }}>
                     {framework.code}
                   </code>
-                  <p className="mt-2 text-[14px] leading-snug" style={{ color: 'var(--color-muted)' }}>
+                  <p className="mt-3 text-[14px] leading-snug" style={{ color: 'var(--color-muted)' }}>
                     {framework.description}
                   </p>
                 </div>

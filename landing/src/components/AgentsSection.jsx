@@ -28,12 +28,12 @@ const AGENTS = [
     icon: ShieldCheck,
     accent: 'sky',
     summary:
-      'Audits every plant SOP against Indian statutory frameworks — Factories Act 1948, OISD, and PESO — mapping each requirement clause-by-clause and flagging the gaps before an inspector does.',
+      'Audits every plant SOP against Indian statutory frameworks - Factories Act 1948, OISD, and PESO - mapping each requirement clause-by-clause and flagging the gaps before an inspector does.',
     capabilities: [
       {
         icon: ScanSearch,
         title: 'Automatic clause mapping',
-        text: 'Matches each SOP passage to the exact Factories Act / OISD / PESO clause it satisfies — or flags where none does.',
+        text: 'Matches each SOP passage to the exact Factories Act / OISD / PESO clause it satisfies - or flags where none does.',
       },
       {
         icon: CircleAlert,
@@ -43,7 +43,7 @@ const AGENTS = [
       {
         icon: BadgeCheck,
         title: 'Traceable citations',
-        text: 'Each verdict links back to the source document, page, and clause number — no unsourced claims.',
+        text: 'Each verdict links back to the source document, page, and clause number - no unsourced claims.',
       },
       {
         icon: Layers,
@@ -71,12 +71,12 @@ const AGENTS = [
     icon: MessageSquareText,
     accent: 'cyan',
     summary:
-      'Answers plain-language questions about plant procedures on the shop floor — fully offline, on-device, with a citation on every answer and an honest "I don\'t know" instead of a guess.',
+      'Answers plain-language questions about plant procedures on the shop floor - fully offline, on-device, with a citation on every answer and an honest "I don\'t know" instead of a guess.',
     capabilities: [
       {
         icon: WifiOff,
         title: '100% offline',
-        text: 'Runs on the device GPU via llama.cpp + Vulkan — no Wi-Fi, no cellular, nothing leaves the handset.',
+        text: 'Runs on the device GPU via llama.cpp + Vulkan - no Wi-Fi, no cellular, nothing leaves the handset.',
       },
       {
         icon: Sparkles,
@@ -114,7 +114,7 @@ const AGENTS = [
     icon: FileSearch,
     accent: 'peach',
     summary:
-      'Turns raw manuals and PDFs into clean, grounded knowledge — extracting dates, equipment tags, and clause references, then pre-computing compliance audits while the plant is online.',
+      'Turns raw manuals and PDFs into clean, grounded knowledge - extracting dates, equipment tags, and clause references, then pre-computing compliance audits while the plant is online.',
     capabilities: [
       {
         icon: ScanSearch,
@@ -201,7 +201,7 @@ export default function AgentsSection() {
             Purpose-built agents, one grounded brain
           </h2>
           <p className="section-subheading">
-            Every FaktriIQ answer is produced by a dedicated agent — grounded in
+            Every FaktriIQ answer is produced by a dedicated agent - grounded in
             your own documents, cited to the clause, and deployed exactly where
             the work happens, from an offline phone on the floor to an EHS desk
             preparing for audit.
@@ -230,7 +230,7 @@ export default function AgentsSection() {
                   className="agents__tab-icon"
                   style={{
                     background: tabAccent.soft,
-                    borderColor: tabAccent.mid,
+                    borderColor: 'var(--color-border)',
                   }}
                 >
                   <TabIcon
@@ -254,7 +254,7 @@ export default function AgentsSection() {
           <div className="agents__profile">
             <span
               className="agents__profile-icon"
-              style={{ background: accent.soft, borderColor: accent.mid }}
+              style={{ background: accent.soft, borderColor: 'var(--color-border)' }}
             >
               <PanelIcon
                 size={30}

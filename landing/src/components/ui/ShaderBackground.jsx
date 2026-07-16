@@ -187,7 +187,7 @@ void main() {
     / min(u_resolution.x, u_resolution.y);
   float cursorMask = 0.0;
 
-  // Cursor modes 1–3 are local distortions. Push shifts the same screen-space
+  // Cursor modes 1-3 are local distortions. Push shifts the same screen-space
   // coordinates before field transforms, so Zoom/Rotate don't change its feel.
   if (u_cursorPresence > 0.001) {
     // u_mouse is normalized to -1..1 in canvas space. Convert it to the same

@@ -10,7 +10,7 @@ const MENU_ITEMS = [
   'Resources',
 ];
 
-// SVG Filter — creates the liquid refraction, specular lighting, and displacement
+// SVG Filter - creates the liquid refraction, specular lighting, and displacement
 function GlassFilter() {
   return (
     <svg style={{ display: 'none' }}>
@@ -66,7 +66,7 @@ function GlassFilter() {
   );
 }
 
-// The glass effect wrapper — exactly like Apple's liquid glass
+// The glass effect wrapper - exactly like Apple's liquid glass
 function LiquidGlassNavWrapper({ children, className = '', isScrolled }) {
   return (
     <div

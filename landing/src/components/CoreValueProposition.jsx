@@ -14,7 +14,7 @@ const STEPS = [
     bullets: [
       'Unified ingestion across 3 frameworks',
       'Clause-level auto-tagging for traceability',
-      'Strictly bounded — zero hallucination guarantee',
+      'Strictly bounded - zero hallucination guarantee',
     ],
     metric: '3',
     metricLabel: 'Frameworks unified',
@@ -55,12 +55,12 @@ const STEPS = [
 
 function IsometricStack({ active }) {
   // A tightly-bounded viewBox (no reserved margin for side captions) so the
-  // stack itself — not empty canvas around it — fills the panel.
+  // stack itself - not empty canvas around it - fills the panel.
   const cx = 180;
   const w = 170;
   const h = 85;
   const d = 54;
-  // 185px apart — comfortably more than each layer's 170px vertical
+  // 185px apart - comfortably more than each layer's 170px vertical
   // footprint (2h), so adjacent layers never overlap.
   const yPositions = [490, 305, 120];
 
@@ -151,7 +151,7 @@ function IsometricStack({ active }) {
               strokeDasharray={dashArray}
               style={{ transition: 'all 0.5s' }}
             />
-            {/* Layer heading — the only label kept */}
+            {/* Layer heading - the only label kept */}
             <text
               x={cx}
               y={cy + 6}
@@ -197,14 +197,14 @@ export default function CoreValueProposition() {
   return (
     <section className="section" id="overview">
       <div className="container max-w-[1400px]">
-        {/* Section header — centered, with clear rhythm between heading and support copy */}
+        {/* Section header - centered, with clear rhythm between heading and support copy */}
         <div className="mx-auto mb-20 max-w-2xl text-center">
           <p className="overline">FaktriIQ Operations Brain</p>
           <h2 className="section-heading">
             Instant answers. Verified compliance.
           </h2>
           <p className="section-subheading" style={{ marginTop: '20px' }}>
-            One unified brain, working end to end — turning raw plant documents
+            One unified brain, working end to end - turning raw plant documents
             into cited, audit-ready answers in three steps.
           </p>
         </div>
@@ -390,7 +390,7 @@ export default function CoreValueProposition() {
               })}
               </div>
 
-              {/* Footer CTA — anchors the column and drives into the agents section */}
+              {/* Footer CTA - anchors the column and drives into the agents section */}
               <a
                 href="#agents"
                 className="group inline-flex w-fit items-center gap-2.5 rounded-full px-5 py-3 text-[13px] font-bold transition-transform duration-300 hover:-translate-y-0.5"
@@ -415,8 +415,8 @@ export default function CoreValueProposition() {
                 minHeight: '380px',
               }}
             >
-              {/* SVG Stack is absolutely positioned so it fills — but never
-                  drives — the panel height. The grid (items-stretch) sizes this
+              {/* SVG Stack is absolutely positioned so it fills - but never
+                  drives - the panel height. The grid (items-stretch) sizes this
                   panel to the LEFT column's height, so the diagram always
                   conforms to the content beside it and no dead space appears. */}
               <div
@@ -426,7 +426,7 @@ export default function CoreValueProposition() {
                 <IsometricStack active={active} />
               </div>
 
-              {/* Floating info chip — only shown when a step is active */}
+              {/* Floating info chip - only shown when a step is active */}
               {current && (
                 <div
                   className="absolute flex flex-col border px-3.5 py-2.5 transition-all duration-500 ease-in-out"
@@ -450,7 +450,7 @@ export default function CoreValueProposition() {
                     className="mt-0.5 text-[14px] font-bold"
                     style={{ color: 'var(--color-ink)' }}
                   >
-                    {current.metric} — {current.metricLabel}
+                    {current.metric} - {current.metricLabel}
                   </span>
                 </div>
               )}

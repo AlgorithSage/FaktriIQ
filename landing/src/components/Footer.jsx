@@ -47,7 +47,7 @@ export default function Footer() {
           <li><a href="#resources">Resources</a></li>
         </ul>
         <p className="footer__note">
-          &copy; {new Date().getFullYear()} FaktriIQ &mdash; Unified Asset &amp;
+          &copy; {new Date().getFullYear()} FaktriIQ - Unified Asset &amp;
           Operations Brain. Compliance outputs are system-generated; always confirm
           against the original regulation before acting.
         </p>
