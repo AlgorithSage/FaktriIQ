@@ -217,7 +217,7 @@ export default function CoreValueProposition() {
             background: 'var(--color-subtle)',
             borderColor: 'var(--color-border)',
             boxShadow: 'var(--shadow-soft)',
-            padding: 'clamp(0.5rem, 1.2vw, 1.0rem) clamp(1.5rem, 3.5vw, 3rem)',
+            padding: 'clamp(2rem, 3.5vw, 3.5rem) clamp(1.5rem, 3.5vw, 3rem)',
           }}
         >
           <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-[48fr_52fr] lg:gap-12">
@@ -239,7 +239,7 @@ export default function CoreValueProposition() {
               </div>
 
               {/* Step Cards List */}
-              <div className="flex flex-col gap-3.5 lg:h-[435px]">
+              <div className="flex flex-col gap-3.5">
                 {STEPS.map((step, i) => {
                   const Icon = step.icon;
                   const on = active !== null && i === active;
