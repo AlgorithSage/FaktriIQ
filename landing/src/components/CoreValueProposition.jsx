@@ -56,12 +56,11 @@ const STEPS = [
 function IsometricStack({ active }) {
   // A tightly-bounded viewBox (no reserved margin for side captions) so the
   // stack itself - not empty canvas around it - fills the panel.
-  const cx = 180;
-  const w = 170;
-  const h = 85;
-  const d = 54;
-  // 185px apart - comfortably more than each layer's 170px vertical
-  // footprint (2h), so adjacent layers never overlap.
+  const cx = 150; // Shifted left from 180 to leave more room on the right
+  const w = 140;  // Scaled down from 170 to make stack narrower
+  const h = 70;   // Scaled down from 85 to match width scaling
+  const d = 48;   // Scaled down from 54
+  // 185px apart - comfortably more than each layer's vertical footprint (2h)
   const yPositions = [490, 305, 120];
 
   const labels = ['Ground', 'Query', 'Cite'];
@@ -117,8 +116,8 @@ function IsometricStack({ active }) {
             <ellipse
               cx={cx}
               cy={cy + d + 48}
-              rx={150}
-              ry={40}
+              rx={125}
+              ry={35}
               fill="var(--peach)"
               opacity={on ? 0.22 : 0}
               filter="url(#layerGlow)"
@@ -157,7 +156,7 @@ function IsometricStack({ active }) {
               y={cy + 6}
               textAnchor="middle"
               fill={on ? 'var(--color-ink)' : 'var(--color-muted)'}
-              fontSize="19"
+              fontSize="16"
               fontWeight="700"
               fontFamily="var(--font-mono)"
               letterSpacing="0.08em"
@@ -433,26 +432,26 @@ export default function CoreValueProposition() {
               {/* Floating info chip - only shown when a step is active */}
               {current && (
                 <div
-                  className="absolute flex flex-col border px-3.5 py-2.5"
+                  className="absolute flex flex-col border px-2.5 py-1.5"
                   style={{
                     right: 'clamp(0.4rem, 1.2vw, 0.85rem)',
                     top: active === 0 ? '74%' : active === 1 ? '46%' : '18%',
                     transform: 'translateY(-50%)',
-                    borderRadius: '0.75rem',
+                    borderRadius: '0.6rem',
                     borderColor: 'rgba(30, 35, 40, 0.12)',
-                    boxShadow: '0 6px 20px rgba(30, 35, 40, 0.06)',
+                    boxShadow: '0 4px 16px rgba(30, 35, 40, 0.05)',
                     background: '#FFFFFF',
                     transition: 'top 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease-in-out',
                   }}
                 >
                   <span
-                    className="font-mono text-[9px] font-bold uppercase tracking-widest"
-                    style={{ color: 'var(--color-muted)' }}
+                    className="font-mono text-[8px] font-bold uppercase tracking-widest"
+                    style={{ color: 'var(--color-muted)', opacity: 0.8 }}
                   >
                     {current.label}
                   </span>
                   <span
-                    className="mt-0.5 text-[14px] font-bold"
+                    className="mt-0.5 text-[11.5px] font-bold whitespace-nowrap"
                     style={{ color: 'var(--color-ink)' }}
                   >
                     {current.metric} - {current.metricLabel}
