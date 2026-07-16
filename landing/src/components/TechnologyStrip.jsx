@@ -348,8 +348,8 @@ export default function TechnologyStrip() {
                 {/* Label - height reserved for 2 lines so every card's title
                     starts at the same y regardless of how the label wraps. */}
                 <p
-                  className="flex items-center justify-center font-mono text-[9px] font-bold uppercase tracking-wider mb-2"
-                  style={{ color: 'rgba(217, 119, 6, 0.85)', minHeight: '26px', lineHeight: 1.4 }}
+                  className="flex items-center justify-center font-mono text-[10px] font-extrabold italic tracking-wider mb-2"
+                  style={{ color: '#78350f', minHeight: '26px', lineHeight: 1.4 }}
                 >
                   {tier.label}
                 </p>
