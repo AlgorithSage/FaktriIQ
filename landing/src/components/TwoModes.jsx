@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 
 /* ------------------------------------------------------------------
-   Two operating modes — the two surfaces the role-selection gateway
+   Two operating modes - the two surfaces the role-selection gateway
    splits into: the Field Technician's on-device mobile copilot and the
    Safety Officer's two-pane web compliance console.
 ------------------------------------------------------------------ */
@@ -226,7 +226,7 @@ export default function TwoModes() {
           <h2 className="section-heading">One brain, two ways to work</h2>
           <p className="section-subheading" style={{ marginInline: 'auto' }}>
             FaktriIQ opens to a simple choice of role, then adapts entirely to the surface the
-            work happens on — a one-handed phone on the plant floor, or a dense two-pane console
+            work happens on - a one-handed phone on the plant floor, or a dense two-pane console
             at the EHS desk.
           </p>
         </div>
@@ -253,7 +253,7 @@ export default function TwoModes() {
               </div>
 
               <p className="mb-5 text-[15px] leading-relaxed" style={{ color: 'var(--color-slate)' }}>
-                A single-question, single-answer copilot built for gloves and glances — the answer
+                A single-question, single-answer copilot built for gloves and glances - the answer
                 arrives as one focused, cited card, and it never needs a network.
               </p>
 
@@ -299,7 +299,7 @@ export default function TwoModes() {
               </div>
 
               <p className="mb-5 text-[15px] leading-relaxed" style={{ color: 'var(--color-slate)' }}>
-                A dense, information-rich workspace for triage — procedures on the left, matched
+                A dense, information-rich workspace for triage - procedures on the left, matched
                 clauses and flags on the right, with red reserved for genuine gaps.
               </p>
 

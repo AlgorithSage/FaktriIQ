@@ -73,7 +73,7 @@ export default function Hero() {
         </h1>
         <p className="hero__subheading">
           A unified AI asset &amp; operations brain mapping plant procedures against
-          Indian regulations&mdash;delivering traceable, cited answers for technicians
+          Indian regulations-delivering traceable, cited answers for technicians
           on the floor and safety officers at their desks.
         </p>
         <PushButton onClick={() => window.location.hash = 'agents'} className="hero__cta">

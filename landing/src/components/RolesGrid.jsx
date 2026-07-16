@@ -52,7 +52,7 @@ const ROLES = [
     title: 'Field Technicians',
     deployment: 'Mobile · offline',
     description:
-      'Get instant, cited answers from plant manuals and SOPs on the floor — accelerated on-device, even with no signal.',
+      'Get instant, cited answers from plant manuals and SOPs on the floor - accelerated on-device, even with no signal.',
     checklist: [
       '100% offline llama.cpp Vulkan inference',
       'Thumb-reachable EHS console interface',
@@ -117,7 +117,7 @@ export default function RolesGrid() {
           <h2 className="section-heading">Built for everyone on the plant</h2>
           <p className="section-subheading" style={{ marginInline: 'auto' }}>
             From the shop floor to the server room, every role gets the same grounded, cited
-            intelligence — shaped to exactly how, and where, they work.
+            intelligence - shaped to exactly how, and where, they work.
           </p>
         </div>
 

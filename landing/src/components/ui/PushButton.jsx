@@ -1,6 +1,6 @@
 import { useId, useRef, useCallback } from "react";
 
-/* Self-contained glass-refraction filter — generates its distortion from
+/* Self-contained glass-refraction filter - generates its distortion from
    noise (feTurbulence) rather than sampling a background photo, so it works
    over any section background (yellow, cream, white cards, nav). Same
    technique already proven in NavBar's liquid-glass filter. */
@@ -22,9 +22,9 @@ function GlassDistortionFilter({ id }) {
 }
 
 /**
- * PushButton — the site's single button primitive: a chunky black-ink pill
+ * PushButton - the site's single button primitive: a chunky black-ink pill
  * (global --color-ink surface, white text) fused with a liquid-glass
- * treatment — backdrop blur + noise-based refraction + a specular highlight
+ * treatment - backdrop blur + noise-based refraction + a specular highlight
  * that tracks the pointer, on top of the existing tactile "press down" 3D
  * shadow interaction.
  */

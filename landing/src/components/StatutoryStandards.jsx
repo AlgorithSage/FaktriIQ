@@ -17,7 +17,7 @@ const FRAMEWORKS = [
     name: 'OISD Standards',
     code: 'OISD-STD series',
     description:
-      'Oil Industry Safety Directorate standards for hydrocarbon operations — hot-work permits, fire-protection systems, and equipment-integrity inspections.',
+      'Oil Industry Safety Directorate standards for hydrocarbon operations - hot-work permits, fire-protection systems, and equipment-integrity inspections.',
   },
   {
     icon: Fuel,
@@ -63,7 +63,7 @@ export default function StatutoryStandards() {
               Aligned with the standards your auditors actually cite
             </h2>
             <p className="section-subheading">
-              FaktriIQ doesn’t just “do compliance” — it grounds every answer in the exact
+              FaktriIQ doesn’t just “do compliance” - it grounds every answer in the exact
               Indian statutory frameworks that govern your plant. Each one below is built into
               the Compliance Agent, so a flagged gap always points back to a real clause you
               can open and verify.

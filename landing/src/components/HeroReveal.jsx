@@ -5,7 +5,7 @@ import { useEffect, useRef, useState } from 'react';
    ContainerScroll component). As the section scrolls through the
    viewport, a sticky frame pins and the media inside scales up while
    its clip-path inset opens from a rounded pill to a full frame.
-   No animation library — a single rAF-throttled scroll handler.
+   No animation library - a single rAF-throttled scroll handler.
 ------------------------------------------------------------------ */
 
 const clamp = (value, min = 0, max = 1) => Math.min(max, Math.max(min, value));
@@ -66,7 +66,7 @@ export default function HeroReveal({ videoSrc, poster }) {
   }, [reducedMotion]);
 
   // Finish the zoom-in within the first half of the scroll range, then hold the
-  // video at full size (still pinned) for the remaining scroll — a deliberate
+  // video at full size (still pinned) for the remaining scroll - a deliberate
   // dwell so the fully-revealed frame is visible before the page moves on.
   const REVEAL_END = 0.5;
   const reveal = clamp(progress / REVEAL_END);

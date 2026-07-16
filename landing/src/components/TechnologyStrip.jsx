@@ -31,7 +31,7 @@ const TIERS = [
     points: [
       'Zero-latency local inference executed directly on field devices',
       'Process voice notes, captured photos, and text queries in the field',
-      '100% data sovereignty — zero external network dependency',
+      '100% data sovereignty - zero external network dependency',
     ],
   },
   {
@@ -123,7 +123,7 @@ export default function TechnologyStrip() {
           <h2 className="section-heading">A three-tier hybrid AI runtime</h2>
           <p className="section-subheading" style={{ marginInline: 'auto' }}>
             The same grounded intelligence, matched to your hardware and
-            connectivity&mdash;from an offline phone on the plant floor to
+            connectivity-from an offline phone on the plant floor to
             sovereign cloud audits.
           </p>
         </div>
@@ -171,7 +171,7 @@ export default function TechnologyStrip() {
                   </div>
                 </div>
 
-                {/* Label — height reserved for 2 lines so every card's title
+                {/* Label - height reserved for 2 lines so every card's title
                     starts at the same y regardless of how the label wraps. */}
                 <p
                   className="flex items-center justify-center font-mono text-[9px] font-bold uppercase tracking-wider mb-2"
@@ -180,7 +180,7 @@ export default function TechnologyStrip() {
                   {tier.label}
                 </p>
 
-                {/* Heading — height reserved for 2 lines so the tags row below
+                {/* Heading - height reserved for 2 lines so the tags row below
                     starts at the same y whether the title wraps or not. */}
                 <h3
                   className="flex items-center justify-center text-[19px] font-extrabold text-(--color-ink) leading-tight mb-4"
@@ -189,7 +189,7 @@ export default function TechnologyStrip() {
                   {tier.title}
                 </h3>
 
-                {/* Tech stack tags — every tier has exactly 4, so a fixed 2x2
+                {/* Tech stack tags - every tier has exactly 4, so a fixed 2x2
                     grid keeps the wrap identical and symmetric across cards
                     (avoids the lopsided "3 then 1 alone" wrap). */}
                 <div className="grid grid-cols-2 gap-2 w-full max-w-[230px] mb-6">
@@ -207,7 +207,7 @@ export default function TechnologyStrip() {
                   ))}
                 </div>
 
-                {/* Points — stacked in series (one after another), each a short
+                {/* Points - stacked in series (one after another), each a short
                     horizontal strip rather than a tall padded box, so the card
                     doesn't elongate vertically. */}
                 <ul className="flex flex-col gap-2 w-full">
