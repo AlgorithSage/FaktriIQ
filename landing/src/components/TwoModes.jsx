@@ -10,7 +10,9 @@ import {
   CircleAlert,
   Download,
   Send,
+  ShieldCheck,
 } from 'lucide-react';
+import ScrollReveal from './ui/ScrollReveal.jsx';
 
 /* ------------------------------------------------------------------
    Two operating modes - the two surfaces the role-selection gateway
@@ -38,10 +40,10 @@ function Check({ children, icon: Icon, soft }) {
 function PhoneMock() {
   return (
     <div
-      className="mx-auto w-[248px] rounded-[30px] border p-2"
-      style={{ background: 'var(--color-ink)', borderColor: 'var(--color-ink)', boxShadow: 'var(--shadow-soft)' }}
+      className="mx-auto w-[248px] rounded-[30px] border p-1.5"
+      style={{ background: 'var(--color-slate)', borderColor: 'var(--color-slate)', borderWidth: '1px', boxShadow: 'var(--shadow-soft)' }}
     >
-      <div className="overflow-hidden rounded-[22px]" style={{ background: 'var(--color-subtle)' }}>
+      <div className="overflow-hidden rounded-[25px]" style={{ background: 'var(--color-subtle)' }}>
         {/* status bar */}
         <div className="flex items-center justify-between px-4 pb-2 pt-3">
           <span className="font-mono text-[10px]" style={{ color: 'var(--color-muted)' }}>
@@ -64,23 +66,20 @@ function PhoneMock() {
           </div>
 
           <div
-            className="rounded-[12px] rounded-bl-sm border px-3 py-2.5"
-            style={{ borderColor: 'var(--color-border)', background: 'var(--color-surface)' }}
+            className="rounded-[12px] rounded-bl-sm px-3 py-2.5"
+            style={{ background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(30,35,40,0.06)' }}
           >
             <p className="text-[12px] leading-snug" style={{ color: 'var(--color-slate)' }}>
               Flame-resistant coveralls, a hard hat, and an H₂S-rated respirator. See the
               site-entry procedure, §3.
             </p>
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              <code
-                className="rounded-md border px-2 py-0.5 text-[10px]"
-                style={{ borderColor: 'var(--color-border)', background: 'var(--color-subtle)', color: 'var(--color-ink)' }}
-              >
-                Manual PH2-Entry · §3
-              </code>
-              <span className="flex items-center gap-1 text-[10px] font-bold" style={{ color: 'var(--color-verify)' }}>
-                <span className="inline-block h-1.5 w-1.5 rounded-full" style={{ background: 'var(--color-verify)' }} />
+            <div className="mt-2 flex items-start gap-1.5 text-[10.5px] font-bold" style={{ color: 'var(--color-verify)' }}>
+              <span className="mt-[3px] inline-block h-1.5 w-1.5 rounded-full shrink-0" style={{ background: 'var(--color-verify)' }} />
+              <span>
                 High confidence
+                <span className="font-medium" style={{ color: 'var(--color-muted)' }}>
+                  {' '}· Manual PH2-Entry · §3
+                </span>
               </span>
             </div>
           </div>
@@ -89,8 +88,8 @@ function PhoneMock() {
         {/* input */}
         <div className="px-3.5 pb-3.5 pt-1.5">
           <div
-            className="flex items-center gap-2 rounded-full border px-3 py-2"
-            style={{ borderColor: 'var(--color-border)', background: 'var(--color-surface)' }}
+            className="flex items-center gap-2 rounded-full px-3 py-2"
+            style={{ background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(30,35,40,0.06)' }}
           >
             <span className="text-[11.5px]" style={{ color: 'var(--color-muted)' }}>
               Ask about a procedure…
@@ -127,24 +126,25 @@ function ConsoleMock() {
       className="overflow-hidden rounded-[12px] border"
       style={{ borderColor: 'var(--color-border)', background: 'var(--color-surface)', boxShadow: 'var(--shadow-soft)' }}
     >
-      {/* title bar */}
-      <div className="flex items-center gap-2 border-b px-3 py-2.5" style={{ borderColor: 'var(--color-border)', background: 'var(--color-subtle)' }}>
-        <span className="flex gap-1.5">
-          <span className="h-2.5 w-2.5 rounded-full" style={{ background: '#E7EAF0' }} />
-          <span className="h-2.5 w-2.5 rounded-full" style={{ background: '#E7EAF0' }} />
-          <span className="h-2.5 w-2.5 rounded-full" style={{ background: '#E7EAF0' }} />
+      {/* native app titlebar */}
+      <div className="relative flex items-center px-3 py-2.5" style={{ borderBottom: '1px solid var(--color-border)', background: 'var(--color-surface)' }}>
+        <span className="flex shrink-0 gap-1.5">
+          <span className="h-2.5 w-2.5 rounded-full" style={{ background: '#FF5F57' }} />
+          <span className="h-2.5 w-2.5 rounded-full" style={{ background: '#FEBC2E' }} />
+          <span className="h-2.5 w-2.5 rounded-full" style={{ background: '#28C840' }} />
         </span>
         <span
-          className="ml-2 rounded-md px-2.5 py-1 font-mono text-[10.5px]"
-          style={{ background: 'var(--color-surface)', color: 'var(--color-muted)', border: '1px solid var(--color-border)' }}
+          className="pointer-events-none absolute inset-0 flex items-center justify-center gap-1.5 text-[11px] font-bold"
+          style={{ color: 'var(--color-ink)' }}
         >
-          faktriiq.app / officer
+          <ShieldCheck className="h-3 w-3" strokeWidth={2} />
+          FaktriIQ Compliance Console
         </span>
       </div>
 
       {/* two panes */}
       <div className="grid grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
-        <div className="border-r p-3" style={{ borderColor: 'var(--color-border)', background: 'var(--color-subtle)' }}>
+        <div className="p-3" style={{ background: 'var(--color-subtle)' }}>
           <p className="mb-2 font-mono text-[9.5px] font-bold uppercase tracking-[0.1em]" style={{ color: 'var(--color-muted)' }}>
             Documents
           </p>
@@ -152,28 +152,24 @@ function ConsoleMock() {
             {docs.map((d, i) => (
               <div
                 key={d.name}
-                className="flex items-center gap-2 rounded-md border px-2 py-1.5"
+                className="flex items-center gap-2 rounded-md px-2 py-1.5"
                 style={{
-                  borderColor: i === 2 ? 'var(--sky)' : 'var(--color-border)',
                   background: i === 2 ? 'var(--sky-soft)' : 'var(--color-surface)',
+                  boxShadow: '0 1px 3px rgba(30,35,40,0.06)',
                 }}
               >
                 <span className="truncate text-[11px] font-medium" style={{ color: 'var(--color-ink)' }}>
                   {d.name}
                 </span>
-                <span className="ml-auto flex shrink-0 gap-1">
+                <span className="ml-auto flex shrink-0 items-center gap-2 font-mono text-[9.5px] font-bold">
                   {d.gap > 0 && (
-                    <span
-                      className="rounded px-1.5 py-0.5 font-mono text-[9px] font-bold"
-                      style={{ color: 'var(--color-flag)', background: 'rgba(224,72,61,0.1)' }}
-                    >
+                    <span className="flex items-center gap-1" style={{ color: 'var(--color-flag)' }}>
+                      <span className="h-1.5 w-1.5 rounded-full" style={{ background: 'var(--color-flag)' }} />
                       {d.gap} gap
                     </span>
                   )}
-                  <span
-                    className="rounded px-1.5 py-0.5 font-mono text-[9px] font-bold"
-                    style={{ color: 'var(--color-verify)', background: 'rgba(47,163,107,0.12)' }}
-                  >
+                  <span className="flex items-center gap-1" style={{ color: 'var(--color-verify)' }}>
+                    <span className="h-1.5 w-1.5 rounded-full" style={{ background: 'var(--color-verify)' }} />
                     {d.ok} ok
                   </span>
                 </span>
@@ -193,13 +189,11 @@ function ConsoleMock() {
               return (
                 <div
                   key={c.code}
-                  className="flex items-center gap-2 rounded-md border px-2 py-2"
-                  style={{ borderColor: isGap ? 'rgba(224,72,61,0.38)' : 'var(--color-border)', background: 'var(--color-surface)' }}
+                  className="flex items-center gap-2 rounded-md px-2 py-2"
+                  style={{ background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(30,35,40,0.06)' }}
                 >
-                  <span
-                    className="rounded px-1.5 py-0.5 font-mono text-[9px] font-bold"
-                    style={{ color, background: isGap ? 'rgba(224,72,61,0.1)' : 'rgba(47,163,107,0.12)' }}
-                  >
+                  <span className="flex shrink-0 items-center gap-1.5 font-mono text-[9.5px] font-bold" style={{ color }}>
+                    <span className="h-1.5 w-1.5 rounded-full" style={{ background: color }} />
                     {isGap ? 'GAP' : 'OK'}
                   </span>
                   <code className="text-[11px]" style={{ color: 'var(--color-slate)' }}>
@@ -219,7 +213,7 @@ export default function TwoModes() {
   return (
     <section id="modes" className="section section--subtle">
       <div className="container">
-        <div className="mx-auto mb-14 max-w-[720px] text-center">
+        <ScrollReveal preset="fadeUp" className="mx-auto mb-14 max-w-[720px] text-center">
           <p className="overline" style={{ display: 'inline-block' }}>
             Two Modes
           </p>
@@ -229,11 +223,11 @@ export default function TwoModes() {
             work happens on - a one-handed phone on the plant floor, or a dense two-pane console
             at the EHS desk.
           </p>
-        </div>
+        </ScrollReveal>
 
         <div className="flex flex-col gap-10">
           {/* Technician mode */}
-          <article className="card grid gap-8 p-6 md:p-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:gap-12">
+          <ScrollReveal preset="fadeLeft" delay={0.1} as="article" className="card grid gap-8 p-6 md:p-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:gap-12">
             <div className="flex flex-col">
               <div className="mb-5 flex items-center gap-3">
                 <span
@@ -276,10 +270,10 @@ export default function TwoModes() {
             <div className="flex items-center justify-center min-h-[360px] rounded-2xl p-4" style={{ background: 'var(--color-bg)' }}>
               <PhoneMock />
             </div>
-          </article>
+          </ScrollReveal>
 
           {/* Officer mode */}
-          <article className="card grid gap-8 p-6 md:p-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:gap-12">
+          <ScrollReveal preset="fadeRight" delay={0.15} as="article" className="card grid gap-8 p-6 md:p-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:gap-12">
             <div className="flex flex-col">
               <div className="mb-5 flex items-center gap-3">
                 <span
@@ -324,7 +318,7 @@ export default function TwoModes() {
                 <ConsoleMock />
               </div>
             </div>
-          </article>
+          </ScrollReveal>
         </div>
       </div>
     </section>

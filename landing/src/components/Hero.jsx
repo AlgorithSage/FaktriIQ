@@ -1,6 +1,7 @@
 import HeroReveal from './HeroReveal.jsx';
 import { PushButton } from './ui/PushButton';
 import { ShaderBackground } from './ui/ShaderBackground.jsx';
+import ScrollReveal from './ui/ScrollReveal.jsx';
 
 const STATUTORY_DETAILS = {
   'Factories Act 1948': {
@@ -68,22 +69,28 @@ export default function Hero() {
       {/* WebGL Silk Shader Background (interactive, theme matched) */}
       <ShaderBackground className="absolute inset-0 z-0 pointer-events-none" />
       <div className="hero__content container" style={{ position: "relative", zIndex: 1, marginBottom: "clamp(2rem, 4vw, 3rem)" }}>
-        <h1 className="hero__heading">
-          Catch compliance gaps before your next audit does.
-        </h1>
-        <p className="hero__subheading">
-          A unified AI asset &amp; operations brain mapping plant procedures against
-          Indian regulations-delivering traceable, cited answers for technicians
-          on the floor and safety officers at their desks.
-        </p>
-        <PushButton onClick={() => window.location.hash = 'agents'} className="hero__cta">
-          See our Platform
-        </PushButton>
+        <ScrollReveal preset="fadeUp" duration={0.8}>
+          <h1 className="hero__heading">
+            Catch compliance gaps before your next audit does.
+          </h1>
+        </ScrollReveal>
+        <ScrollReveal preset="fadeUp" delay={0.15} duration={0.8}>
+          <p className="hero__subheading">
+            A unified AI asset &amp; operations brain mapping plant procedures against
+            Indian regulations-delivering traceable, cited answers for technicians
+            on the floor and safety officers at their desks.
+          </p>
+        </ScrollReveal>
+        <ScrollReveal preset="fadeUp" delay={0.3} duration={0.8}>
+          <PushButton onClick={() => window.location.hash = 'agents'} className="hero__cta">
+            See our Platform
+          </PushButton>
+        </ScrollReveal>
       </div>
 
       <HeroReveal videoSrc="/lp_video.mp4" />
 
-      <div className="social-proof container">
+      <ScrollReveal preset="fadeUp" delay={0.1} className="social-proof container">
         <p className="social-proof__label">Aligned with statutory standards</p>
         <ul className="social-proof__logos">
           {Object.entries(STATUTORY_DETAILS).map(([name, details]) => (
@@ -112,7 +119,7 @@ export default function Hero() {
             </li>
           ))}
         </ul>
-      </div>
+      </ScrollReveal>
     </section>
   );
 }

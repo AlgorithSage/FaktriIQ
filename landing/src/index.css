@@ -1217,9 +1217,12 @@ code {
 
 .pillars__puzzle-center {
   position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  /* Centered via calc() rather than `transform: translate(-50%, -50%)` -
+     this element is a Framer Motion (ScrollReveal) node, and Motion writes
+     its own inline `transform` for the reveal animation, which would
+     otherwise silently overwrite a stylesheet transform used for centering. */
+  top: calc(50% - (var(--center-size) / 2));
+  left: calc(50% - (var(--center-size) / 2));
   width: var(--center-size);
   height: var(--center-size);
   background: rgba(255, 255, 255, 0.85);
@@ -1778,14 +1781,16 @@ code {
 
 /* ---- Detail panel ---- */
 
+/* One shared window; sections are separated by open gap/spacing rather
+   than internal divider lines. */
 .agents__panel {
   display: grid;
   grid-template-columns: 1fr;
   gap: 32px;
   border-radius: 16px;
   border: 1.5px solid var(--color-border);
-  background: #F9F6EE;
-  padding: 36px;
+  background: var(--color-surface);
+  padding: 28px 24px;
   box-shadow: var(--shadow-soft);
   animation: agents-fadeSlide 0.4s ease-out;
   color: var(--color-ink);
@@ -1794,8 +1799,8 @@ code {
 @media (min-width: 1024px) {
   .agents__panel {
     grid-template-columns: 0.85fr 1.15fr 0.9fr;
-    gap: 0;
-    padding: 0;
+    gap: 40px;
+    padding: 40px;
   }
 }
 
@@ -1816,13 +1821,6 @@ code {
 .agents__profile {
   display: flex;
   flex-direction: column;
-}
-
-@media (min-width: 1024px) {
-  .agents__profile {
-    padding: 36px 32px;
-    border-right: 1.5px solid var(--color-border);
-  }
 }
 
 .agents__profile-icon {
@@ -1870,12 +1868,15 @@ code {
   font-size: 15px;
   line-height: 1.65;
   color: var(--color-slate);
-  flex: 1;
 }
 
+/* Auto margins on both sides center this block in whatever vacant space
+   is left below the summary text, instead of it hugging the bottom edge. */
 .agents__engines {
-  margin-top: 24px;
+  margin-top: auto;
+  margin-bottom: auto;
   padding-top: 20px;
+  padding-bottom: 4px;
   border-top: 1px solid var(--color-border);
 }
 
@@ -1921,7 +1922,6 @@ code {
 
 @media (min-width: 1024px) {
   .agents__capabilities {
-    padding: 36px 28px;
     grid-template-columns: 1fr 1fr;
     gap: 14px;
     align-content: start;
@@ -2010,70 +2010,72 @@ code {
   gap: 20px;
 }
 
-@media (min-width: 1024px) {
-  .agents__demo {
-    padding: 36px 32px;
-    border-left: 1.5px solid var(--color-border);
-  }
-}
+/* Chat window - mobile mockup (phone bezel + status bar), matching the
+   phone mock used in the Two Modes section instead of a browser-chrome card. */
 
-/* Chat window */
-
-.agents__chat {
-  border-radius: 12px;
-  border: 1.5px solid var(--color-border);
-  overflow: hidden;
+.agents__phone {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.agents__chat-titlebar {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 10px 14px;
-  background: #FFEA00;
-  border-bottom: 1px solid var(--color-border);
+  justify-content: center;
+  padding: 8px 0;
 }
 
-.agents__chat-dots {
-  display: flex;
-  gap: 5px;
+.agents__phone-frame {
+  width: 100%;
+  max-width: 258px;
+  border-radius: 30px;
+  border: 1px solid var(--color-slate);
+  background: var(--color-slate);
+  padding: 6px;
+  box-shadow: var(--shadow-soft);
 }
 
-.agents__chat-dot {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-}
-
-.agents__chat-dot:nth-child(1) {
-  background: var(--peach);
-}
-
-.agents__chat-dot:nth-child(2) {
-  background: var(--lemon);
-}
-
-.agents__chat-dot:nth-child(3) {
-  background: var(--cyan);
-}
-
-.agents__chat-title {
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--color-ink);
-  margin-left: 6px;
-}
-
-.agents__chat-body {
-  padding: 16px;
+.agents__phone-screen {
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  flex: 1;
-  background: #F9F6EE;
+  overflow: hidden;
+  border-radius: 25px;
+  background: var(--color-subtle);
+}
+
+.agents__phone-statusbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px 8px;
+}
+
+.agents__phone-time {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--color-muted);
+}
+
+.agents__phone-agent {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-ink);
+}
+
+.agents__phone-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.agents__phone-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 14px 12px;
 }
 
 .agents__chat-q {
@@ -2081,7 +2083,7 @@ code {
   max-width: 85%;
   padding: 10px 14px;
   border-radius: 12px 12px 4px 12px;
-  font-size: 13.5px;
+  font-size: 12.5px;
   font-weight: 500;
   line-height: 1.45;
   color: var(--color-ink);
@@ -2089,18 +2091,64 @@ code {
 
 .agents__chat-a {
   align-self: flex-start;
-  max-width: 90%;
+  max-width: 92%;
   padding: 10px 14px;
   border-radius: 12px 12px 12px 4px;
-  border: 1px solid var(--color-border);
-  background: #FFEA00;
-  font-size: 13.5px;
+  background: var(--color-surface);
+  box-shadow: 0 1px 3px rgba(30, 35, 40, 0.06);
+  font-size: 12.5px;
   line-height: 1.5;
-  color: var(--color-ink);
+  color: var(--color-slate);
 }
 
 .agents__chat-status {
   align-self: flex-start;
+  display: inline-flex;
+  align-items: flex-start;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.agents__chat-status-dot {
+  margin-top: 4px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.agents__chat-status-cite {
+  font-weight: 500;
+  color: var(--color-muted);
+}
+
+.agents__phone-inputbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 14px 14px;
+  padding: 7px 7px 7px 14px;
+  border-radius: 9999px;
+  background: var(--color-surface);
+  box-shadow: 0 1px 3px rgba(30, 35, 40, 0.06);
+}
+
+.agents__phone-input-text {
+  font-size: 11px;
+  color: var(--color-muted);
+}
+
+.agents__phone-send {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 /* Stats row */
@@ -2141,22 +2189,6 @@ code {
 }
 
 /* ---- Responsive ---- */
-
-@media (max-width: 1023px) {
-  .agents__panel {
-    padding: 28px 20px;
-  }
-
-  .agents__profile {
-    padding-bottom: 24px;
-    border-bottom: 1px solid var(--color-border);
-  }
-
-  .agents__demo {
-    padding-top: 24px;
-    border-top: 1px solid var(--color-border);
-  }
-}
 
 @media (max-width: 640px) {
   .agents__tabs {

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Layers, ScanSearch, BadgeCheck, ArrowRight } from 'lucide-react';
+import ScrollReveal from './ui/ScrollReveal.jsx';
 
 /* ─── Data ─────────────────────────────────────────────────────────── */
 
@@ -56,18 +57,18 @@ const STEPS = [
 function IsometricStack({ active }) {
   // A tightly-bounded viewBox (no reserved margin for side captions) so the
   // stack itself - not empty canvas around it - fills the panel.
-  const cx = 150; // Shifted left from 180 to leave more room on the right
-  const w = 140;  // Scaled down from 170 to make stack narrower
-  const h = 70;   // Scaled down from 85 to match width scaling
-  const d = 48;   // Scaled down from 54
-  // 185px apart - comfortably more than each layer's vertical footprint (2h)
-  const yPositions = [490, 305, 120];
+  const cx = 220; // Centrally placed inside the 440px viewBox
+  const w = 170;  // Original width
+  const h = 85;   // Original height
+  const d = 54;   // Original depth
+  // 170px apart - shifted down to make room for the info chip at the top
+  const yPositions = [530, 360, 190];
 
   const labels = ['Ground', 'Query', 'Cite'];
 
   return (
     <svg
-      viewBox="0 0 440 660"
+      viewBox="0 0 440 700"
       className="w-full h-full"
       role="img"
       aria-label="Knowledge stack visualization"
@@ -81,15 +82,30 @@ function IsometricStack({ active }) {
       {/* Center guide line */}
       <line
         x1={cx}
-        y1={active === 2 ? 23 : 35}
+        y1={active === 2 ? 90 : 110}
         x2={cx}
-        y2={active === 0 ? 617 : 629}
+        y2={active === 0 ? 660 : 680}
         stroke="var(--color-border)"
         strokeDasharray="3 8"
         strokeLinecap="round"
         opacity="0.25"
         style={{
           transition: 'y1 0.6s cubic-bezier(0.25, 1, 0.5, 1), y2 0.6s cubic-bezier(0.25, 1, 0.5, 1)',
+        }}
+      />
+
+      {/* Dynamic connecting line to active layer */}
+      <line
+        x1={cx}
+        y1={75}
+        x2={cx}
+        y2={yPositions[active] - h}
+        stroke="var(--orange)"
+        strokeWidth={2}
+        strokeDasharray="4 6"
+        strokeLinecap="round"
+        style={{
+          transition: 'y2 0.6s cubic-bezier(0.25, 1, 0.5, 1)',
         }}
       />
 
@@ -116,8 +132,8 @@ function IsometricStack({ active }) {
             <ellipse
               cx={cx}
               cy={cy + d + 48}
-              rx={125}
-              ry={35}
+              rx={150}
+              ry={40}
               fill="var(--peach)"
               opacity={on ? 0.22 : 0}
               filter="url(#layerGlow)"
@@ -156,7 +172,7 @@ function IsometricStack({ active }) {
               y={cy + 6}
               textAnchor="middle"
               fill={on ? 'var(--color-ink)' : 'var(--color-muted)'}
-              fontSize="16"
+              fontSize="19"
               fontWeight="700"
               fontFamily="var(--font-mono)"
               letterSpacing="0.08em"
@@ -197,7 +213,7 @@ export default function CoreValueProposition() {
     <section className="section" id="overview">
       <div className="container max-w-[1400px]">
         {/* Section header - centered, with clear rhythm between heading and support copy */}
-        <div className="mx-auto mb-20 max-w-2xl text-center">
+        <ScrollReveal preset="fadeUp" className="mx-auto mb-20 max-w-2xl text-center">
           <p className="overline">FaktriIQ Operations Brain</p>
           <h2 className="section-heading">
             Instant answers. Verified compliance.
@@ -206,14 +222,14 @@ export default function CoreValueProposition() {
             One unified brain, working end to end - turning raw plant documents
             into cited, audit-ready answers in three steps.
           </p>
-        </div>
+        </ScrollReveal>
 
-        {/* ── Large yellow container wrapping both columns ── */}
+        {/* ── Large container wrapping both columns ── */}
         <div
-          className="overflow-hidden border grain-bg-parent"
+          className="overflow-hidden border"
           style={{
             borderRadius: '2rem',
-            background: 'var(--color-subtle)',
+            background: 'var(--color-surface)',
             borderColor: 'var(--color-border)',
             boxShadow: 'var(--shadow-soft)',
             padding: 'clamp(2rem, 3.5vw, 3.5rem) clamp(1.5rem, 3.5vw, 3rem)',
@@ -222,7 +238,7 @@ export default function CoreValueProposition() {
           <div className="grid grid-cols-1 items-stretch gap-8 lg:grid-cols-[48fr_52fr] lg:gap-12">
 
             {/* ─── Left Column: Intro + Step Cards ─── */}
-            <div className="flex w-full min-w-0 flex-col gap-8">
+            <ScrollReveal preset="fadeLeft" delay={0.1} className="flex w-full min-w-0 flex-col gap-8">
               {/* Pipeline Intro Block */}
               <div className="flex flex-col gap-3 max-w-lg">
                 <div className="inline-flex items-center gap-2 self-start rounded-full bg-white/60 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wider text-[var(--color-ink)] border border-[rgba(59,63,70,0.15)]">
@@ -257,7 +273,7 @@ export default function CoreValueProposition() {
                         borderColor: on
                           ? 'var(--color-border)'
                           : 'rgba(59, 63, 70, 0.15)',
-                        background: on ? '#FFFFFF' : 'rgba(255, 255, 255, 0.5)',
+                        background: on ? 'var(--color-subtle)' : 'var(--color-surface)',
                         boxShadow: on
                           ? '0 6px 24px rgba(30, 35, 40, 0.08)'
                           : '0 1px 2px rgba(30, 35, 40, 0.02)',
@@ -272,7 +288,7 @@ export default function CoreValueProposition() {
                             style={{
                               borderRadius: '0.5rem',
                               background: on
-                                ? 'var(--color-subtle)'
+                                ? '#FFFFFF'
                                 : 'var(--color-surface)',
                               border: `1px solid ${on ? 'var(--color-border)' : 'rgba(59, 63, 70, 0.15)'}`,
                               boxShadow: on
@@ -364,7 +380,7 @@ export default function CoreValueProposition() {
                               <div
                                 className="mt-3 inline-flex items-center gap-2 rounded-lg px-3 py-1.5"
                                 style={{
-                                  background: 'var(--lemon-soft)',
+                                  background: '#FFFFFF',
                                   border: '1px solid rgba(59, 63, 70, 0.12)',
                                 }}
                               >
@@ -403,19 +419,16 @@ export default function CoreValueProposition() {
                   strokeWidth={2}
                 />
               </a>
-            </div>
+            </ScrollReveal>
 
-            {/* ─── Right Column: Isometric Stack in translucent glassmorphic panel ─── */}
-            <div
-              className="relative w-full min-w-0 overflow-hidden border"
+            {/* ─── Right Column: Isometric Stack ─── */}
+            <ScrollReveal preset="fadeRight" delay={0.2}
+              className="relative w-full min-w-0"
               style={{
-                borderRadius: '1.5rem',
-                background: 'rgba(255, 255, 255, 0.4)',
-                backdropFilter: 'blur(16px)',
-                WebkitBackdropFilter: 'blur(16px)',
-                borderColor: 'rgba(30, 35, 40, 0.12)',
-                boxShadow: '0 8px 32px rgba(30, 35, 40, 0.03)',
                 minHeight: '380px',
+                borderRadius: '1.5rem',
+                background: '#FFFFFF',
+                boxShadow: '0 8px 30px rgba(30, 35, 40, 0.06)',
               }}
             >
               {/* SVG Stack is absolutely positioned so it fills - but never
@@ -426,39 +439,40 @@ export default function CoreValueProposition() {
                 className="absolute"
                 style={{ inset: 'clamp(1rem, 2.5vw, 2rem)' }}
               >
+                {/* Floating info chip - centrally positioned at the top matching stack width */}
+                {current && (
+                  <div
+                    className="absolute flex flex-col border px-4 py-2.5 text-center"
+                    style={{
+                      left: '11.36%', // Aligns exactly with the left tip of the isometric stack: (220-170)/440 = 11.36%
+                      right: '11.36%', // Aligns exactly with the right tip: (220+170)/440 = 88.64% (100% - 88.64% = 11.36%)
+                      top: '0px',
+                      borderRadius: '0.75rem',
+                      borderColor: 'rgba(255, 255, 255, 0.12)',
+                      boxShadow: '0 6px 20px rgba(30, 35, 40, 0.18)',
+                      background: 'var(--color-ink)',
+                      zIndex: 10,
+                      transition: 'opacity 0.4s ease-in-out',
+                    }}
+                  >
+                    <span
+                      className="font-mono text-[9px] font-bold uppercase tracking-widest"
+                      style={{ color: 'rgba(255, 255, 255, 0.6)' }}
+                    >
+                      {current.label}
+                    </span>
+                    <span
+                      className="mt-0.5 text-[13px] font-bold whitespace-nowrap"
+                      style={{ color: '#FFFFFF' }}
+                    >
+                      {current.metric} - {current.metricLabel}
+                    </span>
+                  </div>
+                )}
+
                 <IsometricStack active={active} />
               </div>
-
-              {/* Floating info chip - only shown when a step is active */}
-              {current && (
-                <div
-                  className="absolute flex flex-col border px-2.5 py-1.5"
-                  style={{
-                    right: 'clamp(0.4rem, 1.2vw, 0.85rem)',
-                    top: active === 0 ? '74%' : active === 1 ? '46%' : '18%',
-                    transform: 'translateY(-50%)',
-                    borderRadius: '0.6rem',
-                    borderColor: 'rgba(30, 35, 40, 0.12)',
-                    boxShadow: '0 4px 16px rgba(30, 35, 40, 0.05)',
-                    background: '#FFFFFF',
-                    transition: 'top 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease-in-out',
-                  }}
-                >
-                  <span
-                    className="font-mono text-[8px] font-bold uppercase tracking-widest"
-                    style={{ color: 'var(--color-muted)', opacity: 0.8 }}
-                  >
-                    {current.label}
-                  </span>
-                  <span
-                    className="mt-0.5 text-[11.5px] font-bold whitespace-nowrap"
-                    style={{ color: 'var(--color-ink)' }}
-                  >
-                    {current.metric} - {current.metricLabel}
-                  </span>
-                </div>
-              )}
-            </div>
+            </ScrollReveal>
 
           </div>
         </div>

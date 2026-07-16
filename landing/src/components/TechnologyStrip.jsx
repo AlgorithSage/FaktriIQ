@@ -1,3 +1,5 @@
+import ScrollReveal from './ui/ScrollReveal.jsx';
+
 const TIERS = [
   {
     label: 'Offline Mobile & Field Deployment',
@@ -285,7 +287,7 @@ export default function TechnologyStrip() {
       <div className="container">
         
         {/* Header */}
-        <div className="tech__header mx-auto text-center max-w-[720px] mb-16">
+        <ScrollReveal preset="fadeUp" className="tech__header mx-auto text-center max-w-[720px] mb-16">
           <p className="overline" style={{ display: 'inline-block' }}>Under the Hood</p>
           <h2 className="section-heading">A three-tier hybrid AI runtime</h2>
           <p className="section-subheading" style={{ marginInline: 'auto' }}>
@@ -293,10 +295,12 @@ export default function TechnologyStrip() {
             connectivity-from an offline phone on the plant floor to
             sovereign cloud audits.
           </p>
-        </div>
+        </ScrollReveal>
 
         {/* Outer Glassmorphic Modal Wrapper */}
-        <div 
+        <ScrollReveal 
+          preset="scaleUp"
+          delay={0.1}
           className="tech__glass-modal"
           style={{
             background: 'rgba(255, 255, 255, 0.45)',
@@ -309,9 +313,12 @@ export default function TechnologyStrip() {
           }}
         >
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 items-stretch" id="architecture">
-            {TIERS.map((tier) => (
-              <article
+            {TIERS.map((tier, idx) => (
+              <ScrollReveal
                 key={tier.title}
+                preset="fadeUp"
+                delay={0.15 + idx * 0.08}
+                as="article"
                 className="tech__card flex flex-col items-center text-center grain-bg-parent"
                 style={{
                   background: 'var(--color-subtle)',
@@ -399,10 +406,10 @@ export default function TechnologyStrip() {
                     </li>
                   ))}
                 </ul>
-              </article>
+              </ScrollReveal>
             ))}
           </div>
-        </div>
+        </ScrollReveal>
 
       </div>
     </section>

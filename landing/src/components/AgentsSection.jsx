@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import ScrollReveal from './ui/ScrollReveal.jsx';
 import {
   ShieldCheck,
   MessageSquareText,
@@ -11,6 +12,7 @@ import {
   Sparkles,
   Quote,
   Cpu,
+  Send,
 } from 'lucide-react';
 
 /* Accent → palette CSS variables (kept as vars so light/pastel theming stays central). */
@@ -156,31 +158,12 @@ function StatusChip({ status, cite }) {
   const isGap = status === 'gap';
   const color = isGap ? 'var(--color-flag)' : 'var(--color-verify)';
   return (
-    <span
-      className="agents__chat-status"
-      style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '8px',
-        borderRadius: '6px',
-        border: `1px solid ${isGap ? 'rgba(224,72,61,0.38)' : 'rgba(47,163,107,0.35)'}`,
-        background: isGap ? 'rgba(224,72,61,0.08)' : 'rgba(47,163,107,0.1)',
-        padding: '4px 10px',
-        fontFamily: 'var(--font-mono)',
-        fontSize: '11.5px',
-        color,
-      }}
-    >
-      <span
-        style={{
-          display: 'inline-block',
-          width: '6px',
-          height: '6px',
-          borderRadius: '50%',
-          background: color,
-        }}
-      />
-      {isGap ? 'GAP' : 'OK'} · {cite}
+    <span className="agents__chat-status" style={{ color }}>
+      <span className="agents__chat-status-dot" style={{ background: color }} />
+      <span>
+        {isGap ? 'GAP' : 'OK'}
+        <span className="agents__chat-status-cite"> · {cite}</span>
+      </span>
     </span>
   );
 }
@@ -195,7 +178,7 @@ export default function AgentsSection() {
     <section id="agents" className="section section--subtle">
       <div className="container">
         {/* ── Zone 1: Centred header ── */}
-        <div className="agents__header">
+        <ScrollReveal preset="fadeUp" className="agents__header">
           <p className="overline">The Agents</p>
           <h2 className="section-heading">
             Purpose-built agents, one grounded brain
@@ -206,7 +189,7 @@ export default function AgentsSection() {
             the work happens, from an offline phone on the floor to an EHS desk
             preparing for audit.
           </p>
-        </div>
+        </ScrollReveal>
 
         {/* ── Zone 2: Horizontal tab strip ── */}
         <div className="agents__tabs">
@@ -249,7 +232,7 @@ export default function AgentsSection() {
         </div>
 
         {/* ── Zone 3: Full-width 3-column detail panel ── */}
-        <div className="agents__panel" key={agent.id}>
+        <ScrollReveal preset="scaleUp" delay={0.2} className="agents__panel" key={agent.id}>
           {/* Left: Profile */}
           <div className="agents__profile">
             <span
@@ -309,28 +292,49 @@ export default function AgentsSection() {
 
           {/* Right: Demo + Stats */}
           <div className="agents__demo">
-            {/* Chat window */}
-            <div className="agents__chat">
-              <div className="agents__chat-titlebar">
-                <div className="agents__chat-dots">
-                  <span className="agents__chat-dot" />
-                  <span className="agents__chat-dot" />
-                  <span className="agents__chat-dot" />
+            {/* Chat window (mobile mockup) */}
+            <div className="agents__phone">
+              <div className="agents__phone-frame">
+                <div className="agents__phone-screen">
+                  <div className="agents__phone-statusbar">
+                    <span className="agents__phone-time">9:41</span>
+                    <span className="agents__phone-agent">
+                      <span
+                        className="agents__phone-dot"
+                        style={{ background: accent.mid }}
+                      />
+                      {agent.name}
+                    </span>
+                  </div>
+                  <div className="agents__phone-body">
+                    <div
+                      className="agents__chat-q"
+                      style={{ background: accent.soft }}
+                    >
+                      {agent.example.q}
+                    </div>
+                    <div className="agents__chat-a">{agent.example.a}</div>
+                    <StatusChip
+                      status={agent.example.status}
+                      cite={agent.example.cite}
+                    />
+                  </div>
+                  <div className="agents__phone-inputbar">
+                    <span className="agents__phone-input-text">
+                      Ask about a procedure…
+                    </span>
+                    <span
+                      className="agents__phone-send"
+                      style={{ background: accent.mid }}
+                    >
+                      <Send
+                        size={13}
+                        strokeWidth={2}
+                        style={{ color: 'var(--color-ink)' }}
+                      />
+                    </span>
+                  </div>
                 </div>
-                <span className="agents__chat-title">{agent.name}</span>
-              </div>
-              <div className="agents__chat-body">
-                <div
-                  className="agents__chat-q"
-                  style={{ background: accent.soft }}
-                >
-                  {agent.example.q}
-                </div>
-                <div className="agents__chat-a">{agent.example.a}</div>
-                <StatusChip
-                  status={agent.example.status}
-                  cite={agent.example.cite}
-                />
               </div>
             </div>
 
@@ -344,7 +348,7 @@ export default function AgentsSection() {
               ))}
             </div>
           </div>
-        </div>
+        </ScrollReveal>
       </div>
     </section>
   );

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ShieldCheck, Smartphone, Gauge, Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
+import ScrollReveal from './ui/ScrollReveal.jsx';
 
 const ACCENTS = {
   sky: {
@@ -35,13 +36,13 @@ const ROLES = [
     title: 'Safety Officers',
     deployment: 'Web console',
     description:
-      'Audit SOPs against statutory standards, identify regulatory gaps, and maintain audit-ready compliance reports.',
+      'Audit SOPs against statutory standards online via Groq + GPT-OSS 120B, with cached results that keep audits running offline through LiteRT.js + WebGPU.',
     checklist: [
-      'Factories Act & OISD compliance auditing',
-      'Visual gap analysis & flagged warnings',
+      'Cloud audits cached locally for offline parity',
+      'On-device LiteRT.js fallback clause matching',
+      'Visual gap triage with statutory citations',
+      'Pre-computed snapshots sync on reconnect',
       'One-tap export EHS report cards',
-      'Cross-referenced clause hierarchy mapping',
-      'Auto-updating regulatory standards feed',
     ],
     metric: '95%',
     metricLabel: 'Reduction in gap-audit time',
@@ -110,7 +111,7 @@ export default function RolesGrid() {
       <div className="container">
         
         {/* Section Header */}
-        <div className="mx-auto mb-14 max-w-[720px] text-center">
+        <ScrollReveal preset="fadeUp" className="mx-auto mb-14 max-w-[720px] text-center">
           <p className="overline" style={{ display: 'inline-block' }}>
             Roles &amp; Deployments
           </p>
@@ -119,13 +120,15 @@ export default function RolesGrid() {
             From the shop floor to the server room, every role gets the same grounded, cited
             intelligence - shaped to exactly how, and where, they work.
           </p>
-        </div>
+        </ScrollReveal>
 
         {/* Interactive Showcase Layout */}
         <div className="grid gap-6 lg:grid-cols-2 lg:gap-8 lg:items-stretch">
           
           {/* Left Side: Vertical list of roles */}
-          <div
+          <ScrollReveal
+            preset="fadeLeft"
+            delay={0.1}
             className="flex flex-col gap-3 border p-5 lg:p-6"
             style={{
               borderRadius: '2rem',
@@ -214,10 +217,13 @@ export default function RolesGrid() {
                 </button>
               );
             })}
-          </div>
+          </ScrollReveal>
 
           {/* Right Side: Active role details card */}
-          <div
+          <ScrollReveal
+            key={activeIdx}
+            preset="scaleUp"
+            delay={0.15}
             className="flex flex-col border p-6 lg:p-10 transition-all duration-500 ease-in-out"
             style={{
               borderRadius: '2rem',
@@ -288,7 +294,7 @@ export default function RolesGrid() {
               Configure Deployment
               <ArrowRight className="h-4 w-4" strokeWidth={2} />
             </a>
-          </div>
+          </ScrollReveal>
 
         </div>
       </div>

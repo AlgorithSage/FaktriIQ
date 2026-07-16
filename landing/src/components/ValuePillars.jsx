@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import ScrollReveal from './ui/ScrollReveal.jsx';
 
 const PILLARS = [
   {
@@ -289,10 +290,30 @@ export default function ValuePillars() {
 
   const cardLayouts = ['tl', 'tr', 'bl', 'br'];
 
+  // The compass is centered with a plain `top: 50%` against the 2x2 grid box,
+  // which only lines up with the true row boundary when both rows are the
+  // same height. Card copy lengths differ, so left to their own intrinsic
+  // size the two rows can render unevenly - drifting the compass into
+  // whichever row is taller. Measuring every card's natural content height
+  // here and applying the max as a shared floor keeps all four (and both
+  // rows) locked to the same height, so the 50% center is always correct.
+  const [cardHeights, setCardHeights] = useState([0, 0, 0, 0]);
+  const maxCardHeight = Math.max(190, ...cardHeights);
+
+  const reportCardHeight = (index, height) => {
+    setCardHeights((prev) => {
+      if (prev[index] === height) return prev;
+      const next = [...prev];
+      next[index] = height;
+      return next;
+    });
+  };
+
   // Card component implementing resize observer to feed exact widths to the SVG path generator
   const Card = ({ pillar, index }) => {
     const [size, setSize] = useState({ width: 0, height: 0 });
     const ref = useRef(null);
+    const contentRef = useRef(null);
     const isActive = index === activeIndex;
 
     useEffect(() => {
@@ -309,6 +330,20 @@ export default function ValuePillars() {
       return () => observer.disconnect();
     }, []);
 
+    // Tracks the content's own natural height (unaffected by the minHeight
+    // floor applied to the outer card below), so all four cards can be
+    // measured independently and equalized without a feedback loop.
+    useEffect(() => {
+      if (!contentRef.current) return;
+      const observer = new ResizeObserver((entries) => {
+        for (let entry of entries) {
+          reportCardHeight(index, entry.contentRect.height);
+        }
+      });
+      observer.observe(contentRef.current);
+      return () => observer.disconnect();
+    }, [index]);
+
     return (
       <div
         ref={ref}
@@ -321,6 +356,7 @@ export default function ValuePillars() {
           background: 'transparent',
           border: 'none',
           boxShadow: 'none',
+          minHeight: maxCardHeight,
           filter: isActive
             ? 'drop-shadow(0 16px 36px rgba(30, 35, 40, 0.08))'
             : 'drop-shadow(0 4px 12px rgba(30, 35, 40, 0.03))',
@@ -329,8 +365,14 @@ export default function ValuePillars() {
       >
         <RoundedCardBg quadrant={cardLayouts[index]} size={size} isActive={isActive} />
 
-        {/* Content wrapper */}
-        <div className="pillars__card-inner relative w-full h-full bg-transparent border-none p-6 lg:p-7" style={{ zIndex: 1, background: 'transparent' }}>
+        {/* Content wrapper - self-start so it keeps its natural content+padding
+            height for measurement, instead of being stretched to fill the
+            outer card's (now equalized) minHeight. */}
+        <div
+          ref={contentRef}
+          className="pillars__card-inner relative w-full bg-transparent border-none p-6 lg:p-7"
+          style={{ zIndex: 1, background: 'transparent', height: 'auto', alignSelf: 'flex-start' }}
+        >
           <span
             className="pillars__card-badge inline-block"
             style={{
@@ -360,7 +402,7 @@ export default function ValuePillars() {
   return (
     <section className="pillars section" id="platform" style={{ overflow: 'hidden' }}>
       <div className="container">
-        <div className="pillars__header mx-auto text-center max-w-[720px] mb-16">
+        <ScrollReveal preset="fadeUp" className="pillars__header mx-auto text-center max-w-[720px] mb-16">
           <p className="overline">The Power of FaktriIQ</p>
           <h2 className="section-heading">Audit-ready and floor-focused from day one</h2>
           <p className="section-subheading" style={{ marginInline: 'auto' }}>
@@ -368,15 +410,24 @@ export default function ValuePillars() {
             platform to resolve safety questions on the floor and detect regulatory
             gaps at EHS desks.
           </p>
-        </div>
+        </ScrollReveal>
 
         <div className="pillars__puzzle">
           {PILLARS.map((pillar, index) => (
-            <Card key={pillar.title} pillar={pillar} index={index} />
+            <ScrollReveal
+              key={pillar.title}
+              preset={index % 2 === 0 ? 'fadeLeft' : 'fadeRight'}
+              delay={0.1 + index * 0.08}
+              style={{ display: 'contents' }}
+            >
+              <Card pillar={pillar} index={index} />
+            </ScrollReveal>
           ))}
 
           {/* Symmetrical central floating compass panel */}
-          <div
+          <ScrollReveal
+            preset="scaleUp"
+            delay={0.25}
             className="pillars__puzzle-center flex items-center justify-center border"
             id="pillars-visual"
             style={{
@@ -390,7 +441,7 @@ export default function ValuePillars() {
             }}
           >
             <CompassVisual rotationAngle={activeAngle} isLocked={isLocked} />
-          </div>
+          </ScrollReveal>
         </div>
       </div>
     </section>
