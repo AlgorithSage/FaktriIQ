@@ -1384,7 +1384,9 @@ code {
   height: 28px;
   width: auto;
   color: var(--color-ink);
-  transition: var(--transition);
+  transition: color 0.22s ease, opacity 0.22s ease;
+  transform: translateZ(0);
+  will-change: transform;
 }
 
 .tech__logo--stroke {
