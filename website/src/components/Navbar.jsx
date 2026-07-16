@@ -1,7 +1,7 @@
 import React from 'react'
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { Menu, Search } from "lucide-react"
+import { Menu } from "lucide-react"
 
 export default function Navbar() {
   const menuItems = [
@@ -40,12 +40,6 @@ export default function Navbar() {
 
           {/* Right - Actions */}
           <div className="hidden lg:flex items-center space-x-6">
-            <button 
-              className="text-industrial-muted hover:text-industrial-ink transition-colors duration-150"
-              aria-label="Search"
-            >
-              <Search className="h-4 w-4" />
-            </button>
             <Button
               className="bg-industrial-ink hover:bg-industrial-slate text-white font-mono text-xs uppercase tracking-wider px-4 py-2 rounded border border-industrial-border shadow-sm transition-all duration-150"
               onClick={() => document.getElementById('pilot-request')?.scrollIntoView({ behavior: 'smooth' })}
@@ -56,12 +50,6 @@ export default function Navbar() {
 
           {/* Mobile menu trigger */}
           <div className="lg:hidden flex items-center space-x-4">
-            <button 
-              className="text-industrial-muted hover:text-industrial-ink transition-colors duration-150"
-              aria-label="Search"
-            >
-              <Search className="h-4 w-4" />
-            </button>
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" className="text-industrial-ink hover:bg-industrial-subtle">

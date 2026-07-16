@@ -225,23 +225,6 @@ export default function NavBar() {
             </nav>
 
             <div className="nav__actions">
-              <button className="nav__search" type="button" aria-label="Search">
-                <svg
-                  width="18"
-                  height="18"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  aria-hidden="true"
-                >
-                  <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="1.6" />
-                  <path
-                    d="M20 20l-4-4"
-                    stroke="currentColor"
-                    strokeWidth="1.6"
-                    strokeLinecap="round"
-                  />
-                </svg>
-              </button>
               <PushButton href="#book-a-demo" className="nav__demo-push">
                 Book a Demo
               </PushButton>

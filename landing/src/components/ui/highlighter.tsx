@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef } from "react"
+import { useEffect, useRef } from "react"
 import type React from "react"
 import { useInView } from "motion/react"
 import { annotate } from "rough-notation"
@@ -46,10 +46,11 @@ export function Highlighter({
   // If isView is false, always show. If isView is true, wait for inView
   const shouldShow = !isView || isInView
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     const element = elementRef.current
     let annotation: RoughAnnotation | null = null
     let resizeObserver: ResizeObserver | null = null
+    let cancelled = false
 
     if (shouldShow && element) {
       const annotationConfig = {
@@ -62,28 +63,36 @@ export function Highlighter({
         multiline,
       }
 
-      const currentAnnotation = annotate(element, annotationConfig)
-      annotation = currentAnnotation
-      currentAnnotation.show()
+      // Wait for all fonts to finish loading before creating the annotation.
+      // This prevents the SVG overlay from being positioned against fallback
+      // font metrics, which causes drift after custom fonts load and reflow text.
+      document.fonts.ready.then(() => {
+        if (cancelled) return
 
-      let lastWidth = element.offsetWidth
-      let lastHeight = element.offsetHeight
+        const currentAnnotation = annotate(element, annotationConfig)
+        annotation = currentAnnotation
+        currentAnnotation.show()
 
-      resizeObserver = new ResizeObserver(() => {
-        const currentWidth = element.offsetWidth
-        const currentHeight = element.offsetHeight
-        if (currentWidth !== lastWidth || currentHeight !== lastHeight) {
-          lastWidth = currentWidth
-          lastHeight = currentHeight
-          currentAnnotation.hide()
-          currentAnnotation.show()
-        }
+        let lastWidth = element.offsetWidth
+        let lastHeight = element.offsetHeight
+
+        resizeObserver = new ResizeObserver(() => {
+          const currentWidth = element.offsetWidth
+          const currentHeight = element.offsetHeight
+          if (currentWidth !== lastWidth || currentHeight !== lastHeight) {
+            lastWidth = currentWidth
+            lastHeight = currentHeight
+            currentAnnotation.hide()
+            currentAnnotation.show()
+          }
+        })
+
+        resizeObserver.observe(element)
       })
-
-      resizeObserver.observe(element)
     }
 
     return () => {
+      cancelled = true
       annotation?.remove()
       if (resizeObserver) {
         resizeObserver.disconnect()
@@ -106,3 +115,4 @@ export function Highlighter({
     </span>
   )
 }
+

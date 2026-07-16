@@ -2,6 +2,7 @@ import HeroReveal from './HeroReveal.jsx';
 import { PushButton } from './ui/PushButton';
 import { ShaderBackground } from './ui/ShaderBackground.jsx';
 import ScrollReveal from './ui/ScrollReveal.jsx';
+import { Highlighter } from './ui/highlighter';
 
 const STATUTORY_DETAILS = {
   'Factories Act 1948': {
@@ -69,11 +70,9 @@ export default function Hero() {
       {/* WebGL Silk Shader Background (interactive, theme matched) */}
       <ShaderBackground className="absolute inset-0 z-0 pointer-events-none" />
       <div className="hero__content container" style={{ position: "relative", zIndex: 1, marginBottom: "clamp(2rem, 4vw, 3rem)" }}>
-        <ScrollReveal preset="fadeUp" duration={0.8}>
-          <h1 className="hero__heading">
-            Catch compliance gaps before your next audit does.
-          </h1>
-        </ScrollReveal>
+        <h1 className="hero__heading">
+          Catch <Highlighter action="highlight" color="rgba(47, 163, 107, 0.22)" animationDuration={800} padding={3} isView>compliance gaps</Highlighter> before your next <Highlighter action="underline" color="#D97706" animationDuration={600} strokeWidth={2.5} isView>audit</Highlighter> does.
+        </h1>
         <ScrollReveal preset="fadeUp" delay={0.15} duration={0.8}>
           <p className="hero__subheading">
             A unified AI asset &amp; operations brain mapping plant procedures against
