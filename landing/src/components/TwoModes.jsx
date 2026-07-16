@@ -238,7 +238,7 @@ export default function TwoModes() {
               <div className="mb-5 flex items-center gap-3">
                 <span
                   className="flex h-11 w-11 items-center justify-center rounded-[10px] border"
-                  style={{ background: 'var(--cyan-soft)', borderColor: 'var(--cyan)' }}
+                  style={{ background: 'var(--cyan-soft)', borderColor: 'var(--color-border)' }}
                 >
                   <Smartphone className="h-[22px] w-[22px]" strokeWidth={1.7} style={{ color: 'var(--color-ink)' }} />
                 </span>
@@ -284,7 +284,7 @@ export default function TwoModes() {
               <div className="mb-5 flex items-center gap-3">
                 <span
                   className="flex h-11 w-11 items-center justify-center rounded-[10px] border"
-                  style={{ background: 'var(--sky-soft)', borderColor: 'var(--sky)' }}
+                  style={{ background: 'var(--sky-soft)', borderColor: 'var(--color-border)' }}
                 >
                   <Monitor className="h-[22px] w-[22px]" strokeWidth={1.7} style={{ color: 'var(--color-ink)' }} />
                 </span>

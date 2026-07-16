@@ -106,13 +106,13 @@ export default function StatutoryStandards() {
                     <Icon className="h-[26px] w-[26px]" strokeWidth={1.6} style={{ color: 'var(--color-ink)' }} />
                   </span>
 
-                  <h3 className="mt-4 text-[17px] font-bold leading-tight" style={{ color: 'var(--color-ink)' }}>
+                  <h3 className="mt-5 text-[17px] font-bold leading-tight" style={{ color: 'var(--color-ink)' }}>
                     {framework.name}
                   </h3>
-                  <code className="mt-1 text-[12px]" style={{ color: 'var(--color-muted)' }}>
+                  <code className="mt-2 text-[12px]" style={{ color: 'var(--color-muted)' }}>
                     {framework.code}
                   </code>
-                  <p className="mt-2 text-[14px] leading-snug" style={{ color: 'var(--color-muted)' }}>
+                  <p className="mt-3 text-[14px] leading-snug" style={{ color: 'var(--color-muted)' }}>
                     {framework.description}
                   </p>
                 </div>

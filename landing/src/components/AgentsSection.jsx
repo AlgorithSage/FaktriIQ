@@ -230,7 +230,7 @@ export default function AgentsSection() {
                   className="agents__tab-icon"
                   style={{
                     background: tabAccent.soft,
-                    borderColor: tabAccent.mid,
+                    borderColor: 'var(--color-border)',
                   }}
                 >
                   <TabIcon
@@ -254,7 +254,7 @@ export default function AgentsSection() {
           <div className="agents__profile">
             <span
               className="agents__profile-icon"
-              style={{ background: accent.soft, borderColor: accent.mid }}
+              style={{ background: accent.soft, borderColor: 'var(--color-border)' }}
             >
               <PanelIcon
                 size={30}

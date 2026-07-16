@@ -15,16 +15,16 @@ const ACCENTS = {
     glow: 'rgba(119, 230, 224, 0.35)',
   },
   peach: {
-    tile: 'linear-gradient(135deg, var(--peach) 0%, var(--orange) 100%)',
-    soft: 'var(--peach-soft)',
-    mid: 'var(--peach)',
-    glow: 'rgba(247, 198, 184, 0.45)',
+    tile: 'linear-gradient(135deg, var(--sky) 0%, var(--cyan) 100%)',
+    soft: 'var(--cyan-soft)',
+    mid: 'var(--sky)',
+    glow: 'rgba(169, 216, 255, 0.4)',
   },
   lemon: {
-    tile: 'linear-gradient(135deg, var(--lemon) 0%, var(--orange) 100%)',
-    soft: 'var(--lemon-soft)',
-    mid: 'var(--lemon)',
-    glow: 'rgba(248, 227, 106, 0.4)',
+    tile: 'linear-gradient(135deg, var(--sky) 0%, var(--cyan) 100%)',
+    soft: 'var(--sky-soft)',
+    mid: 'var(--sky)',
+    glow: 'rgba(169, 216, 255, 0.4)',
   },
 };
 
