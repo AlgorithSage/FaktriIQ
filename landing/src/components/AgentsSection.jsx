@@ -293,39 +293,39 @@ export default function AgentsSection() {
           {/* Right: Demo + Stats */}
           <div className="agents__demo">
             {/* Chat window (mobile mockup) */}
-            <div className="agents__phone">
-              <div className="agents__phone-frame">
-                <div className="agents__phone-screen">
-                  <div className="agents__phone-statusbar">
-                    <span className="agents__phone-time">9:41</span>
-                    <span className="agents__phone-agent">
+            <div className="agents__phone" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px 0' }}>
+              <div className="agents__phone-frame" style={{ width: '100%', maxWidth: '258px', borderRadius: '30px', border: '1px solid var(--color-slate)', background: 'var(--color-slate)', padding: '6px', boxShadow: 'var(--shadow-soft)' }}>
+                <div className="agents__phone-screen" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: '25px', background: 'var(--color-subtle)' }}>
+                  <div className="agents__phone-statusbar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 8px' }}>
+                    <span className="agents__phone-time" style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-muted)' }}>9:41</span>
+                    <span className="agents__phone-agent" style={{ display: 'flex', alignItems: 'center', gap: '5px', fontFamily: 'var(--font-mono)', fontSize: '9px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--color-ink)' }}>
                       <span
                         className="agents__phone-dot"
-                        style={{ background: accent.mid }}
+                        style={{ width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0, background: accent.mid }}
                       />
                       {agent.name}
                     </span>
                   </div>
-                  <div className="agents__phone-body">
+                  <div className="agents__phone-body" style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '4px 14px 12px' }}>
                     <div
                       className="agents__chat-q"
-                      style={{ background: accent.soft }}
+                      style={{ alignSelf: 'flex-end', maxWidth: '85%', padding: '10px 14px', borderRadius: '12px 12px 4px 12px', fontSize: '12.5px', fontWeight: 500, lineHeight: 1.45, color: 'var(--color-ink)', background: accent.soft }}
                     >
                       {agent.example.q}
                     </div>
-                    <div className="agents__chat-a">{agent.example.a}</div>
+                    <div className="agents__chat-a" style={{ alignSelf: 'flex-start', maxWidth: '92%', padding: '10px 14px', borderRadius: '12px 12px 12px 4px', background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(30, 35, 40, 0.06)', fontSize: '12.5px', lineHeight: 1.5, color: 'var(--color-slate)' }}>{agent.example.a}</div>
                     <StatusChip
                       status={agent.example.status}
                       cite={agent.example.cite}
                     />
                   </div>
-                  <div className="agents__phone-inputbar">
-                    <span className="agents__phone-input-text">
+                  <div className="agents__phone-inputbar" style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '0 14px 14px', padding: '7px 7px 7px 14px', borderRadius: '9999px', background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(30, 35, 40, 0.06)' }}>
+                    <span className="agents__phone-input-text" style={{ fontSize: '11px', color: 'var(--color-muted)' }}>
                       Ask about a procedure…
                     </span>
                     <span
                       className="agents__phone-send"
-                      style={{ background: accent.mid }}
+                      style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '26px', height: '26px', borderRadius: '50%', flexShrink: 0, background: accent.mid }}
                     >
                       <Send
                         size={13}
