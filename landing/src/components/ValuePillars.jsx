@@ -432,7 +432,7 @@ export default function ValuePillars() {
             id="pillars-visual"
             style={{
               borderRadius: '1.5rem',
-              background: '#FFFFFF',
+              background: 'var(--color-white)',
               borderColor: isLocked ? 'var(--color-border)' : 'rgba(59, 63, 70, 0.15)',
               boxShadow: isLocked
                 ? '0 12px 30px rgba(217, 119, 6, 0.12)'

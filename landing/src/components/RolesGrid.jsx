@@ -132,7 +132,7 @@ export default function RolesGrid() {
             className="flex flex-col gap-3 border p-5 lg:p-6"
             style={{
               borderRadius: '2rem',
-              background: '#FFFFFF',
+              background: 'var(--color-white)',
               borderColor: 'var(--color-border)',
               boxShadow: 'var(--shadow-soft)',
             }}
@@ -227,7 +227,7 @@ export default function RolesGrid() {
             className="flex flex-col border p-6 lg:p-10 transition-all duration-500 ease-in-out"
             style={{
               borderRadius: '2rem',
-              background: '#FFFFFF',
+              background: 'var(--color-white)',
               borderColor: 'var(--color-border)',
               boxShadow: 'var(--shadow-soft)',
             }}

@@ -75,6 +75,9 @@
 }
 
 :root {
+  color-scheme: light !important;
+  --color-white: #FFFFFF;
+  --color-accent-dark: #78350F;
   /* Base surfaces & text */
   --color-bg: #FFFDF5;
   /* Primary page background: lighter warm cream-yellow */

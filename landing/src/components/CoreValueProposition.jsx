@@ -380,7 +380,7 @@ export default function CoreValueProposition() {
                               <div
                                 className="mt-3 inline-flex items-center gap-2 rounded-lg px-3 py-1.5"
                                 style={{
-                                  background: '#FFFFFF',
+                                  background: 'var(--color-white)',
                                   border: '1px solid rgba(59, 63, 70, 0.12)',
                                 }}
                               >
@@ -411,7 +411,7 @@ export default function CoreValueProposition() {
               <a
                 href="#agents"
                 className="group inline-flex w-fit items-center gap-2.5 rounded-full px-5 py-3 text-[13px] font-bold transition-transform duration-300 hover:-translate-y-0.5"
-                style={{ background: 'var(--color-ink)', color: '#FFFFFF' }}
+                style={{ background: 'var(--color-ink)', color: 'var(--color-white)' }}
               >
                 See the platform in action
                 <ArrowRight
@@ -427,7 +427,7 @@ export default function CoreValueProposition() {
               style={{
                 minHeight: '380px',
                 borderRadius: '1.5rem',
-                background: '#FFFFFF',
+                background: 'var(--color-white)',
                 boxShadow: '0 8px 30px rgba(30, 35, 40, 0.06)',
               }}
             >
@@ -463,7 +463,7 @@ export default function CoreValueProposition() {
                     </span>
                     <span
                       className="mt-0.5 text-[13px] font-bold whitespace-nowrap"
-                      style={{ color: '#FFFFFF' }}
+                      style={{ color: 'var(--color-white)' }}
                     >
                       {current.metric} - {current.metricLabel}
                     </span>

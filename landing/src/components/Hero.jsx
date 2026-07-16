@@ -82,7 +82,7 @@ export default function Hero() {
           </p>
         </ScrollReveal>
         <ScrollReveal preset="fadeUp" delay={0.3} duration={0.8}>
-          <PushButton onClick={() => window.location.hash = 'agents'} className="hero__cta">
+          <PushButton href="#agents" className="hero__cta">
             See our Platform
           </PushButton>
         </ScrollReveal>

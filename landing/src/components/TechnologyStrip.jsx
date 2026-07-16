@@ -333,7 +333,7 @@ export default function TechnologyStrip() {
                 <div
                   className="flex items-center justify-center gap-3 px-4 py-2 border shadow-[0_2px_8px_rgba(30,35,40,0.04)] mb-5"
                   style={{
-                    background: '#FFFFFF',
+                    background: 'var(--color-white)',
                     borderColor: 'var(--color-border)',
                     borderRadius: '0.875rem',
                     width: 'fit-content',
@@ -349,7 +349,7 @@ export default function TechnologyStrip() {
                     starts at the same y regardless of how the label wraps. */}
                 <p
                   className="flex items-center justify-center font-mono text-[10px] font-extrabold italic tracking-wider mb-2"
-                  style={{ color: '#78350f', minHeight: '26px', lineHeight: 1.4 }}
+                  style={{ color: 'var(--color-accent-dark)', minHeight: '26px', lineHeight: 1.4 }}
                 >
                   {tier.label}
                 </p>
@@ -392,7 +392,7 @@ export default function TechnologyStrip() {
                       style={{
                         fontWeight: 600,
                         color: 'var(--color-ink)',
-                        background: '#FFFFFF',
+                        background: 'var(--color-white)',
                         borderColor: 'var(--color-border)',
                         borderRadius: '0.75rem',
                         padding: '10px 12px',

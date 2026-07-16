@@ -242,7 +242,7 @@ export default function NavBar() {
                   />
                 </svg>
               </button>
-              <PushButton onClick={() => window.location.hash = 'book-a-demo'} className="nav__demo-push">
+              <PushButton href="#book-a-demo" className="nav__demo-push">
                 Book a Demo
               </PushButton>
               <button

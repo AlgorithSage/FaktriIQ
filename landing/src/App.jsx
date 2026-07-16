@@ -33,8 +33,31 @@ export default function App() {
 
     requestAnimationFrame(raf);
 
+    // Intercept hash link clicks for Lenis smooth scroll
+    const handleAnchorClick = (e) => {
+      const targetLink = e.target.closest('a');
+      if (!targetLink) return;
+      
+      const href = targetLink.getAttribute('href');
+      if (href && href.startsWith('#') && href.length > 1) {
+        const targetElement = document.querySelector(href);
+        if (targetElement) {
+          e.preventDefault();
+          lenis.scrollTo(targetElement, {
+            offset: -16, // offset to account for navbar height spacing
+            duration: 1.2,
+          });
+          // Update window location hash without browser jump
+          window.history.pushState(null, '', href);
+        }
+      }
+    };
+
+    document.addEventListener('click', handleAnchorClick);
+
     // Sync Lenis scroll triggers with document changes if needed
     return () => {
+      document.removeEventListener('click', handleAnchorClick);
       lenis.destroy();
     };
   }, []);
