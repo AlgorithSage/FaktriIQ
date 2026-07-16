@@ -273,7 +273,7 @@ export default function TwoModes() {
               </ul>
             </div>
 
-            <div className="flex items-center justify-center min-h-[360px] rounded-2xl p-4 border" style={{ background: 'var(--color-bg)', borderColor: 'var(--color-border)' }}>
+            <div className="flex items-center justify-center min-h-[360px] rounded-2xl p-4" style={{ background: 'var(--color-bg)' }}>
               <PhoneMock />
             </div>
           </article>
@@ -319,7 +319,7 @@ export default function TwoModes() {
               </ul>
             </div>
 
-            <div className="flex items-center justify-center min-h-[360px] rounded-2xl p-4 border" style={{ background: 'var(--color-bg)', borderColor: 'var(--color-border)' }}>
+            <div className="flex items-center justify-center min-h-[360px] rounded-2xl p-4" style={{ background: 'var(--color-bg)' }}>
               <div className="w-full max-w-[420px]">
                 <ConsoleMock />
               </div>

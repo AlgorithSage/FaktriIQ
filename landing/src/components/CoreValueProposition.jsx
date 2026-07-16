@@ -90,7 +90,7 @@ function IsometricStack({ active }) {
         strokeLinecap="round"
         opacity="0.25"
         style={{
-          transition: 'y1 0.55s cubic-bezier(0.16, 1, 0.3, 1), y2 0.55s cubic-bezier(0.16, 1, 0.3, 1)',
+          transition: 'y1 0.6s cubic-bezier(0.25, 1, 0.5, 1), y2 0.6s cubic-bezier(0.25, 1, 0.5, 1)',
         }}
       />
 
@@ -110,7 +110,7 @@ function IsometricStack({ active }) {
             key={i}
             style={{
               transform: on ? 'translateY(-12px)' : 'translateY(0)',
-              transition: 'transform 0.55s cubic-bezier(0.16, 1, 0.3, 1)',
+              transition: 'transform 0.6s cubic-bezier(0.25, 1, 0.5, 1)',
             }}
           >
             {/* Glow shadow */}
@@ -239,7 +239,7 @@ export default function CoreValueProposition() {
               </div>
 
               {/* Step Cards List */}
-              <div className="flex flex-col gap-3.5">
+              <div className="flex flex-col gap-3.5 lg:h-[435px]">
                 {STEPS.map((step, i) => {
                   const Icon = step.icon;
                   const on = active !== null && i === active;
@@ -324,62 +324,64 @@ export default function CoreValueProposition() {
 
                         {/* Expandable content */}
                         <div
-                          className="overflow-hidden transition-all duration-500"
+                          className="grid overflow-hidden"
                           style={{
-                            maxHeight: on ? '180px' : '0px',
+                            gridTemplateRows: on ? '1fr' : '0fr',
                             opacity: on ? 1 : 0,
-                            transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                            transition: 'grid-template-rows 0.5s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease-in-out',
                           }}
                         >
-                          <div className="mt-3.5 ml-[54px] border-t pt-3.5" style={{ borderColor: 'rgba(30, 35, 40, 0.08)' }}>
-                            {/* Headline */}
-                            <p
-                              className="mb-2.5 text-[14px] font-semibold"
-                              style={{ color: 'var(--color-ink)' }}
-                            >
-                              {step.headline}
-                            </p>
-
-                            {/* Bullets */}
-                            <ul className="flex flex-col gap-2">
-                              {step.bullets.map((bullet, idx) => (
-                                <li
-                                  key={idx}
-                                  className="flex items-start gap-2.5 text-[13.5px] leading-relaxed"
-                                  style={{ color: 'var(--color-slate)' }}
-                                >
-                                  <span
-                                    className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full"
-                                    style={{
-                                      background: 'var(--orange)',
-                                      boxShadow: '0 0 0 2px rgba(245, 158, 11, 0.15)',
-                                    }}
-                                  />
-                                  <span>{bullet}</span>
-                                </li>
-                              ))}
-                            </ul>
-
-                            {/* Metric badge */}
-                            <div
-                              className="mt-3 inline-flex items-center gap-2 rounded-lg px-3 py-1.5"
-                              style={{
-                                background: 'var(--lemon-soft)',
-                                border: '1px solid rgba(59, 63, 70, 0.12)',
-                              }}
-                            >
-                              <span
-                                className="text-[15px] font-bold"
+                          <div className="overflow-hidden">
+                            <div className="mt-3.5 ml-[54px] border-t pt-3.5" style={{ borderColor: 'rgba(30, 35, 40, 0.08)' }}>
+                              {/* Headline */}
+                              <p
+                                className="mb-2.5 text-[14px] font-semibold"
                                 style={{ color: 'var(--color-ink)' }}
                               >
-                                {step.metric}
-                              </span>
-                              <span
-                                className="text-[11px] font-medium"
-                                style={{ color: 'var(--color-muted)' }}
+                                {step.headline}
+                              </p>
+
+                              {/* Bullets */}
+                              <ul className="flex flex-col gap-2">
+                                {step.bullets.map((bullet, idx) => (
+                                  <li
+                                    key={idx}
+                                    className="flex items-start gap-2.5 text-[13.5px] leading-relaxed"
+                                    style={{ color: 'var(--color-slate)' }}
+                                  >
+                                    <span
+                                      className="mt-[7px] h-1.5 w-1.5 shrink-0 rounded-full"
+                                      style={{
+                                        background: 'var(--orange)',
+                                        boxShadow: '0 0 0 2px rgba(245, 158, 11, 0.15)',
+                                      }}
+                                    />
+                                    <span>{bullet}</span>
+                                  </li>
+                                ))}
+                              </ul>
+
+                              {/* Metric badge */}
+                              <div
+                                className="mt-3 inline-flex items-center gap-2 rounded-lg px-3 py-1.5"
+                                style={{
+                                  background: 'var(--lemon-soft)',
+                                  border: '1px solid rgba(59, 63, 70, 0.12)',
+                                }}
                               >
-                                {step.metricLabel}
-                              </span>
+                                <span
+                                  className="text-[15px] font-bold"
+                                  style={{ color: 'var(--color-ink)' }}
+                                >
+                                  {step.metric}
+                                </span>
+                                <span
+                                  className="text-[11px] font-medium"
+                                  style={{ color: 'var(--color-muted)' }}
+                                >
+                                  {step.metricLabel}
+                                </span>
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -404,14 +406,16 @@ export default function CoreValueProposition() {
               </a>
             </div>
 
-            {/* ─── Right Column: Isometric Stack in white panel ─── */}
+            {/* ─── Right Column: Isometric Stack in translucent glassmorphic panel ─── */}
             <div
               className="relative w-full min-w-0 overflow-hidden border"
               style={{
                 borderRadius: '1.5rem',
-                background: '#FFFFFF',
-                borderColor: 'var(--color-border)',
-                boxShadow: 'var(--shadow-soft)',
+                background: 'rgba(255, 255, 255, 0.4)',
+                backdropFilter: 'blur(16px)',
+                WebkitBackdropFilter: 'blur(16px)',
+                borderColor: 'rgba(30, 35, 40, 0.12)',
+                boxShadow: '0 8px 32px rgba(30, 35, 40, 0.03)',
                 minHeight: '380px',
               }}
             >
@@ -429,15 +433,16 @@ export default function CoreValueProposition() {
               {/* Floating info chip - only shown when a step is active */}
               {current && (
                 <div
-                  className="absolute flex flex-col border px-3.5 py-2.5 transition-all duration-500 ease-in-out"
+                  className="absolute flex flex-col border px-3.5 py-2.5"
                   style={{
                     right: 'clamp(0.4rem, 1.2vw, 0.85rem)',
                     top: active === 0 ? '74%' : active === 1 ? '46%' : '18%',
                     transform: 'translateY(-50%)',
                     borderRadius: '0.75rem',
-                    borderColor: 'var(--color-border)',
-                    boxShadow: '0 4px 16px rgba(30, 35, 40, 0.10)',
-                    background: 'var(--color-subtle)',
+                    borderColor: 'rgba(30, 35, 40, 0.12)',
+                    boxShadow: '0 6px 20px rgba(30, 35, 40, 0.06)',
+                    background: '#FFFFFF',
+                    transition: 'top 0.6s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.4s ease-in-out',
                   }}
                 >
                   <span
