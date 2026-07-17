@@ -2,19 +2,20 @@
 
 ## Current Position
 
-**Milestone:** Scroll Polish & Motion Polish
-**Phase:** 3 - Scroll-Triggered Motion Animations
+**Milestone:** Mobile App Branding & Feature Polish
+**Phase:** 4 - Branding, Fonts, & Real-Time Status
 **Status:** verified
-**Plan:** Reusable ScrollReveal wrapper integration across all landing page sections
+**Plan:** Launcher icon replacement, premium typography layout, and real-time connectivity status implementation
 
 ## Last Action
 
-Implemented smooth, professional scroll-reveal animations across all 8 landing page sections:
-1. Created `landing/src/components/ui/ScrollReveal.jsx` wrapper component utilizing `motion/react` (v12) and custom cubic-bezier curves (`[0.25, 0.1, 0.25, 1]`) for premium spring-like scroll entries.
-2. Wrapped overlines, headings, subheadings, cards, and phone/console mockups in `ScrollReveal` with staggered delay curves.
-3. Added tab-retrigger key-based scale animations to details panels in `AgentsSection` and `RolesGrid`.
-4. Verified that all changes compile successfully with `npm run build`.
+1. **Branding & Logo**: Substituted default icons in all Android `mipmap` resource directories with the square `FaktriIQ_sq.png` logo.
+2. **Anthropic Typography**: Re-styled all portal App Bars to display names in bold-italic **`GoogleFonts.newsreader`** format.
+3. **Real-time Status**: Integrated `connectivity_plus` to dynamically detect and swap the App Bar badge between green **`ONLINE`** and red **`OFFLINE`** indicators.
+4. **Gradle Compilation Fix**: Resolved compile SDK constraints by defining a safe `afterEvaluate` compile version override to Android SDK 35 inside root `build.gradle.kts`.
+5. **React NavBar Polish**: Replaced placeholder logo paths with the square `FaktriIQ_sq.png` logo across the landing page navbar, footer, and HTML favicon. Styled the logo wordmark to use the italicized `'AnthropicSerif'` font face. Added an `IntersectionObserver` to dynamically update the active navigation tab state as the page is scrolled.
+6. **Git Commit**: Staged, verified, and committed all improvements successfully.
 
 ## Next Steps
 
-1. Wait for further user instructions or refinements.
+1. Wait for further user instructions on refining dynamic features or other sections.
