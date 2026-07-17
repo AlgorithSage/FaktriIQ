@@ -185,6 +185,7 @@
 html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(var(--nav-height) + 16px);
+  overflow-y: overlay;
 }
 
 body {
@@ -196,6 +197,31 @@ body {
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* Custom premium scrollbar styling - theme-matched warm gold/amber */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+  background: transparent !important;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent !important; /* transparent track so the page content overlays underneath */
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(217, 119, 6, 0.35); /* theme gold/amber thumb */
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(217, 119, 6, 0.55); /* slightly darker amber on hover */
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
 }
 
 h1,
