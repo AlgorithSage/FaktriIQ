@@ -573,15 +573,19 @@ code {
 }
 
 .brand-text-style {
-  font-family: 'AnthropicSerifUpright', var(--font-body);
-  font-weight: 600;
-  font-style: normal;
-  display: inline-block;
-  letter-spacing: -0.01em;
+  font-family: 'AnthropicSerif', var(--font-body);
+  font-weight: 700;
+  font-style: italic;
+  display: inline-flex;
+  align-items: center;
+  letter-spacing: -0.02em;
 }
 
 .nav__logo-iq {
   color: var(--color-accent);
+  font-style: normal;
+  font-weight: 800;
+  margin-left: 1px;
 }
 
 .nav__menu {
