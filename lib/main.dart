@@ -203,6 +203,7 @@ class AnswerResult {
   final String source;
   final String section;
   final String confidence;
+  final String? fullSectionText;
 
   AnswerResult({
     required this.success,
@@ -211,6 +212,7 @@ class AnswerResult {
     this.source = "",
     this.section = "",
     this.confidence = "",
+    this.fullSectionText,
   });
 }
 
@@ -221,7 +223,8 @@ final Map<String, AnswerResult> mockSearchReplies = {
     answer: "Prior to entering chemical storage tank TK-101, the vessel must be isolated, drained, and ventilated. The oxygen level must be checked using a calibrated gas detector. Operators are required to wear a safety harness for entry.",
     source: "SOP-TC-042",
     section: "Confined Space Sec 3.1",
-    confidence: "High confidence"
+    confidence: "High confidence",
+    fullSectionText: "SOP-TC-042: CONFINED SPACE ENTRY & TANK CLEANING\n\n1. REGULATORY STANDARD\nThis procedure satisfies Section 36 of the Factories Act 1948 (Confined Space Entry) and OISD-STD-105.\n\n2. PRE-ENTRY PROTOCOLS\n- Vessel isolation: Blank or blind all inlet and outlet pipes.\n- Emptying & Draining: Remove all residues completely prior to entry.\n- Forced Ventilation: Keep mechanical exhaust running continuously.\n- Atmosphere Gas Test: Test oxygen level (19.5% - 23.5%), toxic vapors (H2S < 10 ppm), and explosive limits (< 1% LEL).\n\n3. PERSONAL SAFETY LIMITS\n- Harness: Double-lanyard safety harness anchored securely to a lifeline.\n- Standby Person: Station a certified operator outside the manhole to maintain visual contact and hold the lifeline.\n- Breathing Apparatus: Self-contained breathing apparatus (SCBA) required if toxic levels exceed permissible exposure limits.",
   ),
   "oisd rule for fire hydrant water pressure": AnswerResult(
     success: true,
@@ -229,7 +232,8 @@ final Map<String, AnswerResult> mockSearchReplies = {
     answer: "The static water pressure in the fire water network must be maintained at not less than 7 kg/cm2. This must be monitored during routine inspections of the fire hydrant loop.",
     source: "SOP-FF-005",
     section: "OISD-STD-189 Sec 7.3",
-    confidence: "High confidence"
+    confidence: "High confidence",
+    fullSectionText: "SOP-FF-005: FIRE HYDRANT NETWORK SYSTEM\n\n1. REGULATORY STANDARD\nConforms to OISD-STD-189 Section 7.3 (Fire Water System Design).\n\n2. SYSTEM OPERATING CRITERIA\n- Minimum Static Pressure: 7.0 kg/cm2 at the remotest point of the hydrant network.\n- Design Flow: Hydrant water ring must maintain continuous flow under full emergency load.\n- Pump Auto-Start: Jockey pumps start at 7.5 kg/cm2, main pumps start automatically at 7.0 kg/cm2.\n\n3. MAINTENANCE & DRILLS\n- Log header pressure hourly in the central control room.\n- Test run main diesel and motor-driven fire water pumps weekly.\n- Inspect all hydrant boxes, valves, and nozzles monthly for scaling, rust, and physical blockages.",
   ),
   "peso pressure vessel inspection frequency": AnswerResult(
     success: true,
@@ -237,7 +241,8 @@ final Map<String, AnswerResult> mockSearchReplies = {
     answer: "For pressure vessel PV-202, visual inspections must be conducted monthly, safety relief valve calibration must occur annually, and hydrostatic testing is mandated once every 2 years.",
     source: "SOP-PV-018",
     section: "PESO Rules 2016 Cl 18",
-    confidence: "High confidence"
+    confidence: "High confidence",
+    fullSectionText: "SOP-PV-018: PRESSURE VESSEL PV-202 TESTING FREQUENCY\n\n1. REGULATORY STANDARD\nConforms to Clause 18 of the Petroleum and Explosives Safety Organisation (PESO) Rules 2016.\n\n2. MANDATED INSPECTION SCHEDULE\n- Visual Inspection: Monthly check of external structure, mounts, and indicators.\n- Safety Relief Valve (SRV) Calibration: Conduct calibration and pop-testing annually. Tag with calibration dates.\n- Hydrostatic Test: Subject the vessel to a hydrotest at 1.5x design pressure once every 2 years.\n\n3. REPORTING REQUIREMENTS\n- Certification: Test reports must be signed by a PESO Competent Person.\n- Submissions: Submit structural integrity certificates online to the licensing authority within 14 days.",
   ),
   "oisd safety harness guideline": AnswerResult(
     success: true,
@@ -245,7 +250,8 @@ final Map<String, AnswerResult> mockSearchReplies = {
     answer: "Personnel entering chemical tanks like TK-101 must wear a safety harness anchored to a lifeline. This matches OISD-STD-105 requirements for confined entry.",
     source: "SOP-TC-042",
     section: "OISD-STD-105 Sec 4.2",
-    confidence: "High confidence"
+    confidence: "High confidence",
+    fullSectionText: "SOP-TC-042: FALL PROTECTION & HARNESS GUIDELINES\n\n1. REGULATORY STANDARD\nConforms to OISD-STD-105 Section 4.2 (Safety in Confined Spaces).\n\n2. EQUIPMENT DESIGN REQUIREMENTS\n- Harness Type: Full-body safety harness with dual back-anchoring D-rings.\n- Lanyards: Double-shock-absorbing lifelines with automatic snap hooks.\n- Lifeline Load: Minimum tensile strength of 22.2 kN static weight load.\n\n3. OPERATION PROCEDURE\n- Verify anchoring structural integrity prior to worker attachment.\n- Station one attendant outside the manhole to maintain constant tension on the safety lifeline.\n- Clean harness strap webs weekly of any acidic chemical residues or grease accumulation.",
   )
 };
 
@@ -283,26 +289,40 @@ class _FaktriAppState extends State<FaktriApp> {
       // LIGHT MODE TOKEN MAP
       theme: ThemeData(
         brightness: Brightness.light,
-        scaffoldBackgroundColor: const Color(0xFFFFFFFF), // paper
-        primaryColor: const Color(0xFFFEE715), // volt
-        cardColor: const Color(0xFFFFFFFF), // paper
-        dividerColor: const Color(0xFFE5E1D3), // line
+        scaffoldBackgroundColor: const Color(0xFFFFFDF5), // cream
+        primaryColor: const Color(0xFFFFD966), // soft gold
+        cardColor: const Color(0xFFF9F6EE), // warm ecru
+        dividerColor: const Color(0xFF3B3F46), // dark border/line
+        hintColor: const Color(0xFF6B7280),
+        colorScheme: const ColorScheme.light(
+          primary: Color(0xFFFFD966),
+          secondary: Color(0xFF1E2328), // ink
+          surface: Color(0xFFF9F6EE),
+          background: Color(0xFFFFFDF5),
+        ),
         textTheme: const TextTheme(
-          bodyLarge: TextStyle(fontFamily: 'Satoshi', fontWeight: FontWeight.w700, color: Color(0xFF101820)), // Satoshi-Bold
-          bodyMedium: TextStyle(fontFamily: 'Satoshi', fontWeight: FontWeight.w700, color: Color(0xFF101820)),
-          labelSmall: TextStyle(fontFamily: 'Satoshi', fontWeight: FontWeight.w500, color: Color(0xFF6B7280)), // Satoshi-Medium / mist
+          bodyLarge: TextStyle(fontFamily: 'Satoshi', fontWeight: FontWeight.w700, color: Color(0xFF1E2328)), // Satoshi-Bold / ink
+          bodyMedium: TextStyle(fontFamily: 'Satoshi', fontWeight: FontWeight.w500, color: Color(0xFF1E2328)), // Satoshi-Medium / ink
+          labelSmall: TextStyle(fontFamily: 'Satoshi', fontWeight: FontWeight.w500, color: Color(0xFF3B3F46)), // Satoshi-Medium / border/muted
         ),
       ),
       // DARK MODE TOKEN MAP
       darkTheme: ThemeData(
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: const Color(0xFF101820), // carbon becomes page background
-        primaryColor: const Color(0xFFFEE715), // volt remains hex
-        cardColor: const Color(0xFF1A242F), // carbon-adjacent dark surface
-        dividerColor: const Color(0xFF2D3748), // custom line-equivalent
+        scaffoldBackgroundColor: const Color(0xFF0B1120), // near-black
+        primaryColor: const Color(0xFFFACC15), // brightened gold
+        cardColor: const Color(0xFF111827), // dark surface
+        dividerColor: const Color(0xFF1F2937), // subtle dark border
+        hintColor: const Color(0xFF9CA3AF),
+        colorScheme: const ColorScheme.dark(
+          primary: Color(0xFFFACC15),
+          secondary: Color(0xFFE5E7EB),
+          surface: Color(0xFF111827),
+          background: Color(0xFF0B1120),
+        ),
         textTheme: const TextTheme(
-          bodyLarge: TextStyle(fontFamily: 'Satoshi', fontWeight: FontWeight.w700, color: Color(0xFFF3F4F6)), // paper-like off white
-          bodyMedium: TextStyle(fontFamily: 'Satoshi', fontWeight: FontWeight.w700, color: Color(0xFFF3F4F6)),
+          bodyLarge: TextStyle(fontFamily: 'Satoshi', fontWeight: FontWeight.w700, color: Color(0xFFE5E7EB)), // off-white
+          bodyMedium: TextStyle(fontFamily: 'Satoshi', fontWeight: FontWeight.w500, color: Color(0xFFE5E7EB)),
           labelSmall: TextStyle(fontFamily: 'Satoshi', fontWeight: FontWeight.w500, color: Color(0xFF9CA3AF)), // lightened mist
         ),
       ),
@@ -328,6 +348,83 @@ class _FaktriAppState extends State<FaktriApp> {
 // ==========================================
 // 1. PROFILE ENTRY GATEWAY
 // ==========================================
+// ==========================================
+// 1. REUSABLE TACTILE PUSH BUTTON (LIGHTWEIGHT)
+// ==========================================
+class TactilePushButton extends StatefulWidget {
+  final Widget child;
+  final VoidCallback onTap;
+  final Color? backgroundColor;
+  final Color? textColor;
+
+  const TactilePushButton({
+    super.key,
+    required this.child,
+    required this.onTap,
+    this.backgroundColor,
+    this.textColor,
+  });
+
+  @override
+  State<TactilePushButton> createState() => _TactilePushButtonState();
+}
+
+class _TactilePushButtonState extends State<TactilePushButton> {
+  bool _isPressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
+    final baseColor = widget.backgroundColor ?? (isDark ? const Color(0xFFFACC15) : const Color(0xFF1E2328));
+    final labelColor = widget.textColor ?? (isDark ? Colors.black : Colors.white);
+    final shadowColor = isDark ? const Color(0xFF020617) : const Color(0xFF0D1012);
+
+    return GestureDetector(
+      onTapDown: (_) => setState(() => _isPressed = true),
+      onTapUp: (_) {
+        setState(() => _isPressed = false);
+        widget.onTap();
+      },
+      onTapCancel: () => setState(() => _isPressed = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 60),
+        curve: Curves.easeOut,
+        transform: Matrix4.translationValues(0, _isPressed ? 4 : 0, 0),
+        padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 12),
+        decoration: BoxDecoration(
+          color: baseColor,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isDark ? const Color(0xFF1F2937) : const Color(0xFF3B3F46),
+            width: 1.5,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: shadowColor,
+              offset: Offset(0, _isPressed ? 1 : 5),
+              blurRadius: 0,
+            ),
+          ],
+        ),
+        child: DefaultTextStyle(
+          style: TextStyle(
+            fontFamily: 'Satoshi',
+            fontSize: 13,
+            fontWeight: FontWeight.bold,
+            color: labelColor,
+          ),
+          child: widget.child,
+        ),
+      ),
+    );
+  }
+}
+
+// ==========================================
+// 2. PROFILE ENTRY GATEWAY
+// ==========================================
 class FaktriEntryGateway extends StatelessWidget {
   final bool darkMode;
   final VoidCallback onToggleTheme;
@@ -337,10 +434,10 @@ class FaktriEntryGateway extends StatelessWidget {
     required this.darkMode,
     required this.onToggleTheme,
   });
+
   @override
   Widget build(BuildContext context) {
-    final voltColor = const Color(0xFFFEE715);
-    final carbonColor = const Color(0xFF101820);
+    final theme = Theme.of(context);
     final isDark = darkMode;
     final size = MediaQuery.of(context).size;
     final isLarge = size.width > 700;
@@ -351,8 +448,6 @@ class FaktriEntryGateway extends StatelessWidget {
       subtitle: "Knowledge Copilot",
       description: "Submit plain-language queries over plant operating manuals, safety SOPs, and check limits on the shop floor.",
       icon: Icons.engineering_outlined,
-      color: isDark ? const Color(0xFF1A242F) : Colors.white,
-      textColor: isDark ? Colors.white : carbonColor,
       onTap: () => Navigator.pushNamed(context, '/technician'),
     );
 
@@ -362,48 +457,47 @@ class FaktriEntryGateway extends StatelessWidget {
       subtitle: "Safety Officer Station",
       description: "Map standards, inspect audit gaps against statutory Acts (OISD, Factories Act, PESO), and ingest new operating documents.",
       icon: Icons.shield_outlined,
-      color: isDark ? const Color(0xFF1A242F) : Colors.white,
-      textColor: isDark ? Colors.white : carbonColor,
       onTap: () => Navigator.pushNamed(context, '/officer'),
     );
 
     return Scaffold(
-      backgroundColor: isDark ? carbonColor : voltColor,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: carbonColor,
+        backgroundColor: isDark ? const Color(0xFF111827) : const Color(0xFF1E2328),
         elevation: 0,
         leadingWidth: 50,
         leading: Container(
           margin: const EdgeInsets.all(10),
           decoration: BoxDecoration(
-            color: voltColor,
+            color: theme.primaryColor,
             borderRadius: BorderRadius.circular(8),
+            border: Border.all(color: isDark ? const Color(0xFF1F2937) : const Color(0xFF3B3F46), width: 1),
           ),
           child: const Center(
             child: Text(
               "F",
               style: TextStyle(
                 fontFamily: 'Striper',
-                fontSize: 18,
+                fontSize: 16,
                 fontWeight: FontWeight.bold,
-                color: Color(0xFF101820),
+                color: Color(0xFF1E2328),
               ),
             ),
           ),
         ),
-        title: const Text(
+        title: Text(
           "FaktriIQ Gateway",
           style: TextStyle(
             fontFamily: 'Striper',
-            fontSize: 20,
-            color: Color(0xFFFEE715),
+            fontSize: 18,
+            color: theme.primaryColor,
           ),
         ),
         actions: [
           IconButton(
             icon: Icon(
               isDark ? Icons.light_mode : Icons.dark_mode,
-              color: voltColor,
+              color: theme.primaryColor,
             ),
             onPressed: onToggleTheme,
           ),
@@ -418,11 +512,11 @@ class FaktriEntryGateway extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  "SELECT OPERATION PORTAL",
+                  "SELECT PORTAL",
                   style: GoogleFonts.poppins(
-                    fontSize: 28,
+                    fontSize: 26,
                     fontWeight: FontWeight.w900,
-                    color: isDark ? Colors.white : carbonColor,
+                    color: isDark ? Colors.white : const Color(0xFF1E2328),
                   ),
                 ),
                 const SizedBox(height: 8),
@@ -433,10 +527,10 @@ class FaktriEntryGateway extends StatelessWidget {
                     fontFamily: 'Satoshi',
                     fontSize: 13,
                     fontWeight: FontWeight.w500,
-                    color: isDark ? Colors.grey.shade400 : carbonColor.withOpacity(0.8),
+                    color: isDark ? Colors.grey.shade400 : const Color(0xFF3B3F46),
                   ),
                 ),
-                const SizedBox(height: 48),
+                const SizedBox(height: 40),
                 Flex(
                   direction: isLarge ? Axis.horizontal : Axis.vertical,
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -461,90 +555,90 @@ class FaktriEntryGateway extends StatelessWidget {
     required String subtitle,
     required String description,
     required IconData icon,
-    required Color color,
-    required Color textColor,
     required VoidCallback onTap,
   }) {
-    final voltColor = const Color(0xFFFEE715);
-    final carbonColor = const Color(0xFF101820);
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(24),
-      child: Container(
-        padding: const EdgeInsets.all(32),
-        decoration: BoxDecoration(
-          color: color,
-          borderRadius: BorderRadius.circular(24),
-          border: Border.all(color: carbonColor.withOpacity(0.1), width: 1),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
-            )
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: carbonColor,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: voltColor, size: 28),
+    return Container(
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: theme.cardColor,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: theme.dividerColor, width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: isDark ? Colors.black.withOpacity(0.3) : const Color(0x0C1E2328),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          )
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1E293B) : const Color(0xFFFFFDF5),
+              shape: BoxShape.circle,
+              border: Border.all(color: theme.dividerColor, width: 1.5),
             ),
-            const SizedBox(height: 24),
-            Text(
-              subtitle.toUpperCase(),
-              style: TextStyle(
-                fontFamily: 'Satoshi',
-                fontSize: 10,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey.shade500,
-                letterSpacing: 1.5,
-              ),
+            child: Icon(icon, color: theme.primaryColor, size: 28),
+          ),
+          const SizedBox(height: 20),
+          Text(
+            subtitle.toUpperCase(),
+            style: TextStyle(
+              fontFamily: 'Satoshi',
+              fontSize: 10,
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.grey.shade400 : const Color(0xFF6B7280),
+              letterSpacing: 1.5,
             ),
-            const SizedBox(height: 4),
-            Text(
-              title,
-              style: GoogleFonts.poppins(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: textColor,
-              ),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            title,
+            style: GoogleFonts.poppins(
+              fontSize: 19,
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : const Color(0xFF1E2328),
             ),
-            const SizedBox(height: 12),
-            Text(
-              description,
-              style: TextStyle(
-                fontFamily: 'Satoshi',
-                fontSize: 12,
-                color: textColor.withOpacity(0.7),
-                height: 1.4,
-              ),
+          ),
+          const SizedBox(height: 12),
+          Text(
+            description,
+            style: TextStyle(
+              fontFamily: 'Satoshi',
+              fontSize: 12.5,
+              color: isDark ? Colors.grey.shade300 : const Color(0xFF3B3F46),
+              height: 1.4,
             ),
-            const SizedBox(height: 24),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  "Enter Portal",
-                  style: GoogleFonts.poppins(
-                    fontSize: 13,
-                    fontWeight: FontWeight.bold,
-                    color: voltColor,
+          ),
+          const SizedBox(height: 28),
+          Align(
+            alignment: Alignment.centerRight,
+            child: TactilePushButton(
+              onTap: onTap,
+              backgroundColor: isDark ? theme.primaryColor : const Color(0xFF1E2328),
+              textColor: isDark ? Colors.black : Colors.white,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text("Enter Portal"),
+                  const SizedBox(width: 6),
+                  Icon(
+                    Icons.arrow_forward_rounded,
+                    color: isDark ? Colors.black : Colors.white,
+                    size: 14,
                   ),
-                ),
-                const SizedBox(width: 6),
-                Icon(Icons.arrow_forward_rounded, color: voltColor, size: 16),
-              ],
-            )
-          ],
-        ),
+                ],
+              ),
+            ),
+          )
+        ],
       ),
     );
   }
@@ -572,6 +666,7 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
   AnswerResult? _techResponse;
   bool _techSearching = false;
   String _techTab = "ask"; // "ask" | "history"
+  bool _showFullSection = false;
 
   final List<QueryLog> _techHistory = [
     QueryLog(
@@ -587,6 +682,7 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
     setState(() {
       _techSearching = true;
       _techResponse = null;
+      _showFullSection = false;
     });
 
     Future.delayed(const Duration(milliseconds: 1200), () {
@@ -636,29 +732,36 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      backgroundColor: isDark ? const Color(0xFF101820) : Colors.white,
+      backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
-        backgroundColor: const Color(0xFF101820),
+        backgroundColor: isDark ? const Color(0xFF111827) : const Color(0xFF1E2328),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: Color(0xFFFEE715)),
+          icon: Icon(Icons.arrow_back_rounded, color: theme.primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           "FaktriIQ Copilot",
-          style: TextStyle(fontFamily: 'Striper', fontSize: 16, color: Color(0xFFFEE715)),
+          style: TextStyle(fontFamily: 'Striper', fontSize: 16, color: theme.primaryColor),
         ),
         actions: [
-          const Center(
-            child: GFBadge(
-              text: "Offline-Ready",
-              color: Color(0xFF22C55E),
-              shape: GFBadgeShape.pills,
+          Center(
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+              decoration: BoxDecoration(
+                color: Colors.transparent,
+                border: Border.all(color: theme.primaryColor.withOpacity(0.5)),
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: Text(
+                "HYBRID MODE",
+                style: TextStyle(fontFamily: 'Satoshi', fontSize: 9, fontWeight: FontWeight.bold, color: theme.primaryColor),
+              ),
             ),
           ),
           IconButton(
             icon: Icon(
               widget.darkMode ? Icons.light_mode : Icons.dark_mode,
-              color: const Color(0xFFFEE715),
+              color: theme.primaryColor,
             ),
             onPressed: widget.onToggleTheme,
           ),
@@ -667,10 +770,10 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
             child: GFAvatar(
               shape: GFAvatarShape.circle,
               size: GFSize.SMALL,
-              backgroundColor: const Color(0xFFFEE715),
-              child: const Text(
+              backgroundColor: theme.primaryColor,
+              child: Text(
                 "OP",
-                style: TextStyle(fontFamily: 'Satoshi', fontWeight: FontWeight.bold, color: Color(0xFF101820)),
+                style: TextStyle(fontFamily: 'Satoshi', fontWeight: FontWeight.bold, color: isDark ? Colors.black : const Color(0xFF1E2328)),
               ),
             ),
           )
@@ -681,7 +784,12 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
           children: [
             // Tabs
             Container(
-              color: isDark ? const Color(0xFF1A242F) : Colors.grey.shade100,
+              decoration: BoxDecoration(
+                color: theme.cardColor,
+                border: Border(
+                  bottom: BorderSide(color: theme.dividerColor, width: 1.5),
+                ),
+              ),
               child: Row(
                 children: [
                   Expanded(
@@ -710,6 +818,7 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
 
   Widget _buildTechTabButton(String tab, String label) {
     final isActive = _techTab == tab;
+    final theme = Theme.of(context);
     return InkWell(
       onTap: () => setState(() => _techTab = tab),
       child: Container(
@@ -717,7 +826,7 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
         decoration: BoxDecoration(
           border: Border(
             bottom: BorderSide(
-              color: isActive ? const Color(0xFFFEE715) : Colors.transparent,
+              color: isActive ? theme.primaryColor : Colors.transparent,
               width: 3,
             ),
           ),
@@ -728,7 +837,9 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
             style: GoogleFonts.poppins(
               fontSize: 13,
               fontWeight: FontWeight.bold,
-              color: isActive ? (widget.darkMode ? Colors.white : const Color(0xFF101820)) : (widget.darkMode ? Colors.grey : Colors.grey.shade600),
+              color: isActive 
+                ? (widget.darkMode ? Colors.white : const Color(0xFF1E2328)) 
+                : (widget.darkMode ? Colors.grey : const Color(0xFF6B7280)),
             ),
           ),
         ),
@@ -753,8 +864,8 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
                         Container(
                           width: 56,
                           height: 56,
-                          decoration: const BoxDecoration(color: Color(0xFFFEE715), shape: BoxShape.circle),
-                          child: const Icon(Icons.search, color: Color(0xFF101820), size: 28),
+                          decoration: BoxDecoration(color: theme.primaryColor, shape: BoxShape.circle),
+                          child: Icon(Icons.search, color: isDark ? Colors.black : const Color(0xFF1E2328), size: 28),
                         ),
                         const SizedBox(height: 16),
                         const Text(
@@ -765,7 +876,7 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
                         const SizedBox(height: 8),
                         Text(
                           "Submit queries on purging, tank safety standards, OISD pressure parameters, or PESO rulebooks.",
-                          style: TextStyle(fontFamily: 'Satoshi', fontSize: 11, color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF4B5563), fontWeight: FontWeight.w500),
+                          style: TextStyle(fontFamily: 'Satoshi', fontSize: 11, color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280), fontWeight: FontWeight.w500),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -777,94 +888,249 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
                     padding: const EdgeInsets.only(top: 80.0),
                     child: Column(
                       children: [
-                        const CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFFEE715))),
+                        CircularProgressIndicator(valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor)),
                         const SizedBox(height: 16),
                         Text(
                           "Searching plant documents...",
-                          style: TextStyle(fontFamily: 'Satoshi', fontSize: 12, color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF4B5563), fontWeight: FontWeight.w500),
+                          style: TextStyle(fontFamily: 'Satoshi', fontSize: 12, color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF6B7280), fontWeight: FontWeight.w500),
                         )
                       ],
                     ),
                   )
                 ],
                 if (_techResponse != null && !_techSearching) ...[
-                  Container(
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF1A242F) : Colors.grey.shade100,
-                      borderRadius: BorderRadius.circular(16),
-                      border: Border.all(color: theme.dividerColor),
-                    ),
-                    child: Text(
-                      _techResponse!.answer,
-                      style: const TextStyle(fontFamily: 'Satoshi', fontSize: 13, height: 1.4),
+                  // 1. Question Bubble (Right Aligned)
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Container(
+                      padding: const EdgeInsets.all(12),
+                      margin: const EdgeInsets.only(bottom: 12, left: 32),
+                      decoration: BoxDecoration(
+                        color: isDark ? const Color(0xFF3F3517) : const Color(0xFFFFF4BD),
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          topRight: Radius.circular(12),
+                          bottomLeft: Radius.circular(12),
+                          bottomRight: Radius.circular(4),
+                        ),
+                        border: Border.all(color: theme.dividerColor, width: 1),
+                      ),
+                      child: Text(
+                        _techResponse!.query,
+                        style: TextStyle(
+                          fontFamily: 'Satoshi',
+                          fontSize: 13,
+                          color: isDark ? Colors.white : const Color(0xFF1E2328),
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 12),
-                  if (_techResponse!.success) ...[
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF101820),
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(color: theme.dividerColor),
+                  
+                  // 2. Answer Bubble (Left Aligned)
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: Container(
+                      padding: const EdgeInsets.all(14),
+                      margin: const EdgeInsets.only(bottom: 8, right: 24),
+                      decoration: BoxDecoration(
+                        color: theme.cardColor,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(12),
+                          topRight: Radius.circular(12),
+                          bottomLeft: Radius.circular(4),
+                          bottomRight: Radius.circular(12),
                         ),
-                        child: Text(
-                          "${_techResponse!.source} §${_techResponse!.section} | ${_techResponse!.confidence}",
-                          style: const TextStyle(
-                            fontFamily: 'Satoshi',
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                        border: Border.all(color: theme.dividerColor, width: 1.5),
+                        boxShadow: [
+                          BoxShadow(
+                            color: isDark ? Colors.black.withOpacity(0.3) : const Color(0x0C1E2328),
+                            blurRadius: 4,
+                            offset: const Offset(0, 2),
+                          )
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            _techResponse!.answer,
+                            style: TextStyle(
+                              fontFamily: 'Satoshi', 
+                              fontSize: 13, 
+                              height: 1.45,
+                              color: isDark ? Colors.white : const Color(0xFF1E2328),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          // Citation status chip
+                          Row(
+                            children: [
+                              Container(
+                                width: 8,
+                                height: 8,
+                                decoration: BoxDecoration(
+                                  color: _techResponse!.success ? const Color(0xFF2FA36B) : const Color(0xFFE0483D),
+                                  shape: BoxShape.circle,
+                                ),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                _techResponse!.success ? "OK" : "GAP",
+                                style: TextStyle(
+                                  fontFamily: 'Satoshi',
+                                  fontSize: 10,
+                                  fontWeight: FontWeight.bold,
+                                  color: _techResponse!.success ? const Color(0xFF2FA36B) : const Color(0xFFE0483D),
+                                ),
+                              ),
+                              if (_techResponse!.success) ...[
+                                Text(
+                                  " · ${_techResponse!.source} §${_techResponse!.section}",
+                                  style: TextStyle(
+                                    fontFamily: 'Courier',
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.bold,
+                                    color: isDark ? Colors.grey : const Color(0xFF6B7280),
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: isDark ? const Color(0xFF1F2937) : const Color(0xFFFFF4BD),
+                                    borderRadius: BorderRadius.circular(4),
+                                    border: Border.all(color: theme.dividerColor, width: 0.5),
+                                  ),
+                                  child: Text(
+                                    _techResponse!.confidence.toUpperCase(),
+                                    style: TextStyle(
+                                      fontFamily: 'Satoshi',
+                                      fontSize: 8,
+                                      fontWeight: FontWeight.w900,
+                                      color: isDark ? Colors.white70 : const Color(0xFF1E2328),
+                                    ),
+                                  ),
+                                ),
+                              ]
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+
+                  // 3. View Full Section Affordance
+                  if (_techResponse!.success && _techResponse!.fullSectionText != null) ...[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 4.0, bottom: 8.0),
+                      child: Align(
+                        alignment: Alignment.centerLeft,
+                        child: InkWell(
+                          onTap: () => setState(() => _showFullSection = !_showFullSection),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                _showFullSection ? "Hide Full Section" : "View Full Section",
+                                style: TextStyle(
+                                  fontFamily: 'Satoshi',
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDark ? theme.primaryColor : const Color(0xFF1E2328),
+                                  decoration: TextDecoration.underline,
+                                ),
+                              ),
+                              const SizedBox(width: 2),
+                              Icon(
+                                _showFullSection ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                                color: isDark ? theme.primaryColor : const Color(0xFF1E2328),
+                                size: 16,
+                              )
+                            ],
                           ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 12),
+                    if (_showFullSection) ...[
+                      Container(
+                        width: double.infinity,
+                        margin: const EdgeInsets.only(bottom: 12),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: isDark ? const Color(0xFF1F2937) : const Color(0xFFFFFDF5),
+                          borderRadius: BorderRadius.circular(8),
+                          border: Border.all(color: theme.dividerColor, width: 1),
+                        ),
+                        child: SingleChildScrollView(
+                          child: Text(
+                            _techResponse!.fullSectionText!,
+                            style: TextStyle(
+                              fontFamily: 'Courier',
+                              fontSize: 11,
+                              height: 1.35,
+                              color: isDark ? Colors.white70 : const Color(0xFF3B3F46),
+                            ),
+                          ),
+                        ),
+                      )
+                    ]
+                  ],
+
+                  // 4. Disclaimer or Safety Escalation Box
+                  const SizedBox(height: 4),
+                  if (_techResponse!.success) ...[
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE8453C).withOpacity(0.1),
-                        border: Border.all(color: const Color(0xFFE8453C).withOpacity(0.3)),
-                        borderRadius: BorderRadius.circular(16),
+                        color: const Color(0xFFE0913A).withOpacity(0.08),
+                        border: Border.all(color: const Color(0xFFE0913A).withOpacity(0.3)),
+                        borderRadius: BorderRadius.circular(8),
                       ),
                       child: const Text(
                         "Disclaimer: Confirm safety parameters against regulatory standards files before executing purging entry.",
-                        style: TextStyle(fontFamily: 'Satoshi', fontSize: 10, color: Color(0xFFE8453C), fontWeight: FontWeight.w500),
+                        style: TextStyle(fontFamily: 'Satoshi', fontSize: 10, color: Color(0xFFE0913A), fontWeight: FontWeight.w500),
                       ),
                     ),
                   ] else ...[
                     Container(
                       padding: const EdgeInsets.all(16),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFE8453C).withOpacity(0.15),
-                        border: Border.all(color: const Color(0xFFE8453C)),
-                        borderRadius: BorderRadius.circular(24),
+                        color: const Color(0xFFE0483D).withOpacity(0.1),
+                        border: Border.all(color: const Color(0xFFE0483D).withOpacity(0.3)),
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           const Row(
                             children: [
-                              Icon(Icons.error_outline, color: Color(0xFFE8453C), size: 18),
+                              Icon(Icons.error_outline, color: Color(0xFFE0483D), size: 18),
                               SizedBox(width: 8),
                               Text(
                                 "Safety Escalation Advised",
-                                style: TextStyle(fontFamily: 'Satoshi', fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFFE8453C)),
+                                style: TextStyle(fontFamily: 'Satoshi', fontSize: 12, fontWeight: FontWeight.bold, color: Color(0xFFE0483D)),
                               ),
                             ],
                           ),
                           const SizedBox(height: 8),
-                          GFButton(
-                            onPressed: () {
+                          Text(
+                            "No matching safety procedure found in the uploaded documents. Escalation to supervisor is recommended.",
+                            style: TextStyle(
+                              fontFamily: 'Satoshi',
+                              fontSize: 11.5,
+                              color: isDark ? Colors.grey.shade300 : const Color(0xFF3B3F46),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
+                          TactilePushButton(
+                            onTap: () {
                               GFToast.showToast("Safety coordinator notified of out-of-scope query.", context);
                               setState(() => _techResponse = null);
                             },
-                            text: "Notify Supervisor",
-                            color: const Color(0xFFE8453C),
-                            shape: GFButtonShape.pills,
+                            backgroundColor: const Color(0xFFE0483D),
+                            textColor: Colors.white,
+                            child: const Center(child: Text("Notify Supervisor")),
                           ),
                         ],
                       ),
@@ -875,13 +1141,14 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
             ),
           ),
         ),
+        const SizedBox(height: 8),
         Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             if (!_techSearching) ...[
               Text(
                 "Suggested Safety Queries:",
-                style: TextStyle(fontFamily: 'Satoshi', fontSize: 10, color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF4B5563), fontWeight: FontWeight.bold),
+                style: TextStyle(fontFamily: 'Satoshi', fontSize: 10, color: isDark ? const Color(0xFF9CA3AF) : const Color(0xFF3B3F46), fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 6),
               SingleChildScrollView(
@@ -897,12 +1164,18 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
                       child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
-                          color: isDark ? const Color(0xFF1A242F) : Colors.grey.shade100,
+                          color: isDark ? const Color(0xFF3F3517) : const Color(0xFFFFF4BD),
                           borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: theme.dividerColor, width: 1.5),
                         ),
                         child: Text(
                           s,
-                          style: const TextStyle(fontFamily: 'Satoshi', fontSize: 10, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            fontFamily: 'Satoshi', 
+                            fontSize: 10, 
+                            fontWeight: FontWeight.bold,
+                            color: isDark ? Colors.white : const Color(0xFF1E2328),
+                          ),
                         ),
                       ),
                     ),
@@ -917,9 +1190,9 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
                   child: Container(
                     height: 48,
                     decoration: BoxDecoration(
-                      color: isDark ? const Color(0xFF1A242F) : Colors.grey.shade50,
+                      color: theme.cardColor,
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: theme.dividerColor),
+                      border: Border.all(color: theme.dividerColor, width: 1.5),
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     alignment: Alignment.center,
@@ -942,9 +1215,17 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
                   child: Container(
                     width: 48,
                     height: 48,
-                    decoration: const BoxDecoration(color: Color(0xFF101820), shape: BoxShape.circle),
-                    child: const Center(
-                      child: Icon(Icons.send, color: Color(0xFFFEE715), size: 18),
+                    decoration: BoxDecoration(
+                      color: isDark ? theme.primaryColor : const Color(0xFF1E2328), 
+                      shape: BoxShape.circle,
+                      border: Border.all(color: theme.dividerColor, width: 1.5),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.send, 
+                        color: isDark ? Colors.black : theme.primaryColor, 
+                        size: 16,
+                      ),
                     ),
                   ),
                 ),
@@ -974,9 +1255,9 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
               return Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: isDark ? const Color(0xFF1A242F) : Colors.grey.shade50,
+                  color: theme.cardColor,
                   borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: theme.dividerColor),
+                  border: Border.all(color: theme.dividerColor, width: 1.5),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -984,14 +1265,14 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(item.timestamp, style: TextStyle(fontFamily: 'Satoshi', fontSize: 10, color: isDark ? Colors.grey : Colors.grey.shade700)),
-                        Text(item.doc, style: TextStyle(fontFamily: 'Satoshi', fontSize: 10, color: isDark ? Colors.grey : Colors.grey.shade700, fontWeight: FontWeight.bold)),
+                        Text(item.timestamp, style: TextStyle(fontFamily: 'Satoshi', fontSize: 10, color: isDark ? Colors.grey : const Color(0xFF6B7280))),
+                        Text(item.doc, style: TextStyle(fontFamily: 'Satoshi', fontSize: 10, color: isDark ? Colors.grey : const Color(0xFF6B7280), fontWeight: FontWeight.bold)),
                       ],
                     ),
                     const SizedBox(height: 6),
-                    Text("Q: \"${item.query}\"", style: const TextStyle(fontFamily: 'Satoshi', fontSize: 11, fontWeight: FontWeight.bold)),
+                    Text("Q: \"${item.query}\"", style: TextStyle(fontFamily: 'Satoshi', fontSize: 11, fontWeight: FontWeight.bold, color: isDark ? Colors.white : const Color(0xFF1E2328))),
                     const SizedBox(height: 4),
-                    Text("A: ${item.answer}", style: const TextStyle(fontFamily: 'Satoshi', fontSize: 12, height: 1.3)),
+                    Text("A: ${item.answer}", style: TextStyle(fontFamily: 'Satoshi', fontSize: 12, height: 1.3, color: isDark ? Colors.white70 : const Color(0xFF3B3F46))),
                   ],
                 ),
               );
