@@ -1785,23 +1785,28 @@ code {
 /* One shared window; sections are separated by open gap/spacing rather
    than internal divider lines. */
 .agents__panel {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 32px;
   border-radius: 16px;
   border: 1.5px solid var(--color-border);
   background: var(--color-surface);
   padding: 28px 24px;
   box-shadow: var(--shadow-soft);
-  animation: agents-fadeSlide 0.4s ease-out;
   color: var(--color-ink);
+}
+
+.agents__panel-inner {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 32px;
+  width: 100%;
 }
 
 @media (min-width: 1024px) {
   .agents__panel {
+    padding: 40px;
+  }
+  .agents__panel-inner {
     grid-template-columns: 0.85fr 1.15fr 0.9fr;
     gap: 40px;
-    padding: 40px;
   }
 }
 

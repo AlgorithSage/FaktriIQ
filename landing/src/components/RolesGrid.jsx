@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { ShieldCheck, Smartphone, Gauge, Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { motion } from 'motion/react';
 import ScrollReveal from './ui/ScrollReveal.jsx';
 
 const ACCENTS = {
@@ -221,10 +222,9 @@ export default function RolesGrid() {
 
           {/* Right Side: Active role details card */}
           <ScrollReveal
-            key={activeIdx}
             preset="scaleUp"
             delay={0.15}
-            className="flex flex-col border p-6 lg:p-10 transition-all duration-500 ease-in-out"
+            className="flex flex-col border p-6 lg:p-10"
             style={{
               borderRadius: '2rem',
               background: 'var(--color-white)',
@@ -232,68 +232,76 @@ export default function RolesGrid() {
               boxShadow: 'var(--shadow-soft)',
             }}
           >
-            {/* Header info */}
-            <div className="flex flex-wrap items-start justify-between gap-4 border-b pb-6" style={{ borderColor: 'rgba(30, 35, 40, 0.08)' }}>
-              <div className="flex items-center gap-4">
-                <span
-                  className="flex h-[52px] w-[52px] items-center justify-center rounded-[14px] shadow-sm"
-                  style={{ background: accent.tile }}
-                >
-                  <ActiveIcon className="h-6 w-6" strokeWidth={1.7} style={{ color: 'var(--color-ink)' }} />
-                </span>
-                <div>
-                  <h3 className="text-xl font-bold leading-tight" style={{ color: 'var(--color-ink)' }}>
-                    {activeRole.title}
-                  </h3>
+            <motion.div
+              key={activeIdx}
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35, ease: [0.25, 1, 0.5, 1] }}
+              className="flex flex-col flex-1"
+            >
+              {/* Header info */}
+              <div className="flex flex-wrap items-start justify-between gap-4 border-b pb-6" style={{ borderColor: 'rgba(30, 35, 40, 0.08)' }}>
+                <div className="flex items-center gap-4">
                   <span
-                    className="mt-1 inline-flex items-center rounded-full px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.08em]"
-                    style={{ background: accent.soft, color: 'var(--color-slate)' }}
+                    className="flex h-[52px] w-[52px] items-center justify-center rounded-[14px] shadow-sm"
+                    style={{ background: accent.tile }}
                   >
-                    {activeRole.deployment}
+                    <ActiveIcon className="h-6 w-6" strokeWidth={1.7} style={{ color: 'var(--color-ink)' }} />
+                  </span>
+                  <div>
+                    <h3 className="text-xl font-bold leading-tight" style={{ color: 'var(--color-ink)' }}>
+                      {activeRole.title}
+                    </h3>
+                    <span
+                      className="mt-1 inline-flex items-center rounded-full px-2.5 py-0.5 font-mono text-[10px] font-bold uppercase tracking-[0.08em]"
+                      style={{ background: accent.soft, color: 'var(--color-slate)' }}
+                    >
+                      {activeRole.deployment}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Digital metric badge */}
+                <div className="flex flex-col text-right">
+                  <span className="font-mono text-xl font-extrabold" style={{ color: 'var(--orange)' }}>
+                    {activeRole.metric}
+                  </span>
+                  <span className="text-[10px] font-medium uppercase tracking-wider" style={{ color: 'var(--color-muted)' }}>
+                    {activeRole.metricLabel}
                   </span>
                 </div>
               </div>
 
-              {/* Digital metric badge */}
-              <div className="flex flex-col text-right">
-                <span className="font-mono text-xl font-extrabold" style={{ color: 'var(--orange)' }}>
-                  {activeRole.metric}
-                </span>
-                <span className="text-[10px] font-medium uppercase tracking-wider" style={{ color: 'var(--color-muted)' }}>
-                  {activeRole.metricLabel}
-                </span>
+              {/* Description */}
+              <p className="mt-6 text-[15px] leading-relaxed" style={{ color: 'var(--color-slate)' }}>
+                {activeRole.description}
+              </p>
+
+              {/* Checklist */}
+              <div className="mt-6">
+                <h4 className="font-mono text-[10px] font-bold uppercase tracking-wider mb-3" style={{ color: 'var(--color-muted)' }}>
+                  Compliance &amp; Execution Parity
+                </h4>
+                <ul className="flex flex-col gap-3">
+                  {activeRole.checklist.map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-3 text-[14.5px] leading-relaxed" style={{ color: 'var(--color-ink)' }}>
+                      <CheckCircle2 className="h-5 w-5 shrink-0 mt-0.5" strokeWidth={1.8} style={{ color: 'var(--color-verify)' }} />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-            </div>
 
-            {/* Description */}
-            <p className="mt-6 text-[15px] leading-relaxed" style={{ color: 'var(--color-slate)' }}>
-              {activeRole.description}
-            </p>
-
-            {/* Checklist */}
-            <div className="mt-6">
-              <h4 className="font-mono text-[10px] font-bold uppercase tracking-wider mb-3" style={{ color: 'var(--color-muted)' }}>
-                Compliance &amp; Execution Parity
-              </h4>
-              <ul className="flex flex-col gap-3">
-                {activeRole.checklist.map((item, idx) => (
-                  <li key={idx} className="flex items-start gap-3 text-[14.5px] leading-relaxed" style={{ color: 'var(--color-ink)' }}>
-                    <CheckCircle2 className="h-5 w-5 shrink-0 mt-0.5" strokeWidth={1.8} style={{ color: 'var(--color-verify)' }} />
-                    <span>{item}</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-
-            {/* Call to action */}
-            <a
-              href="#book-a-demo"
-              className="mt-auto pt-8 flex w-full items-center justify-center gap-2 border-t text-[12px] font-bold uppercase tracking-widest transition-colors hover:text-[var(--orange)]"
-              style={{ borderColor: 'rgba(30, 35, 40, 0.08)', color: 'var(--color-ink)' }}
-            >
-              Configure Deployment
-              <ArrowRight className="h-4 w-4" strokeWidth={2} />
-            </a>
+              {/* Call to action */}
+              <a
+                href="#book-a-demo"
+                className="mt-auto pt-8 flex w-full items-center justify-center gap-2 border-t text-[12px] font-bold uppercase tracking-widest transition-colors hover:text-[var(--orange)]"
+                style={{ borderColor: 'rgba(30, 35, 40, 0.08)', color: 'var(--color-ink)' }}
+              >
+                Configure Deployment
+                <ArrowRight className="h-4 w-4" strokeWidth={2} />
+              </a>
+            </motion.div>
           </ScrollReveal>
 
         </div>

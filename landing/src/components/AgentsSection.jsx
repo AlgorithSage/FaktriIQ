@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { motion } from 'motion/react';
 import ScrollReveal from './ui/ScrollReveal.jsx';
 import {
   ShieldCheck,
@@ -232,122 +233,130 @@ export default function AgentsSection() {
         </div>
 
         {/* ── Zone 3: Full-width 3-column detail panel ── */}
-        <ScrollReveal preset="scaleUp" delay={0.2} className="agents__panel" key={agent.id}>
-          {/* Left: Profile */}
-          <div className="agents__profile">
-            <span
-              className="agents__profile-icon"
-              style={{ background: accent.soft, borderColor: 'var(--color-border)' }}
-            >
-              <PanelIcon
-                size={30}
-                strokeWidth={1.6}
-                style={{ color: 'var(--color-ink)' }}
-              />
-            </span>
-            <h3 className="agents__profile-name">{agent.name}</h3>
-            <p className="agents__profile-tagline">{agent.tagline}</p>
-            <p className="agents__profile-summary">{agent.summary}</p>
+        <ScrollReveal preset="scaleUp" delay={0.2} className="agents__panel">
+          <motion.div
+            key={agent.id}
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35, ease: [0.25, 1, 0.5, 1] }}
+            className="agents__panel-inner"
+          >
+            {/* Left: Profile */}
+            <div className="agents__profile">
+              <span
+                className="agents__profile-icon"
+                style={{ background: accent.soft, borderColor: 'var(--color-border)' }}
+              >
+                <PanelIcon
+                  size={30}
+                  strokeWidth={1.6}
+                  style={{ color: 'var(--color-ink)' }}
+                />
+              </span>
+              <h3 className="agents__profile-name">{agent.name}</h3>
+              <p className="agents__profile-tagline">{agent.tagline}</p>
+              <p className="agents__profile-summary">{agent.summary}</p>
 
-            <div className="agents__engines">
-              <p className="agents__engines-label">Runs on</p>
-              <div className="agents__engines-list">
-                {agent.engines.map((engine) => (
-                  <code key={engine} className="agents__engine-badge">
-                    {engine}
-                  </code>
-                ))}
+              <div className="agents__engines">
+                <p className="agents__engines-label">Runs on</p>
+                <div className="agents__engines-list">
+                  {agent.engines.map((engine) => (
+                    <code key={engine} className="agents__engine-badge">
+                      {engine}
+                    </code>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Centre: Capabilities 2×2 */}
-          <div className="agents__capabilities">
-            {agent.capabilities.map((cap) => {
-              const CapIcon = cap.icon;
-              return (
-                <div
-                  key={cap.title}
-                  className="agents__cap-card"
-                  style={{ '--cap-accent': accent.mid }}
-                >
-                  <span
-                    className="agents__cap-icon"
-                    style={{ background: accent.soft }}
+            {/* Centre: Capabilities 2×2 */}
+            <div className="agents__capabilities">
+              {agent.capabilities.map((cap) => {
+                const CapIcon = cap.icon;
+                return (
+                  <div
+                    key={cap.title}
+                    className="agents__cap-card"
+                    style={{ '--cap-accent': accent.mid }}
                   >
-                    <CapIcon
-                      size={18}
-                      strokeWidth={1.7}
-                      style={{ color: 'var(--color-ink)' }}
-                    />
-                  </span>
-                  <div>
-                    <p className="agents__cap-title">{cap.title}</p>
-                    <p className="agents__cap-text">{cap.text}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-
-          {/* Right: Demo + Stats */}
-          <div className="agents__demo">
-            {/* Chat window (mobile mockup) */}
-            <div className="agents__phone" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px 0' }}>
-              <div className="agents__phone-frame" style={{ width: '100%', maxWidth: '258px', borderRadius: '30px', border: '1px solid var(--color-slate)', background: 'var(--color-slate)', padding: '6px', boxShadow: 'var(--shadow-soft)' }}>
-                <div className="agents__phone-screen" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: '25px', background: 'var(--color-subtle)' }}>
-                  <div className="agents__phone-statusbar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 8px' }}>
-                    <span className="agents__phone-time" style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-muted)' }}>9:41</span>
-                    <span className="agents__phone-agent" style={{ display: 'flex', alignItems: 'center', gap: '5px', fontFamily: 'var(--font-mono)', fontSize: '9px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--color-ink)' }}>
-                      <span
-                        className="agents__phone-dot"
-                        style={{ width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0, background: accent.mid }}
-                      />
-                      {agent.name}
-                    </span>
-                  </div>
-                  <div className="agents__phone-body" style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '4px 14px 12px' }}>
-                    <div
-                      className="agents__chat-q"
-                      style={{ alignSelf: 'flex-end', maxWidth: '85%', padding: '10px 14px', borderRadius: '12px 12px 4px 12px', fontSize: '12.5px', fontWeight: 500, lineHeight: 1.45, color: 'var(--color-ink)', background: accent.soft }}
-                    >
-                      {agent.example.q}
-                    </div>
-                    <div className="agents__chat-a" style={{ alignSelf: 'flex-start', maxWidth: '92%', padding: '10px 14px', borderRadius: '12px 12px 12px 4px', background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(30, 35, 40, 0.06)', fontSize: '12.5px', lineHeight: 1.5, color: 'var(--color-slate)' }}>{agent.example.a}</div>
-                    <StatusChip
-                      status={agent.example.status}
-                      cite={agent.example.cite}
-                    />
-                  </div>
-                  <div className="agents__phone-inputbar" style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '0 14px 14px', padding: '7px 7px 7px 14px', borderRadius: '9999px', background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(30, 35, 40, 0.06)' }}>
-                    <span className="agents__phone-input-text" style={{ fontSize: '11px', color: 'var(--color-muted)' }}>
-                      Ask about a procedure…
-                    </span>
                     <span
-                      className="agents__phone-send"
-                      style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '26px', height: '26px', borderRadius: '50%', flexShrink: 0, background: accent.mid }}
+                      className="agents__cap-icon"
+                      style={{ background: accent.soft }}
                     >
-                      <Send
-                        size={13}
-                        strokeWidth={2}
+                      <CapIcon
+                        size={18}
+                        strokeWidth={1.7}
                         style={{ color: 'var(--color-ink)' }}
                       />
                     </span>
+                    <div>
+                      <p className="agents__cap-title">{cap.title}</p>
+                      <p className="agents__cap-text">{cap.text}</p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Right: Demo + Stats */}
+            <div className="agents__demo">
+              {/* Chat window (mobile mockup) */}
+              <div className="agents__phone" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px 0' }}>
+                <div className="agents__phone-frame" style={{ width: '100%', maxWidth: '258px', borderRadius: '30px', border: '1px solid var(--color-slate)', background: 'var(--color-slate)', padding: '6px', boxShadow: 'var(--shadow-soft)' }}>
+                  <div className="agents__phone-screen" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: '25px', background: 'var(--color-subtle)' }}>
+                    <div className="agents__phone-statusbar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 8px' }}>
+                      <span className="agents__phone-time" style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-muted)' }}>9:41</span>
+                      <span className="agents__phone-agent" style={{ display: 'flex', alignItems: 'center', gap: '5px', fontFamily: 'var(--font-mono)', fontSize: '9px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--color-ink)' }}>
+                        <span
+                          className="agents__phone-dot"
+                          style={{ width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0, background: accent.mid }}
+                        />
+                        {agent.name}
+                      </span>
+                    </div>
+                    <div className="agents__phone-body" style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '4px 14px 12px' }}>
+                      <div
+                        className="agents__chat-q"
+                        style={{ alignSelf: 'flex-end', maxWidth: '85%', padding: '10px 14px', borderRadius: '12px 12px 4px 12px', fontSize: '12.5px', fontWeight: 500, lineHeight: 1.45, color: 'var(--color-ink)', background: accent.soft }}
+                      >
+                        {agent.example.q}
+                      </div>
+                      <div className="agents__chat-a" style={{ alignSelf: 'flex-start', maxWidth: '92%', padding: '10px 14px', borderRadius: '12px 12px 12px 4px', background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(30, 35, 40, 0.06)', fontSize: '12.5px', lineHeight: 1.5, color: 'var(--color-slate)' }}>{agent.example.a}</div>
+                      <StatusChip
+                        status={agent.example.status}
+                        cite={agent.example.cite}
+                      />
+                    </div>
+                    <div className="agents__phone-inputbar" style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '0 14px 14px', padding: '7px 7px 7px 14px', borderRadius: '9999px', background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(30, 35, 40, 0.06)' }}>
+                      <span className="agents__phone-input-text" style={{ fontSize: '11px', color: 'var(--color-muted)' }}>
+                        Ask about a procedure…
+                      </span>
+                      <span
+                        className="agents__phone-send"
+                        style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '26px', height: '26px', borderRadius: '50%', flexShrink: 0, background: accent.mid }}
+                      >
+                        <Send
+                          size={13}
+                          strokeWidth={2}
+                          style={{ color: 'var(--color-ink)' }}
+                        />
+                      </span>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Stats row */}
-            <div className="agents__stats">
-              {agent.stats.map((stat) => (
-                <div key={stat.label} className="agents__stat">
-                  <p className="agents__stat-value">{stat.value}</p>
-                  <p className="agents__stat-label">{stat.label}</p>
-                </div>
-              ))}
+              {/* Stats row */}
+              <div className="agents__stats">
+                {agent.stats.map((stat) => (
+                  <div key={stat.label} className="agents__stat">
+                    <p className="agents__stat-value">{stat.value}</p>
+                    <p className="agents__stat-label">{stat.label}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          </motion.div>
         </ScrollReveal>
       </div>
     </section>
