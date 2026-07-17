@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'dart:async';
+import 'package:connectivity_plus/connectivity_plus.dart';
 
 // ==========================================
 // MODELS & DATA DEFINITIONS
@@ -328,11 +330,7 @@ class _FaktriAppState extends State<FaktriApp> {
       ),
       initialRoute: '/',
       routes: {
-        '/': (context) => FaktriEntryGateway(
-              darkMode: _darkMode,
-              onToggleTheme: () => setState(() => _darkMode = !_darkMode),
-            ),
-        '/technician': (context) => TechnicianAppHome(
+        '/': (context) => TechnicianAppHome(
               darkMode: _darkMode,
               onToggleTheme: () => setState(() => _darkMode = !_darkMode),
             ),
@@ -468,28 +466,20 @@ class FaktriEntryGateway extends StatelessWidget {
         leadingWidth: 50,
         leading: Container(
           margin: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: theme.primaryColor,
-            borderRadius: BorderRadius.circular(8),
-            border: Border.all(color: isDark ? const Color(0xFF1F2937) : const Color(0xFF3B3F46), width: 1),
-          ),
-          child: const Center(
-            child: Text(
-              "F",
-              style: TextStyle(
-                fontFamily: 'Striper',
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Color(0xFF1E2328),
-              ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(6),
+            child: Image.asset(
+              "assets/images/FaktriIQ_sq.png",
+              fit: BoxFit.cover,
             ),
           ),
         ),
         title: Text(
           "FaktriIQ Gateway",
-          style: TextStyle(
-            fontFamily: 'Striper',
+          style: GoogleFonts.newsreader(
             fontSize: 18,
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.italic,
             color: theme.primaryColor,
           ),
         ),
@@ -667,6 +657,28 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
   bool _techSearching = false;
   String _techTab = "ask"; // "ask" | "history"
   bool _showFullSection = false;
+  late StreamSubscription<ConnectivityResult> _connectivitySubscription;
+  bool _isOnline = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _initConnectivity();
+    _connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
+      setState(() {
+        _isOnline = (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile);
+      });
+    });
+  }
+
+  Future<void> _initConnectivity() async {
+    try {
+      final result = await Connectivity().checkConnectivity();
+      setState(() {
+        _isOnline = (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile);
+      });
+    } catch (_) {}
+  }
 
   final List<QueryLog> _techHistory = [
     QueryLog(
@@ -723,6 +735,7 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
   @override
   void dispose() {
     _techSearchController.dispose();
+    _connectivitySubscription.cancel();
     super.dispose();
   }
 
@@ -735,13 +748,29 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: isDark ? const Color(0xFF111827) : const Color(0xFF1E2328),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back_rounded, color: theme.primaryColor),
-          onPressed: () => Navigator.pop(context),
-        ),
+        leading: Navigator.canPop(context)
+            ? IconButton(
+                icon: Icon(Icons.arrow_back_rounded, color: theme.primaryColor),
+                onPressed: () => Navigator.pop(context),
+              )
+            : Container(
+                margin: const EdgeInsets.all(10),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(6),
+                  child: Image.asset(
+                    "assets/images/FaktriIQ_sq.png",
+                    fit: BoxFit.cover,
+                  ),
+                ),
+              ),
         title: Text(
           "FaktriIQ Copilot",
-          style: TextStyle(fontFamily: 'Striper', fontSize: 16, color: theme.primaryColor),
+          style: GoogleFonts.newsreader(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.italic,
+            color: theme.primaryColor,
+          ),
         ),
         actions: [
           Center(
@@ -749,12 +778,21 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               decoration: BoxDecoration(
                 color: Colors.transparent,
-                border: Border.all(color: theme.primaryColor.withOpacity(0.5)),
+                border: Border.all(
+                  color: _isOnline 
+                      ? const Color(0xFF2FA36B).withOpacity(0.6) 
+                      : const Color(0xFFE0483D).withOpacity(0.6),
+                ),
                 borderRadius: BorderRadius.circular(4),
               ),
               child: Text(
-                "HYBRID MODE",
-                style: TextStyle(fontFamily: 'Satoshi', fontSize: 9, fontWeight: FontWeight.bold, color: theme.primaryColor),
+                _isOnline ? "ONLINE" : "OFFLINE",
+                style: TextStyle(
+                  fontFamily: 'Satoshi', 
+                  fontSize: 9, 
+                  fontWeight: FontWeight.bold, 
+                  color: _isOnline ? const Color(0xFF2FA36B) : const Color(0xFFE0483D),
+                ),
               ),
             ),
           ),
@@ -964,7 +1002,10 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
                           ),
                           const SizedBox(height: 12),
                           // Citation status chip
-                          Row(
+                          Wrap(
+                            crossAxisAlignment: WrapCrossAlignment.center,
+                            spacing: 6,
+                            runSpacing: 4,
                             children: [
                               Container(
                                 width: 8,
@@ -974,7 +1015,6 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
                                   shape: BoxShape.circle,
                                 ),
                               ),
-                              const SizedBox(width: 6),
                               Text(
                                 _techResponse!.success ? "OK" : "GAP",
                                 style: TextStyle(
@@ -994,7 +1034,6 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
                                     color: isDark ? Colors.grey : const Color(0xFF6B7280),
                                   ),
                                 ),
-                                const SizedBox(width: 8),
                                 Container(
                                   padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                                   decoration: BoxDecoration(
@@ -1345,14 +1384,19 @@ class _OfficerAppHomeState extends State<OfficerAppHome> {
     return Scaffold(
       backgroundColor: isDark ? const Color(0xFF101820) : const Color(0xFFFFFFFF),
       appBar: AppBar(
-        backgroundColor: const Color(0xFF101820),
+        backgroundColor: isDark ? const Color(0xFF111827) : const Color(0xFF1E2328),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded, color: Color(0xFFFEE715)),
+          icon: Icon(Icons.arrow_back_rounded, color: theme.primaryColor),
           onPressed: () => Navigator.pop(context),
         ),
-        title: const Text(
+        title: Text(
           "FaktriIQ Compliance",
-          style: TextStyle(fontFamily: 'Striper', fontSize: 16, color: Color(0xFFFEE715)),
+          style: GoogleFonts.newsreader(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            fontStyle: FontStyle.italic,
+            color: theme.primaryColor,
+          ),
         ),
         actions: [
           // Tab Toggle Segment inside AppBar actions
