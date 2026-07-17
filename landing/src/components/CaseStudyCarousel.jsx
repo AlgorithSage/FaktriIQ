@@ -14,11 +14,11 @@ const CASE_STUDIES = [
   },
   {
     partnerLogo: 'FIELD OPS',
-    heading: 'Field Technicians resolve procedure questions on the floor, fully offline',
+    heading: 'Field Technicians resolve procedure questions on the floor with hybrid connectivity',
     description:
-      'On-device Gemma 4 E2B running on llama.cpp with Vulkan acceleration gives technicians cited answers from plant manuals with zero connectivity - every response grounded in the exact SOP page it came from.',
+      'Hybrid cloud API access backed by on-device Gemma 4 E2B running on llama.cpp with Vulkan acceleration gives technicians cited answers from plant manuals with or without network connectivity - every response grounded in the exact SOP page.',
     metrics: [
-      { value: '100%', label: 'offline availability on plant-floor devices' },
+      { value: '100%', label: 'hybrid online + offline availability on floor devices' },
       { value: '48px', label: 'minimum touch targets, glove-friendly by design' },
       { value: '2', label: 'source citations attached to every answer' },
     ],

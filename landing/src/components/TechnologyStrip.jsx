@@ -2,7 +2,7 @@ import ScrollReveal from './ui/ScrollReveal.jsx';
 
 const TIERS = [
   {
-    label: 'Offline Mobile & Field Deployment',
+    label: 'Hybrid Mobile & Field Deployment',
     title: 'On-Device Edge Engine',
     tech: 'llama.cpp · Vulkan · iOS · Android',
     logos: (
@@ -292,7 +292,7 @@ export default function TechnologyStrip() {
           <h2 className="section-heading">A three-tier hybrid AI runtime</h2>
           <p className="section-subheading" style={{ marginInline: 'auto' }}>
             The same grounded intelligence, matched to your hardware and
-            connectivity-from an offline phone on the plant floor to
+            connectivity-from a hybrid-mode phone on the plant floor to
             sovereign cloud audits.
           </p>
         </ScrollReveal>

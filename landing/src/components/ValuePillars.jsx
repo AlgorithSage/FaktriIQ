@@ -12,7 +12,7 @@ const PILLARS = [
   {
     title: 'Field-Tested Reliability',
     points: [
-      { lead: '100% Offline Ops', text: 'Operational on the floor even in zero-connectivity areas.' },
+      { lead: 'Hybrid Online/Offline', text: 'Operational via cloud APIs with on-device offline fallback.' },
       { lead: 'Real-Time Retrieval', text: 'Fast local lookup directly on technicians\' mobile devices.' }
     ],
   },

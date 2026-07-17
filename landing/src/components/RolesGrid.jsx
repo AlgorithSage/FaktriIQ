@@ -37,8 +37,9 @@ const ROLES = [
     title: 'Safety Officers',
     deployment: 'Web console',
     description:
-      'Audit SOPs against statutory standards online via Groq + GPT-OSS 120B, with cached results that keep audits running offline through LiteRT.js + WebGPU.',
+      'Audit SOPs against statutory standards online via Groq API + GPT-OSS 120B, with cached results that keep audits running offline through LiteRT.js + WebGPU.',
     checklist: [
+      'Cloud audits via Groq API utilizing GPT-OSS 120B',
       'Cloud audits cached locally for offline parity',
       'On-device LiteRT.js fallback clause matching',
       'Visual gap triage with statutory citations',
@@ -52,14 +53,14 @@ const ROLES = [
     icon: Smartphone,
     accent: 'cyan',
     title: 'Field Technicians',
-    deployment: 'Mobile · offline',
+    deployment: 'Mobile · Hybrid Online + Offline',
     description:
-      'Get instant, cited answers from plant manuals and SOPs on the floor - accelerated on-device, even with no signal.',
+      'Get instant, cited answers from plant manuals and SOPs on the floor - powered by cloud APIs with on-device offline fallback.',
     checklist: [
-      '100% offline llama.cpp Vulkan inference',
+      'Hybrid online API + offline Vulkan inference',
       'Thumb-reachable EHS console interface',
       'Original source text snippet fallbacks',
-      'Voice-to-text offline search query mode',
+      'Voice-to-text hybrid search query mode',
       'Local encrypted storage for plant logs',
     ],
     metric: '< 3s',

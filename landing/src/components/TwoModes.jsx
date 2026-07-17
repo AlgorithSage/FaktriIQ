@@ -50,7 +50,7 @@ function PhoneMock() {
             9:41
           </span>
           <span className="flex items-center gap-1 font-mono text-[9px] font-bold" style={{ color: 'var(--color-verify)' }}>
-            <WifiOff className="h-3 w-3" strokeWidth={2} /> OFFLINE
+            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--color-verify)' }} /> HYBRID
           </span>
         </div>
 
@@ -248,12 +248,12 @@ export default function TwoModes() {
 
               <p className="mb-5 text-[15px] leading-relaxed" style={{ color: 'var(--color-slate)' }}>
                 A single-question, single-answer copilot built for gloves and glances - the answer
-                arrives as one focused, cited card, and it never needs a network.
+                arrives as one focused, cited card, operating seamlessly with or without network.
               </p>
 
               <ul className="flex flex-col gap-3.5">
                 <Check icon={WifiOff} soft="var(--cyan-soft)">
-                  <strong>100% Offline Inference</strong>: Operates directly on edge hardware with zero network dependency.
+                  <strong>Hybrid Connectivity</strong>: Utilizes high-speed APIs when online, falling back to on-device edge models.
                 </Check>
                 <Check icon={Fingerprint} soft="var(--cyan-soft)">
                   <strong>Ergonomic Design</strong>: Glove-friendly, thumb-reachable interface with 48px touch targets.

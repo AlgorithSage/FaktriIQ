@@ -14,6 +14,9 @@ import {
   Quote,
   Cpu,
   Send,
+  Network,
+  Wrench,
+  History,
 } from 'lucide-react';
 
 /* Accent → palette CSS variables (kept as vars so light/pastel theming stays central). */
@@ -21,6 +24,7 @@ const ACCENTS = {
   sky: { soft: 'var(--sky-soft)', mid: 'var(--sky)' },
   cyan: { soft: 'var(--cyan-soft)', mid: 'var(--cyan)' },
   peach: { soft: 'var(--peach-soft)', mid: 'var(--peach)' },
+  orange: { soft: 'var(--orange-soft)', mid: 'var(--orange)' },
 };
 
 const AGENTS = [
@@ -74,12 +78,12 @@ const AGENTS = [
     icon: MessageSquareText,
     accent: 'cyan',
     summary:
-      'Answers plain-language questions about plant procedures on the shop floor - fully offline, on-device, with a citation on every answer and an honest "I don\'t know" instead of a guess.',
+      'Answers plain-language questions about plant procedures on the shop floor - running via hybrid cloud APIs with offline, on-device fallbacks, providing a citation on every answer.',
     capabilities: [
       {
         icon: WifiOff,
-        title: '100% offline',
-        text: 'Runs on the device GPU via llama.cpp + Vulkan - no Wi-Fi, no cellular, nothing leaves the handset.',
+        title: 'Hybrid online & offline',
+        text: 'Uses fast cloud APIs when connected, falling back to local on-device GPU inference via llama.cpp + Vulkan.',
       },
       {
         icon: Sparkles,
@@ -106,7 +110,7 @@ const AGENTS = [
     },
     stats: [
       { value: '< 3s', label: 'avg. answer time' },
-      { value: '100%', label: 'offline capable' },
+      { value: 'Hybrid', label: 'online + offline' },
       { value: '< 1.5GB', label: 'on-device model' },
     ],
   },
@@ -153,6 +157,108 @@ const AGENTS = [
       { value: 'PDF', label: 'text & scanned' },
     ],
   },
+  {
+    id: 'knowledge-graph',
+    name: 'Knowledge Graph Agent',
+    tagline: 'For Operations & Eng.',
+    icon: Network,
+    accent: 'sky',
+    isRoadmap: true,
+    summary:
+      'Compiles a live semantic model linking plant equipment tags, statutory regulations, and procedure documents - updating relationships automatically as new manuals are uploaded.',
+    capabilities: [
+      {
+        icon: ScanSearch,
+        title: 'Relationship Discovery',
+        text: 'Interlinks equipment tags (e.g., PV-202) across maintenance manuals, OISD standards, and P&ID drawings.',
+      },
+      {
+        icon: Layers,
+        title: 'Multi-Document Graph',
+        text: 'Maintains an active topology of equipment dependencies, compliance paths, and operational history.',
+      },
+    ],
+    engines: ['Neo4j Graph Database', 'gRPC / GraphQL API', 'Scheduled Graph Updates'],
+    roadmapInfo: {
+      phase: 'Phase 2: Graph Intelligence',
+      status: 'In Design',
+      timeline: 'Q3 2026',
+      description: 'The Knowledge Graph Agent connects disconnected data silos (drawings, SOPs, work orders) into a unified relational brain.'
+    },
+    stats: [
+      { value: '10k+', label: 'nodes mapped' },
+      { value: '< 1s', label: 'graph queries' },
+      { value: 'Auto', label: 'drawing parser' },
+    ],
+  },
+  {
+    id: 'maintenance-rca',
+    name: 'Maintenance & RCA Agent',
+    tagline: 'For Maintenance Teams',
+    icon: Wrench,
+    accent: 'peach',
+    isRoadmap: true,
+    summary:
+      'Fuses work orders, OEM equipment manuals, failure history, and regulatory guidelines to auto-generate root-cause analyses and predictive schedules.',
+    capabilities: [
+      {
+        icon: Cpu,
+        title: 'Predictive Scheduling',
+        text: 'Analyzes operating hours and safety logs to recommend optimal windows for valve and seal replacements.',
+      },
+      {
+        icon: CircleAlert,
+        title: 'Incident RCA Generator',
+        text: 'Traces failure sequences against design specs and historical logs to output ready-to-review incident reports.',
+      },
+    ],
+    engines: ['Failure Mode AI (FMEA)', 'Work-order RAG pipeline', 'RCA Auto-generation'],
+    roadmapInfo: {
+      phase: 'Phase 3: Predictive Operations',
+      status: 'Planned',
+      timeline: 'Q4 2026',
+      description: 'Empowers field teams to preempt equipment failures and comply with Factories Act inspection schedules automatically.'
+    },
+    stats: [
+      { value: '30%', label: 'downtime drop' },
+      { value: 'FMEA', label: 'compliant' },
+      { value: 'OEMs', label: 'fully parsed' },
+    ],
+  },
+  {
+    id: 'lessons-learned',
+    name: 'Lessons Learned Agent',
+    tagline: 'For Safety Directors',
+    icon: History,
+    accent: 'orange',
+    isRoadmap: true,
+    summary:
+      'Unifies past incident reports, audits, and external safety databases to preemptively push safety alerts to technicians before high-risk tasks.',
+    capabilities: [
+      {
+        icon: Sparkles,
+        title: 'Proactive Alert Push',
+        text: 'Pushes historical hazard warnings directly to a field operator when they initiate a tank-cleaning or hot-work query.',
+      },
+      {
+        icon: Quote,
+        title: 'Cross-Plant Auditing',
+        text: 'Compares safety deviations across different plant units to flag systemic operational risks.',
+      },
+    ],
+    engines: ['Historical incident LLM', 'Vector similarity search', 'Context matching'],
+    roadmapInfo: {
+      phase: 'Phase 3: Operational Safety',
+      status: 'Planned',
+      timeline: 'Q1 2027',
+      description: 'Integrates past organizational lessons directly into the daily workflow of the shop floor.'
+    },
+    stats: [
+      { value: 'Proactive', label: 'alert engine' },
+      { value: '0', label: 'forgotten lessons' },
+      { value: 'SIM', label: 'incident-matched' },
+    ],
+  },
 ];
 
 function StatusChip({ status, cite }) {
@@ -187,7 +293,7 @@ export default function AgentsSection() {
           <p className="section-subheading">
             Every FaktriIQ answer is produced by a dedicated agent - grounded in
             your own documents, cited to the clause, and deployed exactly where
-            the work happens, from an offline phone on the floor to an EHS desk
+            the work happens, from a hybrid-mode phone on the floor to an EHS desk
             preparing for audit.
           </p>
         </ScrollReveal>
@@ -224,7 +330,24 @@ export default function AgentsSection() {
                   />
                 </span>
                 <span className="agents__tab-text">
-                  <span className="agents__tab-name">{item.name}</span>
+                  <span className="agents__tab-name" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    {item.name}
+                    {item.isRoadmap && (
+                      <span style={{
+                        fontSize: '8px',
+                        fontWeight: '800',
+                        letterSpacing: '0.04em',
+                        textTransform: 'uppercase',
+                        background: isActive ? 'var(--color-slate)' : 'var(--color-surface)',
+                        color: isActive ? '#FFFFFF' : 'var(--color-accent-dark)',
+                        padding: '1px 5px',
+                        borderRadius: '4px',
+                        border: '1px solid var(--color-border)'
+                      }}>
+                        Roadmap
+                      </span>
+                    )}
+                  </span>
                   <span className="agents__tab-tagline">{item.tagline}</span>
                 </span>
               </button>
@@ -300,51 +423,131 @@ export default function AgentsSection() {
 
             {/* Right: Demo + Stats */}
             <div className="agents__demo">
-              {/* Chat window (mobile mockup) */}
-              <div className="agents__phone" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px 0' }}>
-                <div className="agents__phone-frame" style={{ width: '100%', maxWidth: '258px', borderRadius: '30px', border: '1px solid var(--color-slate)', background: 'var(--color-slate)', padding: '6px', boxShadow: 'var(--shadow-soft)' }}>
-                  <div className="agents__phone-screen" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: '25px', background: 'var(--color-subtle)' }}>
-                    <div className="agents__phone-statusbar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 8px' }}>
-                      <span className="agents__phone-time" style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-muted)' }}>9:41</span>
-                      <span className="agents__phone-agent" style={{ display: 'flex', alignItems: 'center', gap: '5px', fontFamily: 'var(--font-mono)', fontSize: '9px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--color-ink)' }}>
-                        <span
-                          className="agents__phone-dot"
-                          style={{ width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0, background: accent.mid }}
-                        />
-                        {agent.name}
-                      </span>
-                    </div>
-                    <div className="agents__phone-body" style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '4px 14px 12px' }}>
-                      <div
-                        className="agents__chat-q"
-                        style={{ alignSelf: 'flex-end', maxWidth: '85%', padding: '10px 14px', borderRadius: '12px 12px 4px 12px', fontSize: '12.5px', fontWeight: 500, lineHeight: 1.45, color: 'var(--color-ink)', background: accent.soft }}
-                      >
-                        {agent.example.q}
+              {/* Chat window (mobile mockup) or Roadmap integration card */}
+              {agent.isRoadmap ? (
+                <div style={{
+                  flex: 1,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'center',
+                  background: 'var(--color-surface)',
+                  border: '1.5px solid var(--color-border)',
+                  borderRadius: '20px',
+                  padding: '24px',
+                  boxShadow: 'var(--shadow-soft)',
+                  minHeight: '280px',
+                  margin: '8px 0'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}>
+                    <span style={{
+                      fontSize: '9px',
+                      fontWeight: '800',
+                      color: 'var(--color-accent-dark)',
+                      background: 'var(--color-subtle-light)',
+                      padding: '3px 8px',
+                      borderRadius: '4px',
+                      border: '1px solid var(--color-border)',
+                      fontFamily: 'var(--font-mono)'
+                    }}>
+                      {agent.roadmapInfo.phase}
+                    </span>
+                    <span style={{
+                      fontSize: '10px',
+                      fontWeight: '700',
+                      color: 'var(--color-muted)',
+                      fontFamily: 'var(--font-mono)'
+                    }}>
+                      {agent.roadmapInfo.timeline}
+                    </span>
+                  </div>
+                  <h4 style={{
+                    fontSize: '16px',
+                    fontWeight: '700',
+                    color: 'var(--color-ink)',
+                    marginBottom: '8px'
+                  }}>
+                    {agent.name} Integration
+                  </h4>
+                  <p style={{
+                    fontSize: '12px',
+                    lineHeight: '1.6',
+                    color: 'var(--color-muted)',
+                    marginBottom: '16px'
+                  }}>
+                    {agent.roadmapInfo.description}
+                  </p>
+                  <div style={{
+                    background: 'var(--color-bg)',
+                    border: '1px solid var(--color-border)',
+                    borderRadius: '8px',
+                    padding: '10px 14px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '10px'
+                  }}>
+                    <span style={{
+                      width: '6px',
+                      height: '6px',
+                      borderRadius: '50%',
+                      background: 'var(--color-warn)',
+                      flexShrink: 0
+                    }} />
+                    <span style={{
+                      fontSize: '10px',
+                      fontWeight: '700',
+                      color: 'var(--color-ink)',
+                      fontFamily: 'var(--font-mono)'
+                    }}>
+                      Status: {agent.roadmapInfo.status}
+                    </span>
+                  </div>
+                </div>
+              ) : (
+                <div className="agents__phone" style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '8px 0' }}>
+                  <div className="agents__phone-frame" style={{ width: '100%', maxWidth: '258px', borderRadius: '30px', border: '1px solid var(--color-slate)', background: 'var(--color-slate)', padding: '6px', boxShadow: 'var(--shadow-soft)' }}>
+                    <div className="agents__phone-screen" style={{ display: 'flex', flexDirection: 'column', overflow: 'hidden', borderRadius: '25px', background: 'var(--color-subtle)' }}>
+                      <div className="agents__phone-statusbar" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px 8px' }}>
+                        <span className="agents__phone-time" style={{ fontFamily: 'var(--font-mono)', fontSize: '10px', color: 'var(--color-muted)' }}>9:41</span>
+                        <span className="agents__phone-agent" style={{ display: 'flex', alignItems: 'center', gap: '5px', fontFamily: 'var(--font-mono)', fontSize: '9px', fontWeight: 700, letterSpacing: '0.04em', textTransform: 'uppercase', color: 'var(--color-ink)' }}>
+                          <span
+                            className="agents__phone-dot"
+                            style={{ width: '6px', height: '6px', borderRadius: '50%', flexShrink: 0, background: accent.mid }}
+                          />
+                          {agent.name}
+                        </span>
                       </div>
-                      <div className="agents__chat-a" style={{ alignSelf: 'flex-start', maxWidth: '92%', padding: '10px 14px', borderRadius: '12px 12px 12px 4px', background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(30, 35, 40, 0.06)', fontSize: '12.5px', lineHeight: 1.5, color: 'var(--color-slate)' }}>{agent.example.a}</div>
-                      <StatusChip
-                        status={agent.example.status}
-                        cite={agent.example.cite}
-                      />
-                    </div>
-                    <div className="agents__phone-inputbar" style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '0 14px 14px', padding: '7px 7px 7px 14px', borderRadius: '9999px', background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(30, 35, 40, 0.06)' }}>
-                      <span className="agents__phone-input-text" style={{ fontSize: '11px', color: 'var(--color-muted)' }}>
-                        Ask about a procedure…
-                      </span>
-                      <span
-                        className="agents__phone-send"
-                        style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '26px', height: '26px', borderRadius: '50%', flexShrink: 0, background: accent.mid }}
-                      >
-                        <Send
-                          size={13}
-                          strokeWidth={2}
-                          style={{ color: 'var(--color-ink)' }}
+                      <div className="agents__phone-body" style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '4px 14px 12px' }}>
+                        <div
+                          className="agents__chat-q"
+                          style={{ alignSelf: 'flex-end', maxWidth: '85%', padding: '10px 14px', borderRadius: '12px 12px 4px 12px', fontSize: '12.5px', fontWeight: 500, lineHeight: 1.45, color: 'var(--color-ink)', background: accent.soft }}
+                        >
+                          {agent.example.q}
+                        </div>
+                        <div className="agents__chat-a" style={{ alignSelf: 'flex-start', maxWidth: '92%', padding: '10px 14px', borderRadius: '12px 12px 12px 4px', background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(30, 35, 40, 0.06)', fontSize: '12.5px', lineHeight: 1.5, color: 'var(--color-slate)' }}>{agent.example.a}</div>
+                        <StatusChip
+                          status={agent.example.status}
+                          cite={agent.example.cite}
                         />
-                      </span>
+                      </div>
+                      <div className="agents__phone-inputbar" style={{ display: 'flex', alignItems: 'center', gap: '8px', margin: '0 14px 14px', padding: '7px 7px 7px 14px', borderRadius: '9999px', background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(30, 35, 40, 0.06)' }}>
+                        <span className="agents__phone-input-text" style={{ fontSize: '11px', color: 'var(--color-muted)' }}>
+                          Ask about a procedure…
+                        </span>
+                        <span
+                          className="agents__phone-send"
+                          style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '26px', height: '26px', borderRadius: '50%', flexShrink: 0, background: accent.mid }}
+                        >
+                          <Send
+                            size={13}
+                            strokeWidth={2}
+                            style={{ color: 'var(--color-ink)' }}
+                          />
+                        </span>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
 
               {/* Stats row */}
               <div className="agents__stats">
