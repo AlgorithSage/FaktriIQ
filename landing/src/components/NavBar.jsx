@@ -134,39 +134,6 @@ export default function NavBar() {
     };
   }, []);
 
-  // Intersection Observer to track scroll positions and update active menu item
-  useEffect(() => {
-    const sectionIds = MENU_ITEMS.map((item) =>
-      item.toLowerCase().replace(/[^a-z]+/g, '-')
-    );
-
-    const observerOptions = {
-      root: null,
-      rootMargin: '-30% 0px -60% 0px',
-      threshold: 0,
-    };
-
-    const observerCallback = (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          const index = sectionIds.indexOf(entry.target.id);
-          if (index !== -1) {
-            setActiveIdx(index);
-          }
-        }
-      });
-    };
-
-    const observer = new IntersectionObserver(observerCallback, observerOptions);
-
-    sectionIds.forEach((id) => {
-      const el = document.getElementById(id);
-      if (el) observer.observe(el);
-    });
-
-    return () => observer.disconnect();
-  }, [windowWidth]);
-
   const isMobile = windowWidth <= 860;
 
   // Track and update the sliding pill styling coordinates dynamically
@@ -203,7 +170,7 @@ export default function NavBar() {
           <div className="nav__inner container">
             <a className="nav__logo" href="#top" aria-label="FaktriIQ home">
               <img 
-                src="/FaktriIQ_sq.png" 
+                src="/aktr.png" 
                 alt="FaktriIQ Logo" 
                 className="nav__logo-img" 
                 draggable={false} 

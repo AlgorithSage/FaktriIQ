@@ -3,7 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'dart:async';
+import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
+import 'package:http/http.dart' as http;
 
 // ==========================================
 // MODELS & DATA DEFINITIONS
@@ -72,131 +74,13 @@ class QueryLog {
 }
 
 // ==========================================
-// MOCK DATABASE STORES
+// API CONFIGURATION
 // ==========================================
 
-final List<DocumentModel> mockDocuments = [
-  DocumentModel(
-    docId: "SOP-TC-042",
-    filename: "SOP_Chemical_Tank_Cleaning.pdf",
-    docType: "Standard Operating Procedure",
-    title: "TK-101 Storage Tank Cleansing Protocol",
-    uploadDate: "2026-05-12",
-    equipmentTags: ["TK-101", "storage-vessel"],
-    dates: ["12-May-2026", "Revision: 15-Jun-2026"],
-    clauseRefs: ["Factories Act Sec 36", "OISD-STD-105 Sec 4"],
-    gapCount: 1,
-    okCount: 2,
-    content: "Standard operating procedure for purging and cleaning chemical storage tank TK-101. Prior to entry, the tank must be isolated, drained, and ventilated. Oxygen level must be checked using a calibrated gas detector. Safety harness is required for all operators entry."
-  ),
-  DocumentModel(
-    docId: "SOP-PV-018",
-    filename: "SOP_Pressure_Vessel_Maintenance.pdf",
-    docType: "Maintenance Manual",
-    title: "PV-202 Hydrostatic Maintenance & Inspection",
-    uploadDate: "2026-01-08",
-    equipmentTags: ["PV-202", "pressure-system"],
-    dates: ["08-Jan-2026"],
-    clauseRefs: ["PESO Rules 2016 Cl 18", "Factories Act Sec 31"],
-    gapCount: 0,
-    okCount: 3,
-    content: "Operating manual for pressure vessel PV-202 maintenance. Visual inspections must be performed monthly. Pressure relief valves must be calibrated annually. Hydrostatic testing is scheduled every 2 years."
-  ),
-  DocumentModel(
-    docId: "SOP-FF-005",
-    filename: "SOP_Fire_Hydrant_Maintenance.pdf",
-    docType: "Safety Guidelines",
-    title: "Fire Hydrant Network Inspections",
-    uploadDate: "2026-04-15",
-    equipmentTags: ["FH-System", "fire-suppression"],
-    dates: ["15-Apr-2026", "Quarterly check"],
-    clauseRefs: ["OISD-STD-189 Sec 7"],
-    gapCount: 1,
-    okCount: 1,
-    content: "Routine inspection of the fire hydrant loop across the chemical storage yards. Water pressure must exceed 7 kg/cm2. Inspections are quarterly. All staff must be trained on nozzle operation."
-  )
-];
-
-final Map<String, List<ClauseModel>> mockClauses = {
-  "SOP-TC-042": [
-    ClauseModel(
-      clauseId: "FAC-36-1",
-      source: "Factories Act 1948 Sec 36(1)",
-      requirement: "Confined Space Entry Gas Test",
-      clauseText: "No person shall be allowed to enter any confined space until all practicable measures have been taken to remove gas, fumes or vapor, and it has been certified by a competent person based on a gas test that the space is free from dangerous fumes and fit for entry.",
-      status: "ok",
-      matchedText: "Oxygen level must be checked using a calibrated gas detector.",
-      explanation: "The procedure explicitly mandates gas checking prior to entry."
-    ),
-    ClauseModel(
-      clauseId: "FAC-36-2",
-      source: "Factories Act 1948 Sec 36(2)",
-      requirement: "Breathing Apparatus & Mask",
-      clauseText: "No person shall be entry into confined space without wearing suitable breathing apparatus, a safety belt securely attached to a rope, the free end of which is held by a person outside.",
-      status: "gap",
-      matchedText: "",
-      explanation: "No mention of breathing apparatus or oxygen mask requirements for confined space entry in the SOP text. Buddy line rope-end holding is also missing."
-    ),
-    ClauseModel(
-      clauseId: "OISD-105-4.2",
-      source: "OISD-STD-105 Sec 4.2",
-      requirement: "Safety Harness and Anchor",
-      clauseText: "All personnel entering chemical tanks shall wear a full-body safety harness anchored to a lifeline managed by an external standby buddy at all times.",
-      status: "ok",
-      matchedText: "Safety harness is required for all operators entry.",
-      explanation: "Safety harness is required for entries."
-    )
-  ],
-  "SOP-PV-018": [
-    ClauseModel(
-      clauseId: "PESO-18-2",
-      source: "PESO Rules 2016 Clause 18",
-      requirement: "Hydraulic Testing Schedule",
-      clauseText: "Pressure vessels must undergo hydraulic testing by a competent person licensed under PESO at least once in every two years, and certificates must be filed in Form VIII.",
-      status: "ok",
-      matchedText: "Hydrostatic testing is scheduled every 2 years.",
-      explanation: "Hydrostatic testing schedule is in line with the 2-year statutory requirement."
-    ),
-    ClauseModel(
-      clauseId: "FAC-31-1",
-      source: "Factories Act 1948 Sec 31",
-      requirement: "Pressure Relief Safety Valve Calibration",
-      clauseText: "Safe working pressure must be ensured on all machinery operating under pressure. Relief valves must be calibrated annually and kept free of obstruction.",
-      status: "ok",
-      matchedText: "Pressure relief valves must be calibrated annually.",
-      explanation: "Valve calibration frequency complies with annual inspection requirements."
-    ),
-    ClauseModel(
-      clauseId: "FAC-31-2",
-      source: "Factories Act 1948 Sec 31(3)",
-      requirement: "Monthly Visual Checks",
-      clauseText: "Monthly visual inspection of gauges, valves, and structural integrity of the vessels must be recorded by the EHS team.",
-      status: "ok",
-      matchedText: "Visual inspections must be performed monthly.",
-      explanation: "Monthly visual inspections are recorded and scheduled."
-    )
-  ],
-  "SOP-FF-005": [
-    ClauseModel(
-      clauseId: "OISD-189-7.1",
-      source: "OISD-STD-189 Sec 7.1",
-      requirement: "Redundant Water Pumps Supply",
-      clauseText: "The fire water hydrant system must be backed up by a redundant secondary pump set (standby diesel engine-driven pump) capable of starting automatically on pressure drop.",
-      status: "gap",
-      matchedText: "",
-      explanation: "Dual-source water pump supply or standby diesel pump redundancy is not documented in the fire hydrant loop maintenance plan."
-    ),
-    ClauseModel(
-      clauseId: "OISD-189-7.3",
-      source: "OISD-STD-189 Sec 7.3",
-      requirement: "Min Operating Pressure Level",
-      clauseText: "The static pressure in the fire water hydrant network must be maintained at not less than 7.0 kg/cm2 at the farthest point of the loop.",
-      status: "ok",
-      matchedText: "Water pressure must exceed 7 kg/cm2.",
-      explanation: "Pressure threshold matches the 7.0 kg/cm2 regulatory baseline."
-    )
-  ]
-};
+/// Backend URL — change to your deployed server URL in production.
+/// For local development, use your PC's local network IP so the phone can reach it.
+const String kApiBaseUrl = "http://10.0.2.2:8000"; // Android emulator → host
+// const String kApiBaseUrl = "http://192.168.X.X:8000"; // Physical device → LAN IP
 
 class AnswerResult {
   final bool success;
@@ -216,53 +100,20 @@ class AnswerResult {
     this.confidence = "",
     this.fullSectionText,
   });
+
+  /// Parse a JSON response from the Agno backend
+  factory AnswerResult.fromJson(Map<String, dynamic> json) {
+    return AnswerResult(
+      success: json['success'] ?? true,
+      query: json['query'] ?? '',
+      answer: json['answer'] ?? '',
+      source: json['source'] ?? '',
+      section: json['section'] ?? '',
+      confidence: json['confidence'] ?? '',
+      fullSectionText: json['full_section_text'],
+    );
+  }
 }
-
-final Map<String, AnswerResult> mockSearchReplies = {
-  "what is the safety procedure for tank cleaning?": AnswerResult(
-    success: true,
-    query: "what is the safety procedure for tank cleaning?",
-    answer: "Prior to entering chemical storage tank TK-101, the vessel must be isolated, drained, and ventilated. The oxygen level must be checked using a calibrated gas detector. Operators are required to wear a safety harness for entry.",
-    source: "SOP-TC-042",
-    section: "Confined Space Sec 3.1",
-    confidence: "High confidence",
-    fullSectionText: "SOP-TC-042: CONFINED SPACE ENTRY & TANK CLEANING\n\n1. REGULATORY STANDARD\nThis procedure satisfies Section 36 of the Factories Act 1948 (Confined Space Entry) and OISD-STD-105.\n\n2. PRE-ENTRY PROTOCOLS\n- Vessel isolation: Blank or blind all inlet and outlet pipes.\n- Emptying & Draining: Remove all residues completely prior to entry.\n- Forced Ventilation: Keep mechanical exhaust running continuously.\n- Atmosphere Gas Test: Test oxygen level (19.5% - 23.5%), toxic vapors (H2S < 10 ppm), and explosive limits (< 1% LEL).\n\n3. PERSONAL SAFETY LIMITS\n- Harness: Double-lanyard safety harness anchored securely to a lifeline.\n- Standby Person: Station a certified operator outside the manhole to maintain visual contact and hold the lifeline.\n- Breathing Apparatus: Self-contained breathing apparatus (SCBA) required if toxic levels exceed permissible exposure limits.",
-  ),
-  "oisd rule for fire hydrant water pressure": AnswerResult(
-    success: true,
-    query: "oisd rule for fire hydrant water pressure",
-    answer: "The static water pressure in the fire water network must be maintained at not less than 7 kg/cm2. This must be monitored during routine inspections of the fire hydrant loop.",
-    source: "SOP-FF-005",
-    section: "OISD-STD-189 Sec 7.3",
-    confidence: "High confidence",
-    fullSectionText: "SOP-FF-005: FIRE HYDRANT NETWORK SYSTEM\n\n1. REGULATORY STANDARD\nConforms to OISD-STD-189 Section 7.3 (Fire Water System Design).\n\n2. SYSTEM OPERATING CRITERIA\n- Minimum Static Pressure: 7.0 kg/cm2 at the remotest point of the hydrant network.\n- Design Flow: Hydrant water ring must maintain continuous flow under full emergency load.\n- Pump Auto-Start: Jockey pumps start at 7.5 kg/cm2, main pumps start automatically at 7.0 kg/cm2.\n\n3. MAINTENANCE & DRILLS\n- Log header pressure hourly in the central control room.\n- Test run main diesel and motor-driven fire water pumps weekly.\n- Inspect all hydrant boxes, valves, and nozzles monthly for scaling, rust, and physical blockages.",
-  ),
-  "peso pressure vessel inspection frequency": AnswerResult(
-    success: true,
-    query: "peso pressure vessel inspection frequency",
-    answer: "For pressure vessel PV-202, visual inspections must be conducted monthly, safety relief valve calibration must occur annually, and hydrostatic testing is mandated once every 2 years.",
-    source: "SOP-PV-018",
-    section: "PESO Rules 2016 Cl 18",
-    confidence: "High confidence",
-    fullSectionText: "SOP-PV-018: PRESSURE VESSEL PV-202 TESTING FREQUENCY\n\n1. REGULATORY STANDARD\nConforms to Clause 18 of the Petroleum and Explosives Safety Organisation (PESO) Rules 2016.\n\n2. MANDATED INSPECTION SCHEDULE\n- Visual Inspection: Monthly check of external structure, mounts, and indicators.\n- Safety Relief Valve (SRV) Calibration: Conduct calibration and pop-testing annually. Tag with calibration dates.\n- Hydrostatic Test: Subject the vessel to a hydrotest at 1.5x design pressure once every 2 years.\n\n3. REPORTING REQUIREMENTS\n- Certification: Test reports must be signed by a PESO Competent Person.\n- Submissions: Submit structural integrity certificates online to the licensing authority within 14 days.",
-  ),
-  "oisd safety harness guideline": AnswerResult(
-    success: true,
-    query: "oisd safety harness guideline",
-    answer: "Personnel entering chemical tanks like TK-101 must wear a safety harness anchored to a lifeline. This matches OISD-STD-105 requirements for confined entry.",
-    source: "SOP-TC-042",
-    section: "OISD-STD-105 Sec 4.2",
-    confidence: "High confidence",
-    fullSectionText: "SOP-TC-042: FALL PROTECTION & HARNESS GUIDELINES\n\n1. REGULATORY STANDARD\nConforms to OISD-STD-105 Section 4.2 (Safety in Confined Spaces).\n\n2. EQUIPMENT DESIGN REQUIREMENTS\n- Harness Type: Full-body safety harness with dual back-anchoring D-rings.\n- Lanyards: Double-shock-absorbing lifelines with automatic snap hooks.\n- Lifeline Load: Minimum tensile strength of 22.2 kN static weight load.\n\n3. OPERATION PROCEDURE\n- Verify anchoring structural integrity prior to worker attachment.\n- Station one attendant outside the manhole to maintain constant tension on the safety lifeline.\n- Clean harness strap webs weekly of any acidic chemical residues or grease accumulation.",
-  )
-};
-
-final List<String> SUGGESTIONS = [
-  "What is the safety procedure for tank cleaning?",
-  "OISD rule for fire hydrant water pressure",
-  "PESO pressure vessel inspection frequency",
-  "OISD safety harness guideline"
-];
 
 // ==========================================
 // MAIN ENTRY POINT
@@ -680,16 +531,10 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
     } catch (_) {}
   }
 
-  final List<QueryLog> _techHistory = [
-    QueryLog(
-      query: "How to clean TK-101?",
-      answer: "TK-101 must be isolated, drained, and ventilated. Gas test is required prior to entry.",
-      timestamp: "10-Jul-2026 14:35",
-      doc: "SOP-TC-042"
-    )
-  ];
+  final List<QueryLog> _techHistory = [];
 
-  void _runTechSearch(String queryText) {
+  /// Calls the Agno backend API to get an AI-generated answer
+  Future<void> _runTechSearch(String queryText) async {
     if (queryText.trim().isEmpty) return;
     setState(() {
       _techSearching = true;
@@ -697,39 +542,57 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
       _showFullSection = false;
     });
 
-    Future.delayed(const Duration(milliseconds: 1200), () {
-      final normalized = queryText.toLowerCase().trim().replaceAll("?", "");
-      AnswerResult? result;
+    try {
+      final response = await http.post(
+        Uri.parse('$kApiBaseUrl/ask'),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode({'query': queryText}),
+      ).timeout(const Duration(seconds: 30));
 
-      for (var key in mockSearchReplies.keys) {
-        if (normalized.contains(key) || key.contains(normalized)) {
-          result = mockSearchReplies[key];
-          break;
-        }
-      }
-
-      setState(() {
-        _techSearching = false;
-        if (result != null) {
+      if (response.statusCode == 200) {
+        final json = jsonDecode(response.body);
+        final result = AnswerResult.fromJson(json);
+        setState(() {
+          _techSearching = false;
           _techResponse = result;
           _techHistory.insert(
             0,
             QueryLog(
               query: queryText,
               answer: result.answer,
-              timestamp: "Today",
+              timestamp: _formatTimestamp(),
               doc: result.source,
             ),
           );
-        } else {
+        });
+      } else {
+        setState(() {
+          _techSearching = false;
           _techResponse = AnswerResult(
             success: false,
             query: queryText,
-            answer: "No matching safety procedure found in the uploaded documents. Escalate to your supervisor if this is urgent.",
+            answer: "Server returned an error (${response.statusCode}). Please try again.",
           );
-        }
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _techSearching = false;
+        _techResponse = AnswerResult(
+          success: false,
+          query: queryText,
+          answer: _isOnline
+              ? "Could not reach the AI backend. Make sure the server is running at $kApiBaseUrl"
+              : "You are offline. Connect to the network to use the AI Copilot.",
+        );
       });
-    });
+    }
+  }
+
+  String _formatTimestamp() {
+    final now = DateTime.now();
+    final months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return '${now.day}-${months[now.month - 1]}-${now.year} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
   }
 
   @override
@@ -748,137 +611,195 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
       backgroundColor: theme.scaffoldBackgroundColor,
       appBar: AppBar(
         backgroundColor: isDark ? const Color(0xFF111827) : const Color(0xFF1E2328),
-        leading: Navigator.canPop(context)
-            ? IconButton(
-                icon: Icon(Icons.arrow_back_rounded, color: theme.primaryColor),
-                onPressed: () => Navigator.pop(context),
-              )
-            : Container(
-                margin: const EdgeInsets.all(10),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(6),
-                  child: Image.asset(
-                    "assets/images/FaktriIQ_sq.png",
-                    fit: BoxFit.cover,
-                  ),
+        elevation: 0,
+        toolbarHeight: 56,
+        automaticallyImplyLeading: false,
+        titleSpacing: 0,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 14),
+          child: Row(
+            children: [
+              // Logo
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child: Image.asset(
+                  "assets/images/FaktriIQ_sq.png",
+                  width: 32,
+                  height: 32,
+                  fit: BoxFit.cover,
                 ),
               ),
-        title: Text(
-          "FaktriIQ Copilot",
-          style: GoogleFonts.newsreader(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            fontStyle: FontStyle.italic,
-            color: theme.primaryColor,
+              const SizedBox(width: 10),
+              // Brand Name
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      "FaktriIQ",
+                      style: GoogleFonts.newsreader(
+                        fontSize: 17,
+                        fontWeight: FontWeight.w700,
+                        fontStyle: FontStyle.italic,
+                        color: theme.primaryColor,
+                        height: 1.1,
+                      ),
+                    ),
+                    Row(
+                      children: [
+                        Text(
+                          "Copilot",
+                          style: GoogleFonts.poppins(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w500,
+                            color: (isDark ? Colors.white : const Color(0xFFD1D5DB)).withOpacity(0.6),
+                            letterSpacing: 1.2,
+                            height: 1.3,
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        // Status dot
+                        Container(
+                          width: 6,
+                          height: 6,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _isOnline ? const Color(0xFF2FA36B) : const Color(0xFFE0483D),
+                            boxShadow: [
+                              BoxShadow(
+                                color: (_isOnline ? const Color(0xFF2FA36B) : const Color(0xFFE0483D)).withOpacity(0.5),
+                                blurRadius: 6,
+                                spreadRadius: 1,
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(width: 4),
+                        Text(
+                          _isOnline ? "Online" : "Offline",
+                          style: GoogleFonts.poppins(
+                            fontSize: 9,
+                            fontWeight: FontWeight.w600,
+                            color: _isOnline ? const Color(0xFF2FA36B) : const Color(0xFFE0483D),
+                            height: 1.3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         ),
         actions: [
-          Center(
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.transparent,
-                border: Border.all(
-                  color: _isOnline 
-                      ? const Color(0xFF2FA36B).withOpacity(0.6) 
-                      : const Color(0xFFE0483D).withOpacity(0.6),
-                ),
-                borderRadius: BorderRadius.circular(4),
-              ),
-              child: Text(
-                _isOnline ? "ONLINE" : "OFFLINE",
-                style: TextStyle(
-                  fontFamily: 'Satoshi', 
-                  fontSize: 9, 
-                  fontWeight: FontWeight.bold, 
-                  color: _isOnline ? const Color(0xFF2FA36B) : const Color(0xFFE0483D),
-                ),
-              ),
-            ),
-          ),
+          // Theme toggle
           IconButton(
             icon: Icon(
-              widget.darkMode ? Icons.light_mode : Icons.dark_mode,
+              widget.darkMode ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
               color: theme.primaryColor,
+              size: 20,
             ),
             onPressed: widget.onToggleTheme,
+            splashRadius: 20,
           ),
+          // Profile avatar
           Container(
-            margin: const EdgeInsets.only(right: 12, left: 4),
-            child: GFAvatar(
-              shape: GFAvatarShape.circle,
-              size: GFSize.SMALL,
-              backgroundColor: theme.primaryColor,
+            margin: const EdgeInsets.only(right: 14),
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: theme.primaryColor,
+              border: Border.all(
+                color: theme.primaryColor.withOpacity(0.3),
+                width: 2,
+              ),
+            ),
+            child: Center(
               child: Text(
                 "OP",
-                style: TextStyle(fontFamily: 'Satoshi', fontWeight: FontWeight.bold, color: isDark ? Colors.black : const Color(0xFF1E2328)),
-              ),
-            ),
-          )
-        ],
-      ),
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Tabs
-            Container(
-              decoration: BoxDecoration(
-                color: theme.cardColor,
-                border: Border(
-                  bottom: BorderSide(color: theme.dividerColor, width: 1.5),
+                style: TextStyle(
+                  fontFamily: 'Satoshi',
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                  color: isDark ? Colors.black : const Color(0xFF1E2328),
                 ),
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _buildTechTabButton("ask", "Ask Copilot"),
-                  ),
-                  Expanded(
-                    child: _buildTechTabButton("history", "Query Log"),
-                  ),
-                ],
+            ),
+          ),
+        ],
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(42),
+          child: Container(
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF0F172A) : const Color(0xFF161B22),
+              border: Border(
+                top: BorderSide(
+                  color: theme.primaryColor.withOpacity(0.08),
+                  width: 1,
+                ),
               ),
             ),
-            // Body Content
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: _techTab == "ask" 
-                    ? _buildTechAskView(theme, isDark) 
-                    : _buildTechHistoryView(theme, isDark),
-              ),
+            child: Row(
+              children: [
+                _buildNavTab("ask", "Ask Copilot", Icons.chat_bubble_outline_rounded, isDark, theme),
+                _buildNavTab("history", "Query Log", Icons.history_rounded, isDark, theme),
+              ],
             ),
-          ],
+          ),
+        ),
+      ),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: _techTab == "ask"
+              ? _buildTechAskView(theme, isDark)
+              : _buildTechHistoryView(theme, isDark),
         ),
       ),
     );
   }
 
-  Widget _buildTechTabButton(String tab, String label) {
+  Widget _buildNavTab(String tab, String label, IconData icon, bool isDark, ThemeData theme) {
     final isActive = _techTab == tab;
-    final theme = Theme.of(context);
-    return InkWell(
-      onTap: () => setState(() => _techTab = tab),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(
-              color: isActive ? theme.primaryColor : Colors.transparent,
-              width: 3,
+    return Expanded(
+      child: InkWell(
+        onTap: () => setState(() => _techTab = tab),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(
+                color: isActive ? theme.primaryColor : Colors.transparent,
+                width: 2.5,
+              ),
             ),
           ),
-        ),
-        child: Center(
-          child: Text(
-            label,
-            style: GoogleFonts.poppins(
-              fontSize: 13,
-              fontWeight: FontWeight.bold,
-              color: isActive 
-                ? (widget.darkMode ? Colors.white : const Color(0xFF1E2328)) 
-                : (widget.darkMode ? Colors.grey : const Color(0xFF6B7280)),
-            ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 15,
+                color: isActive
+                    ? theme.primaryColor
+                    : (isDark ? const Color(0xFF6B7280) : const Color(0xFF9CA3AF)),
+              ),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: GoogleFonts.poppins(
+                  fontSize: 12,
+                  fontWeight: isActive ? FontWeight.w600 : FontWeight.w500,
+                  color: isActive
+                      ? (isDark ? Colors.white : const Color(0xFFE5E7EB))
+                      : (isDark ? const Color(0xFF6B7280) : const Color(0xFF9CA3AF)),
+                  letterSpacing: 0.3,
+                ),
+              ),
+            ],
           ),
         ),
       ),
@@ -1193,7 +1114,12 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  children: SUGGESTIONS.map((s) => Padding(
+                  children: [
+                    "Tank cleaning safety procedure",
+                    "Fire hydrant pressure rules",
+                    "Pressure vessel inspection",
+                    "Confined space entry rules",
+                  ].map((s) => Padding(
                     padding: const EdgeInsets.only(right: 8.0),
                     child: InkWell(
                       onTap: () {
@@ -1454,8 +1380,43 @@ class _OfficerAppHomeState extends State<OfficerAppHome> {
   }
 
   Widget _buildDashboardView(ThemeData theme, bool isDark, bool isLarge) {
-    final selectedDoc = mockDocuments.firstWhere((d) => d.docId == _selectedDocId);
-    final docClauses = mockClauses[_selectedDocId] ?? [];
+    // Documents will be loaded from the backend — currently empty
+    final List<DocumentModel> documents = [];
+    final List<ClauseModel> docClauses = [];
+    if (documents.isEmpty) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(32),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.cloud_off_rounded, size: 64, color: theme.primaryColor.withOpacity(0.4)),
+              const SizedBox(height: 16),
+              Text(
+                "No documents ingested yet",
+                style: GoogleFonts.newsreader(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w600,
+                  fontStyle: FontStyle.italic,
+                  color: theme.primaryColor,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text(
+                "Connect to the backend to load your compliance documents and clause analysis.",
+                textAlign: TextAlign.center,
+                style: GoogleFonts.poppins(
+                  fontSize: 13,
+                  color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+
+    final selectedDoc = documents.firstWhere((d) => d.docId == _selectedDocId, orElse: () => documents.first);
 
     Widget dashboardContent = Flex(
       direction: isLarge ? Axis.horizontal : Axis.vertical,
@@ -1490,10 +1451,10 @@ class _OfficerAppHomeState extends State<OfficerAppHome> {
                   child: ListView.separated(
                     shrinkWrap: !isLarge,
                     physics: isLarge ? const AlwaysScrollableScrollPhysics() : const NeverScrollableScrollPhysics(),
-                    itemCount: mockDocuments.length,
+                    itemCount: documents.length,
                     separatorBuilder: (_, __) => const SizedBox(height: 12),
                     itemBuilder: (context, idx) {
-                      final doc = mockDocuments[idx];
+                      final doc = documents[idx];
                       final isSelected = doc.docId == _selectedDocId;
 
                       return InkWell(

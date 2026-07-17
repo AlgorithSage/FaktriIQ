@@ -31,7 +31,7 @@ export default function Footer() {
       <div className="container footer__base relative z-10">
         <p className="footer__logo">
           <img 
-            src="/FaktriIQ_sq.png" 
+            src="/aktr.png" 
             alt="FaktriIQ Logo" 
             className="footer__logo-img" 
             draggable={false} 
