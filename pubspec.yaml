@@ -41,6 +41,9 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  firebase_core: ^4.12.1
+  firebase_auth: ^6.5.6
+  google_sign_in: ^7.2.0
 
 dev_dependencies:
   flutter_test:
@@ -72,5 +75,11 @@ flutter:
         - asset: assets/fonts/Satoshi-Medium.otf
           weight: 500
         - asset: assets/fonts/Satoshi-Bold.otf
+          weight: 700
+    - family: AnthropicSerifDisplay
+      fonts:
+        - asset: assets/fonts/AnthropicSerif-Display-Semibold.ttf
+          weight: 600
+        - asset: assets/fonts/AnthropicSerif-Display-Bold.ttf
           weight: 700
 
