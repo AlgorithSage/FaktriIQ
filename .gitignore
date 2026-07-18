@@ -18,6 +18,10 @@ build/web/
 **/android/local.properties
 **/android/key.properties
 **/android/app/src/main/res/values/strings.xml
+**/android/app/google-services.json
+
+# iOS Firebase config (contains API keys — never commit)
+**/ios/Runner/GoogleService-Info.plist
 
 # iOS related
 **/ios/Flutter/.flutter-plugins
