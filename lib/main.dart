@@ -519,6 +519,7 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
   void initState() {
     super.initState();
     _initConnectivity();
+    OnDeviceLlmService().checkModelAvailability();
     _connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
       setState(() {
         _isOnline = (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile);
@@ -1022,24 +1023,106 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
         ),
       ),
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: _techTab == "ask"
-              ? _buildTechAskView(theme, isDark)
-              : _buildTechHistoryView(theme, isDark),
+        child: Column(
+          children: [
+            _buildPersistentDownloadBanner(theme, isDark),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: _techTab == "ask"
+                    ? _buildTechAskView(theme, isDark)
+                    : _buildTechHistoryView(theme, isDark),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  void _showModelDownloadDialog(ThemeData theme, bool isDark) {
-    double downloadProgress = 0.0;
-    String downloadedMbStr = "0";
-    String totalMbStr = "2350";
-    bool isDownloading = false;
-    String? downloadError;
-    final hfTokenController = TextEditingController();
+  Widget _buildPersistentDownloadBanner(ThemeData theme, bool isDark) {
+    final llmService = OnDeviceLlmService();
+    return ValueListenableBuilder<bool>(
+      valueListenable: llmService.isDownloadingNotifier,
+      builder: (context, isDownloading, _) {
+        if (!isDownloading) return const SizedBox.shrink();
+        return ValueListenableBuilder<double>(
+          valueListenable: llmService.downloadProgressNotifier,
+          builder: (context, progress, _) {
+            return ValueListenableBuilder<String>(
+              valueListenable: llmService.downloadedMbNotifier,
+              builder: (context, downloadedMb, _) {
+                return ValueListenableBuilder<String>(
+                  valueListenable: llmService.totalMbNotifier,
+                  builder: (context, totalMb, _) {
+                    final percentStr = (progress * 100).toStringAsFixed(1);
+                    return InkWell(
+                      onTap: () => _showModelDownloadDialog(theme, isDark),
+                      child: Container(
+                        width: double.infinity,
+                        color: isDark ? const Color(0xFF3F3517) : const Color(0xFFFFF4BD),
+                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              children: [
+                                const SizedBox(
+                                  width: 14,
+                                  height: 14,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(Color(0xFFD97706)),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    "Downloading AI Model · $percentStr% ($downloadedMb / $totalMb MB)",
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                      color: isDark ? const Color(0xFFFDE68A) : const Color(0xFF92400E),
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFD97706),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: const Text(
+                                    "VIEW DETAILS",
+                                    style: TextStyle(color: Colors.white, fontSize: 9, fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            LinearProgressIndicator(
+                              value: progress > 0 ? progress : null,
+                              backgroundColor: isDark ? Colors.black26 : Colors.grey[300],
+                              valueColor: const AlwaysStoppedAnimation<Color>(Color(0xFFD97706)),
+                              minHeight: 4,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
 
+  void _showModelDownloadDialog(ThemeData theme, bool isDark) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -1048,205 +1131,197 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
         borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       builder: (ctx) {
-        return StatefulBuilder(
-          builder: (context, setModalState) {
-            return Padding(
-              padding: EdgeInsets.only(
-                left: 24.0,
-                right: 24.0,
-                top: 24.0,
-                bottom: MediaQuery.of(context).viewInsets.bottom + 24.0,
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
+        final llmService = OnDeviceLlmService();
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 24.0,
+            right: 24.0,
+            top: 24.0,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 24.0,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: isDark ? const Color(0xFF3F3517) : const Color(0xFFFFF4BD),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: const Icon(Icons.memory, color: Color(0xFFD97706), size: 20),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            "On-Device Local AI Model",
-                            style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.bold),
-                          ),
-                        ],
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: isDark ? const Color(0xFF3F3517) : const Color(0xFFFFF4BD),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(Icons.memory, color: Color(0xFFD97706), size: 20),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.close, size: 20),
-                        onPressed: () => Navigator.pop(ctx),
+                      const SizedBox(width: 12),
+                      Text(
+                        "On-Device Local AI Model",
+                        style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.bold),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 12),
-                  Text(
-                    "Unsloth Phi-4 Mini (3.8B Dynamic Q4_K_M GGUF) · 2.49 GB",
-                    style: GoogleFonts.poppins(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      color: isDark ? theme.primaryColor : const Color(0xFF92400E),
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(
-                    "Enables 100% offline, zero-internet AI compliance reasoning directly on your mobile processor.",
-                    style: TextStyle(
-                      fontSize: 11,
-                      color: isDark ? Colors.grey[300] : const Color(0xFF4B5563),
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-
-                  if (!isDownloading) ...[
-                    TextField(
-                      controller: hfTokenController,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w600,
-                        color: isDark ? Colors.white : const Color(0xFF1E2328),
-                      ),
-                      decoration: InputDecoration(
-                        labelText: "Hugging Face Access Token (hf_...)",
-                        labelStyle: TextStyle(
-                          color: isDark ? theme.primaryColor : const Color(0xFF92400E),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
-                        ),
-                        floatingLabelStyle: TextStyle(
-                          color: isDark ? theme.primaryColor : const Color(0xFF78350F),
-                          fontWeight: FontWeight.bold,
-                        ),
-                        hintText: "Optional / Free token from huggingface.co/settings/tokens",
-                        hintStyle: TextStyle(
-                          fontSize: 11,
-                          color: isDark ? Colors.grey[400] : const Color(0xFF6B7280),
-                        ),
-                        isDense: true,
-                        prefixIcon: Icon(
-                          Icons.key,
-                          size: 16,
-                          color: isDark ? theme.primaryColor : const Color(0xFF92400E),
-                        ),
-                        enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: isDark ? Colors.grey[700]! : const Color(0xFFD97706),
-                            width: 1.2,
-                          ),
-                        ),
-                        focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8),
-                          borderSide: BorderSide(
-                            color: isDark ? theme.primaryColor : const Color(0xFF78350F),
-                            width: 1.8,
-                          ),
-                        ),
-                        fillColor: isDark ? const Color(0xFF1F2937) : const Color(0xFFFFFBEB),
-                        filled: true,
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-
-                  if (isDownloading) ...[
-                    LinearProgressIndicator(
-                      value: downloadProgress > 0 ? downloadProgress : null,
-                      backgroundColor: isDark ? Colors.grey[800] : Colors.grey[200],
-                      valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor),
-                      minHeight: 8,
-                    ),
-                    const SizedBox(height: 10),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          "${(downloadProgress * 100).toStringAsFixed(1)}% Completed",
-                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          "$downloadedMbStr MB / $totalMbStr MB",
-                          style: TextStyle(fontSize: 11, color: isDark ? Colors.grey : Colors.black54),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                  ],
-
-                  if (downloadError != null) ...[
-                    Text(
-                      downloadError!,
-                      style: const TextStyle(color: Colors.redAccent, fontSize: 11),
-                    ),
-                    const SizedBox(height: 10),
-                  ],
-
-                  Row(
-                    children: [
-                      Expanded(
-                        child: ElevatedButton.icon(
-                          icon: Icon(isDownloading ? Icons.cancel : Icons.download_for_offline, size: 18),
-                          label: Text(isDownloading ? "Cancel Download" : "Start One-Click Download (2.3 GB)"),
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: isDownloading ? Colors.redAccent : theme.primaryColor,
-                            foregroundColor: isDark ? Colors.black : const Color(0xFF1E2328),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                          ),
-                          onPressed: () async {
-                            if (isDownloading) {
-                              OnDeviceLlmService().cancelDownload();
-                              setModalState(() {
-                                isDownloading = false;
-                              });
-                            } else {
-                              setModalState(() {
-                                isDownloading = true;
-                                downloadError = null;
-                              });
-
-                              final success = await OnDeviceLlmService().downloadModel(
-                                hfToken: hfTokenController.text,
-                                onProgress: (progress, downloaded, total) {
-                                  setModalState(() {
-                                    downloadProgress = progress;
-                                    downloadedMbStr = downloaded;
-                                    totalMbStr = total;
-                                  });
-                                },
-                                onError: (err) {
-                                  setModalState(() {
-                                    isDownloading = false;
-                                    downloadError = err;
-                                  });
-                                },
-                              );
-
-                              if (success) {
-                                setModalState(() {
-                                  isDownloading = false;
-                                });
-                                setState(() {});
-                                if (context.mounted) Navigator.pop(ctx);
-                              }
-                            }
-                          },
-                        ),
-                      ),
-                    ],
+                  IconButton(
+                    icon: const Icon(Icons.close, size: 20),
+                    onPressed: () => Navigator.pop(ctx),
                   ),
                 ],
               ),
-            );
-          },
+              const SizedBox(height: 12),
+              Text(
+                "Unsloth Phi-4 Mini (3.8B Dynamic Q4_K_M GGUF) · 2.49 GB",
+                style: GoogleFonts.poppins(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: isDark ? theme.primaryColor : const Color(0xFF92400E),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                "Enables 100% offline, zero-internet AI compliance reasoning directly on your mobile processor.",
+                style: TextStyle(
+                  fontSize: 11,
+                  color: isDark ? Colors.grey[300] : const Color(0xFF4B5563),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              ValueListenableBuilder<bool>(
+                valueListenable: llmService.isDownloadingNotifier,
+                builder: (context, isDownloading, _) {
+                  return ValueListenableBuilder<double>(
+                    valueListenable: llmService.downloadProgressNotifier,
+                    builder: (context, progress, _) {
+                      return ValueListenableBuilder<String>(
+                        valueListenable: llmService.downloadedMbNotifier,
+                        builder: (context, downloadedMb, _) {
+                          return ValueListenableBuilder<String>(
+                            valueListenable: llmService.totalMbNotifier,
+                            builder: (context, totalMb, _) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (isDownloading) ...[
+                                    LinearProgressIndicator(
+                                      value: progress > 0 ? progress : null,
+                                      backgroundColor: isDark ? Colors.grey[800] : Colors.grey[200],
+                                      valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor),
+                                      minHeight: 8,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "${(progress * 100).toStringAsFixed(1)}% Completed",
+                                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                                        ),
+                                        Text(
+                                          "$downloadedMb MB / $totalMb MB",
+                                          style: TextStyle(fontSize: 11, color: isDark ? Colors.grey : Colors.black54),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 16),
+                                  ],
+
+                                  ValueListenableBuilder<String?>(
+                                    valueListenable: llmService.downloadErrorNotifier,
+                                    builder: (context, error, _) {
+                                      if (error == null) return const SizedBox.shrink();
+                                      return Padding(
+                                        padding: const EdgeInsets.only(bottom: 10),
+                                        child: Text(
+                                          error,
+                                          style: const TextStyle(color: Colors.redAccent, fontSize: 11),
+                                        ),
+                                      );
+                                    },
+                                  ),
+
+                                  ValueListenableBuilder<bool>(
+                                    valueListenable: llmService.isModelLoadedNotifier,
+                                    builder: (context, isLoaded, _) {
+                                      String buttonLabel = "Start One-Click Download (2.49 GB)";
+                                      IconData buttonIcon = Icons.download_for_offline;
+
+                                      if (isDownloading) {
+                                        buttonLabel = "Cancel Download";
+                                        buttonIcon = Icons.cancel;
+                                      } else if (isLoaded) {
+                                        buttonLabel = "On-Device AI Active (Installed)";
+                                        buttonIcon = Icons.check_circle;
+                                      } else if (progress > 0) {
+                                        buttonLabel = "Resume Download ($downloadedMb / $totalMb MB)";
+                                        buttonIcon = Icons.play_arrow_rounded;
+                                      }
+
+                                      return Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: ElevatedButton.icon(
+                                                  icon: Icon(buttonIcon, size: 18),
+                                                  label: Text(buttonLabel),
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor: isDownloading
+                                                        ? Colors.redAccent
+                                                        : (isLoaded ? const Color(0xFF10B981) : theme.primaryColor),
+                                                    foregroundColor: (isDownloading || isLoaded) ? Colors.white : (isDark ? Colors.black : const Color(0xFF1E2328)),
+                                                    padding: const EdgeInsets.symmetric(vertical: 12),
+                                                  ),
+                                                  onPressed: isLoaded
+                                                      ? null
+                                                      : () async {
+                                                          if (isDownloading) {
+                                                            llmService.cancelDownload();
+                                                          } else {
+                                                            final success = await llmService.downloadModel();
+                                                            if (success) {
+                                                              setState(() {});
+                                                              if (context.mounted) Navigator.pop(ctx);
+                                                            }
+                                                          }
+                                                        },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          if (isLoaded) ...[
+                                            const SizedBox(height: 10),
+                                            TextButton.icon(
+                                              icon: const Icon(Icons.delete_outline, size: 16, color: Colors.redAccent),
+                                              label: const Text(
+                                                "Delete Local Model to Free Storage",
+                                                style: TextStyle(color: Colors.redAccent, fontSize: 11),
+                                              ),
+                                              onPressed: () async {
+                                                await llmService.deleteModel();
+                                                setState(() {});
+                                                if (context.mounted) Navigator.pop(ctx);
+                                              },
+                                            ),
+                                          ],
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
         );
       },
     );
