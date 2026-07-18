@@ -1089,29 +1089,73 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
                   ),
                   const SizedBox(height: 12),
                   Text(
-                    "Microsoft Phi-4 Mini (3.8B Q4_K_M GGUF) · 2.3 GB",
-                    style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w600, color: isDark ? theme.primaryColor : const Color(0xFFD97706)),
+                    "Unsloth Phi-4 Mini (3.8B Dynamic Q4_K_M GGUF) · 2.49 GB",
+                    style: GoogleFonts.poppins(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      color: isDark ? theme.primaryColor : const Color(0xFF92400E),
+                    ),
                   ),
                   const SizedBox(height: 6),
                   Text(
                     "Enables 100% offline, zero-internet AI compliance reasoning directly on your mobile processor.",
-                    style: TextStyle(fontSize: 11, color: isDark ? Colors.grey : const Color(0xFF6B7280)),
+                    style: TextStyle(
+                      fontSize: 11,
+                      color: isDark ? Colors.grey[300] : const Color(0xFF4B5563),
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                  const SizedBox(height: 14),
+                  const SizedBox(height: 16),
 
                   if (!isDownloading) ...[
                     TextField(
                       controller: hfTokenController,
-                      style: const TextStyle(fontSize: 12),
+                      style: TextStyle(
+                        fontSize: 12,
+                        fontWeight: FontWeight.w600,
+                        color: isDark ? Colors.white : const Color(0xFF1E2328),
+                      ),
                       decoration: InputDecoration(
                         labelText: "Hugging Face Access Token (hf_...)",
+                        labelStyle: TextStyle(
+                          color: isDark ? theme.primaryColor : const Color(0xFF92400E),
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                        floatingLabelStyle: TextStyle(
+                          color: isDark ? theme.primaryColor : const Color(0xFF78350F),
+                          fontWeight: FontWeight.bold,
+                        ),
                         hintText: "Optional / Free token from huggingface.co/settings/tokens",
+                        hintStyle: TextStyle(
+                          fontSize: 11,
+                          color: isDark ? Colors.grey[400] : const Color(0xFF6B7280),
+                        ),
                         isDense: true,
-                        prefixIcon: const Icon(Icons.key, size: 16),
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                        prefixIcon: Icon(
+                          Icons.key,
+                          size: 16,
+                          color: isDark ? theme.primaryColor : const Color(0xFF92400E),
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: isDark ? Colors.grey[700]! : const Color(0xFFD97706),
+                            width: 1.2,
+                          ),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8),
+                          borderSide: BorderSide(
+                            color: isDark ? theme.primaryColor : const Color(0xFF78350F),
+                            width: 1.8,
+                          ),
+                        ),
+                        fillColor: isDark ? const Color(0xFF1F2937) : const Color(0xFFFFFBEB),
+                        filled: true,
                       ),
                     ),
-                    const SizedBox(height: 14),
+                    const SizedBox(height: 16),
                   ],
 
                   if (isDownloading) ...[

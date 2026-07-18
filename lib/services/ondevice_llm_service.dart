@@ -12,7 +12,7 @@ class OnDeviceLlmService {
   OnDeviceLlmService._internal();
 
   static const String kModelUrl =
-      'https://huggingface.co/microsoft/Phi-4-mini-instruct-GGUF/resolve/main/Phi-4-mini-instruct-Q4_K_M.gguf';
+      'https://huggingface.co/unsloth/Phi-4-mini-instruct-GGUF/resolve/main/Phi-4-mini-instruct-Q4_K_M.gguf';
 
   bool _isModelLoaded = false;
   bool _isDownloading = false;
