@@ -35,6 +35,8 @@ dependencies:
   getwidget: ^7.0.2
   google_fonts: ^6.2.1
   http: ^1.2.1
+  path_provider: ^2.1.2
+
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -59,6 +61,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/images/FaktriIQ_sq.png
+    - guidelines.json/
 
   fonts:
     - family: Striper

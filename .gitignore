@@ -40,3 +40,6 @@ build/web/
 Thumbs.db
 desktop.ini
 AI_COWORKER/
+*.env
+.env
+backend/.env

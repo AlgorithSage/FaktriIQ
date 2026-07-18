@@ -6,6 +6,10 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:http/http.dart' as http;
+import 'services/offline_search_service.dart';
+import 'services/query_cache_service.dart';
+
+
 
 // ==========================================
 // MODELS & DATA DEFINITIONS
@@ -77,10 +81,9 @@ class QueryLog {
 // API CONFIGURATION
 // ==========================================
 
-/// Backend URL — change to your deployed server URL in production.
-/// For local development, use your PC's local network IP so the phone can reach it.
-const String kApiBaseUrl = "http://10.0.2.2:8000"; // Android emulator → host
-// const String kApiBaseUrl = "http://192.168.X.X:8000"; // Physical device → LAN IP
+/// Backend URL — set to your PC's Wi-Fi IPv4 address so your physical phone (RMX5051) can reach it.
+const String kApiBaseUrl = "http://192.168.1.4:8000";
+
 
 class AnswerResult {
   final bool success;
@@ -533,7 +536,7 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
 
   final List<QueryLog> _techHistory = [];
 
-  /// Calls the Agno backend API to get an AI-generated answer
+  /// Calls the Agno backend API when online, or local cache / on-device RAG when offline
   Future<void> _runTechSearch(String queryText) async {
     if (queryText.trim().isEmpty) return;
     setState(() {
@@ -542,6 +545,30 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
       _showFullSection = false;
     });
 
+    // 1. If Offline -> Check Local AI Cache first, then fallback to Statutory RAG
+    if (!_isOnline) {
+      final cachedResponse = await QueryCacheService().getCachedResponse(queryText);
+      final finalResult = cachedResponse ?? await OfflineSearchService().search(queryText);
+
+      setState(() {
+        _techSearching = false;
+        _techResponse = finalResult;
+        if (finalResult.success) {
+          _techHistory.insert(
+            0,
+            QueryLog(
+              query: queryText,
+              answer: finalResult.answer,
+              timestamp: _formatTimestamp(),
+              doc: finalResult.source,
+            ),
+          );
+        }
+      });
+      return;
+    }
+
+    // 2. If Online -> Call Agno FastAPI Backend (Groq 120B)
     try {
       final response = await http.post(
         Uri.parse('$kApiBaseUrl/ask'),
@@ -552,6 +579,10 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
       if (response.statusCode == 200) {
         final json = jsonDecode(response.body);
         final result = AnswerResult.fromJson(json);
+
+        // Save AI response to local phone cache for offline reuse
+        await QueryCacheService().saveResponse(queryText, result);
+
         setState(() {
           _techSearching = false;
           _techResponse = result;
@@ -566,25 +597,33 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
           );
         });
       } else {
+        // Fallback to cached response or offline search if server responds with error
+        final cachedResponse = await QueryCacheService().getCachedResponse(queryText);
+        final offlineResult = cachedResponse ?? await OfflineSearchService().search(queryText);
         setState(() {
           _techSearching = false;
-          _techResponse = AnswerResult(
-            success: false,
-            query: queryText,
-            answer: "Server returned an error (${response.statusCode}). Please try again.",
-          );
+          _techResponse = offlineResult.success
+              ? offlineResult
+              : AnswerResult(
+                  success: false,
+                  query: queryText,
+                  answer: "Server error (${response.statusCode}). Could not retrieve answer.",
+                );
         });
       }
     } catch (e) {
+      // Fallback to local AI response cache or statutory RAG search if server is unreachable
+      final cachedResponse = await QueryCacheService().getCachedResponse(queryText);
+      final offlineResult = cachedResponse ?? await OfflineSearchService().search(queryText);
       setState(() {
         _techSearching = false;
-        _techResponse = AnswerResult(
-          success: false,
-          query: queryText,
-          answer: _isOnline
-              ? "Could not reach the AI backend. Make sure the server is running at $kApiBaseUrl"
-              : "You are offline. Connect to the network to use the AI Copilot.",
-        );
+        _techResponse = offlineResult.success
+            ? offlineResult
+            : AnswerResult(
+                success: false,
+                query: queryText,
+                answer: "Could not reach backend API at $kApiBaseUrl and no offline match found.",
+              );
       });
     }
   }
@@ -593,6 +632,121 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
     final now = DateTime.now();
     final months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return '${now.day}-${months[now.month - 1]}-${now.year} ${now.hour.toString().padLeft(2, '0')}:${now.minute.toString().padLeft(2, '0')}';
+  }
+
+  Widget _buildFormattedAnswerText(String text, bool isDark, ThemeData theme) {
+    final lines = text.split('\n');
+    List<Widget> children = [];
+
+    for (var line in lines) {
+      final trimmed = line.trim();
+      if (trimmed.isEmpty) {
+        children.add(const SizedBox(height: 6));
+        continue;
+      }
+
+      // 1. Check for Section Headers (📌, 📜, 📋, ⚠️, ###)
+      if (trimmed.startsWith('📌') ||
+          trimmed.startsWith('📜') ||
+          trimmed.startsWith('📋') ||
+          trimmed.startsWith('⚠️') ||
+          trimmed.startsWith('###') ||
+          trimmed.startsWith('#')) {
+        final cleanHeader = trimmed.replaceAll('#', '').trim();
+        children.add(
+          Container(
+            margin: const EdgeInsets.only(top: 8, bottom: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: isDark ? const Color(0xFF1F2937) : const Color(0xFFFFF4BD),
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(color: theme.primaryColor.withOpacity(0.3), width: 1),
+            ),
+            child: Text(
+              cleanHeader,
+              style: GoogleFonts.poppins(
+                fontSize: 11.5,
+                fontWeight: FontWeight.bold,
+                color: isDark ? theme.primaryColor : const Color(0xFF1E2328),
+                letterSpacing: 0.3,
+              ),
+            ),
+          ),
+        );
+        continue;
+      }
+
+      // 2. Check for Bullet Points (•, -, *, 1., 2.)
+      final isBullet = trimmed.startsWith('•') ||
+          trimmed.startsWith('- ') ||
+          trimmed.startsWith('* ') ||
+          RegExp(r'^\d+\.').hasMatch(trimmed);
+
+      if (isBullet) {
+        String bulletText = trimmed;
+        if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+          bulletText = '• ${trimmed.substring(2)}';
+        } else if (!trimmed.startsWith('•') && !RegExp(r'^\d+\.').hasMatch(trimmed)) {
+          bulletText = '• $trimmed';
+        }
+
+        children.add(
+          Padding(
+            padding: const EdgeInsets.only(left: 8.0, top: 3.0, bottom: 3.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: _buildRichInlineText(bulletText, isDark, theme),
+                ),
+              ],
+            ),
+          ),
+        );
+        continue;
+      }
+
+      // 3. Normal paragraph text
+      children.add(
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 2.0),
+          child: _buildRichInlineText(trimmed, isDark, theme),
+        ),
+      );
+    }
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: children,
+    );
+  }
+
+  Widget _buildRichInlineText(String text, bool isDark, ThemeData theme) {
+    final spans = <TextSpan>[];
+    final parts = text.split('**');
+
+    for (int i = 0; i < parts.length; i++) {
+      if (parts[i].isEmpty) continue;
+      final isBold = (i % 2 == 1);
+      spans.add(
+        TextSpan(
+          text: parts[i],
+          style: TextStyle(
+            fontFamily: 'Satoshi',
+            fontSize: 12.5,
+            height: 1.45,
+            fontWeight: isBold ? FontWeight.w800 : FontWeight.w500,
+            color: isBold
+                ? (isDark ? theme.primaryColor : const Color(0xFFD97706))
+                : (isDark ? Colors.white : const Color(0xFF1E2328)),
+          ),
+        ),
+      );
+    }
+
+    return RichText(
+      text: TextSpan(children: spans),
+    );
   }
 
   @override
@@ -912,15 +1066,7 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            _techResponse!.answer,
-                            style: TextStyle(
-                              fontFamily: 'Satoshi', 
-                              fontSize: 13, 
-                              height: 1.45,
-                              color: isDark ? Colors.white : const Color(0xFF1E2328),
-                            ),
-                          ),
+                          _buildFormattedAnswerText(_techResponse!.answer, isDark, theme),
                           const SizedBox(height: 12),
                           // Citation status chip
                           Wrap(
