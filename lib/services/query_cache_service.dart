@@ -37,13 +37,15 @@ class QueryCacheService {
     return q.trim().toLowerCase().replaceAll(RegExp(r'[^\w\s]'), '');
   }
 
+  String _clean(String s) => s.replaceAll('**', '').replaceAll('*', '').replaceAll('^', '');
+
   /// Save an AI response to local cache
   Future<void> saveResponse(String query, AnswerResult result) async {
     await init();
     final key = _normalize(query);
     _cache[key] = {
       'query': query,
-      'answer': result.answer,
+      'answer': _clean(result.answer),
       'source': result.source,
       'section': result.section,
       'confidence': "Cached AI Response (Groq 120B)",

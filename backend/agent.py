@@ -23,18 +23,35 @@ client = Groq(api_key=groq_api_key)
 SYSTEM_PROMPT = """You are FaktriIQ Copilot — an expert AI Industrial Safety Compliance Officer.
 Your primary role is to assist factory technicians, engineers, and plant safety officers with clear, authoritative compliance answers based on Indian statutory industrial safety rules (Factories Act 1948, OISD, PESO, DGMS, MSIHC).
 
-FORMATTING RULES FOR YOUR RESPONSE (CRITICAL FOR MOBILE READABILITY):
-1. Never write dense, unformatted walls of text or markdown tables.
-2. Structure your response into 3-4 distinct sections using bold emoji headers:
-   📌 **EXECUTIVE SUMMARY** (1 short, direct sentence answering the question)
-   📜 **STATUTORY MANDATE** (Specific Act/Rule citations with **exact numbers, limits, and frequencies** in bold)
-   📋 **TECHNICIAN ACTION CHECKLIST** (Bulleted step-by-step checklist using clear • bullet points)
-   ⚠️ **SAFETY WARNING / THRESHOLD** (Critical safety boundaries in bold)
+FORMATTING RULES FOR YOUR RESPONSE (CRITICAL FOR READABILITY):
+1. Structure your response into 4 distinct sections using clean emoji headers (do NOT put asterisks inside header titles):
+   📌 EXECUTIVE SUMMARY
+   📜 STATUTORY MANDATE
+   📋 TECHNICIAN ACTION CHECKLIST
+   ⚠️ SAFETY WARNING / THRESHOLD
 
-3. Use **bold** for all key safety parameters (e.g. **2.5 bar**, **7.0 kg/cm²**, **19.5% O2**, **Annually**, **Sec 36(1)**).
-4. Use *italics* for equipment tags, definitions, or operational notes.
-5. Keep paragraphs short (maximum 2-3 lines).
+2. USE BOLD SUBHEADINGS & BULLET LEAD TITLES UNDER EVERY PART HEADING:
+   - Under 📌 EXECUTIVE SUMMARY: Start every bullet point with a **Bold Lead Title** (e.g., • **Primary Operational Risk:** ..., • **Key Compliance Directive:** ...).
+   - Under 📜 STATUTORY MANDATE: Start every rule with a **Bold Citation Title** (e.g., • **DGMS Guidelines — Section 111(2):** ..., • **Factories Act 1948 — Section 36(1):** ...).
+   - Under 📋 TECHNICIAN ACTION CHECKLIST: Start every step with a **Bold Step Title** (e.g., 1. **Atmospheric Testing:** ..., 2. **Isolate Pipelines:** ...).
+   - Under ⚠️ SAFETY WARNING / THRESHOLD: Start every warning with a **Bold Threshold Title** (e.g., • **MAXIMUM PERMISSIBLE LIMIT:** H2S gas must be below **10 PPM**).
+
+3. ALWAYS BOLD ALL NUMERICAL METRICS & SECTION NUMBERS IN DOUBLE ASTERISKS:
+   - Wrap all Act names, section numbers, pressure metrics, PPM limits, temperature limits, and inspection frequencies in **double asterisks** (e.g., **Factories Act 1948**, **Section 111(2)**, **OISD-STD-128**, **2.5 bar**, **7.0 kg/cm²**, **1.5 × MOP**, **Annually**).
+
+4. Keep text structured, professional, and visually engaging.
 """
+
+def _clean_header_stars(text: str) -> str:
+    lines = text.split('\n')
+    cleaned = []
+    for line in lines:
+        stripped = line.strip()
+        if any(stripped.startswith(e) for e in ['📌', '📜', '📋', '⚠️', '###', '#']):
+            cleaned.append(stripped.replace('**', '').replace('*', ''))
+        else:
+            cleaned.append(line)
+    return '\n'.join(cleaned)
 
 def query_faktriiq_agent(query: str) -> dict:
     """
@@ -75,7 +92,7 @@ Please provide a clear, concise, and structured safety answer for the technician
             reasoning_effort="medium"
         )
 
-        answer_text = completion.choices[0].message.content
+        answer_text = _clean_header_stars(completion.choices[0].message.content)
 
         return {
             "success": True,
@@ -84,7 +101,7 @@ Please provide a clear, concise, and structured safety answer for the technician
             "source": primary_source,
             "section": primary_section,
             "confidence": "High Confidence (Groq 120B)",
-            "full_section_text": f"Retrieved Context:\n{full_text}" if full_text else None
+            "full_section_text": f"Retrieved Context:\n{full_text.replace('**', '')}" if full_text else None
         }
 
     except Exception as e:
@@ -92,14 +109,16 @@ Please provide a clear, concise, and structured safety answer for the technician
         # Fallback to direct statutory text if API call fails
         if top_docs:
             doc = top_docs[0]
+            clean_clause = str(doc['clause_id']).replace('**', '')
+            clean_doc_text = str(doc['text']).replace('**', '')
             return {
                 "success": True,
                 "query": query,
-                "answer": f"Statutory Match ({doc['source_framework']} - {doc['clause_id']}):\n{doc['text']}",
+                "answer": f"Statutory Match ({doc['source_framework']} - {clean_clause}):\n{clean_doc_text}",
                 "source": doc['source_framework'],
-                "section": doc['clause_id'],
+                "section": clean_clause,
                 "confidence": "Direct Statutory Citation",
-                "full_section_text": doc['text']
+                "full_section_text": clean_doc_text
             }
         else:
             return {

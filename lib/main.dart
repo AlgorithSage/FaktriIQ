@@ -8,6 +8,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:http/http.dart' as http;
 import 'services/offline_search_service.dart';
 import 'services/query_cache_service.dart';
+import 'services/ondevice_llm_service.dart';
 
 
 
@@ -545,10 +546,14 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
       _showFullSection = false;
     });
 
-    // 1. If Offline -> Check Local AI Cache first, then fallback to Statutory RAG
+    // 1. If Offline -> Check Local AI Cache first, then fallback to On-Device Local AI / Statutory RAG
     if (!_isOnline) {
       final cachedResponse = await QueryCacheService().getCachedResponse(queryText);
-      final finalResult = cachedResponse ?? await OfflineSearchService().search(queryText);
+      final finalResult = cachedResponse ??
+          await OnDeviceLlmService().processQuery(
+            query: queryText,
+            offlineSearch: OfflineSearchService(),
+          );
 
       setState(() {
         _techSearching = false;
@@ -597,9 +602,13 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
           );
         });
       } else {
-        // Fallback to cached response or offline search if server responds with error
+        // Fallback to cached response or on-device local AI if server responds with error
         final cachedResponse = await QueryCacheService().getCachedResponse(queryText);
-        final offlineResult = cachedResponse ?? await OfflineSearchService().search(queryText);
+        final offlineResult = cachedResponse ??
+            await OnDeviceLlmService().processQuery(
+              query: queryText,
+              offlineSearch: OfflineSearchService(),
+            );
         setState(() {
           _techSearching = false;
           _techResponse = offlineResult.success
@@ -612,9 +621,13 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
         });
       }
     } catch (e) {
-      // Fallback to local AI response cache or statutory RAG search if server is unreachable
+      // Fallback to local AI response cache or on-device local AI if server is unreachable
       final cachedResponse = await QueryCacheService().getCachedResponse(queryText);
-      final offlineResult = cachedResponse ?? await OfflineSearchService().search(queryText);
+      final offlineResult = cachedResponse ??
+          await OnDeviceLlmService().processQuery(
+            query: queryText,
+            offlineSearch: OfflineSearchService(),
+          );
       setState(() {
         _techSearching = false;
         _techResponse = offlineResult.success
@@ -641,34 +654,61 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
     for (var line in lines) {
       final trimmed = line.trim();
       if (trimmed.isEmpty) {
-        children.add(const SizedBox(height: 6));
+        children.add(const SizedBox(height: 8));
         continue;
       }
 
       // 1. Check for Section Headers (📌, 📜, 📋, ⚠️, ###)
-      if (trimmed.startsWith('📌') ||
+      final isHeader = trimmed.startsWith('📌') ||
           trimmed.startsWith('📜') ||
           trimmed.startsWith('📋') ||
           trimmed.startsWith('⚠️') ||
           trimmed.startsWith('###') ||
-          trimmed.startsWith('#')) {
-        final cleanHeader = trimmed.replaceAll('#', '').trim();
+          trimmed.startsWith('#');
+
+      if (isHeader) {
+        // Strip all '#' and '*' from header text
+        final cleanHeader = trimmed.replaceAll('#', '').replaceAll('*', '').trim();
+
+        // Determine section badge colors
+        Color badgeBg;
+        Color badgeBorder;
+        Color badgeText;
+
+        if (cleanHeader.contains('EXECUTIVE SUMMARY')) {
+          badgeBg = isDark ? const Color(0xFF3F3517) : const Color(0xFFFFF4BD);
+          badgeBorder = const Color(0xFFD97706);
+          badgeText = isDark ? theme.primaryColor : const Color(0xFF92400E);
+        } else if (cleanHeader.contains('STATUTORY MANDATE')) {
+          badgeBg = isDark ? const Color(0xFF1E293B) : const Color(0xFFE2E8F0);
+          badgeBorder = const Color(0xFF64748B);
+          badgeText = isDark ? const Color(0xFF94A3B8) : const Color(0xFF334155);
+        } else if (cleanHeader.contains('CHECKLIST') || cleanHeader.contains('ACTION')) {
+          badgeBg = isDark ? const Color(0xFF064E3B) : const Color(0xFFD1FAE5);
+          badgeBorder = const Color(0xFF10B981);
+          badgeText = isDark ? const Color(0xFF34D399) : const Color(0xFF065F46);
+        } else {
+          badgeBg = isDark ? const Color(0xFF451A03) : const Color(0xFFFEE2E2);
+          badgeBorder = const Color(0xFFEF4444);
+          badgeText = isDark ? const Color(0xFFFCA5A5) : const Color(0xFF991B1B);
+        }
+
         children.add(
           Container(
-            margin: const EdgeInsets.only(top: 8, bottom: 4),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            margin: const EdgeInsets.only(top: 12, bottom: 6),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             decoration: BoxDecoration(
-              color: isDark ? const Color(0xFF1F2937) : const Color(0xFFFFF4BD),
-              borderRadius: BorderRadius.circular(6),
-              border: Border.all(color: theme.primaryColor.withOpacity(0.3), width: 1),
+              color: badgeBg,
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: badgeBorder.withOpacity(0.5), width: 1.2),
             ),
             child: Text(
               cleanHeader,
               style: GoogleFonts.poppins(
-                fontSize: 11.5,
-                fontWeight: FontWeight.bold,
-                color: isDark ? theme.primaryColor : const Color(0xFF1E2328),
-                letterSpacing: 0.3,
+                fontSize: 11,
+                fontWeight: FontWeight.w800,
+                color: badgeText,
+                letterSpacing: 0.5,
               ),
             ),
           ),
@@ -680,22 +720,31 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
       final isBullet = trimmed.startsWith('•') ||
           trimmed.startsWith('- ') ||
           trimmed.startsWith('* ') ||
-          RegExp(r'^\d+\.').hasMatch(trimmed);
+          RegExp(r'^\d+[\.\)]').hasMatch(trimmed);
 
       if (isBullet) {
         String bulletText = trimmed;
         if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
-          bulletText = '• ${trimmed.substring(2)}';
-        } else if (!trimmed.startsWith('•') && !RegExp(r'^\d+\.').hasMatch(trimmed)) {
-          bulletText = '• $trimmed';
+          bulletText = trimmed.substring(2);
+        } else if (trimmed.startsWith('•')) {
+          bulletText = trimmed.substring(1).trim();
         }
 
         children.add(
           Padding(
-            padding: const EdgeInsets.only(left: 8.0, top: 3.0, bottom: 3.0),
+            padding: const EdgeInsets.only(left: 4.0, top: 4.0, bottom: 4.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                Container(
+                  margin: const EdgeInsets.only(top: 6, right: 8),
+                  width: 5,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: isDark ? theme.primaryColor : const Color(0xFFD97706),
+                    shape: BoxShape.circle,
+                  ),
+                ),
                 Expanded(
                   child: _buildRichInlineText(bulletText, isDark, theme),
                 ),
@@ -709,7 +758,7 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
       // 3. Normal paragraph text
       children.add(
         Padding(
-          padding: const EdgeInsets.symmetric(vertical: 2.0),
+          padding: const EdgeInsets.symmetric(vertical: 3.0),
           child: _buildRichInlineText(trimmed, isDark, theme),
         ),
       );
@@ -723,30 +772,97 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
 
   Widget _buildRichInlineText(String text, bool isDark, ThemeData theme) {
     final spans = <TextSpan>[];
-    final parts = text.split('**');
+    // Split by ** for bold
+    final boldParts = text.split('**');
 
-    for (int i = 0; i < parts.length; i++) {
-      if (parts[i].isEmpty) continue;
-      final isBold = (i % 2 == 1);
-      spans.add(
-        TextSpan(
-          text: parts[i],
-          style: TextStyle(
-            fontFamily: 'Satoshi',
-            fontSize: 12.5,
-            height: 1.45,
-            fontWeight: isBold ? FontWeight.w800 : FontWeight.w500,
-            color: isBold
-                ? (isDark ? theme.primaryColor : const Color(0xFFD97706))
-                : (isDark ? Colors.white : const Color(0xFF1E2328)),
-          ),
-        ),
-      );
+    for (int i = 0; i < boldParts.length; i++) {
+      if (boldParts[i].isEmpty) continue;
+      final isExplicitBold = (i % 2 == 1);
+
+      // Sub-split by * for italics
+      final italicParts = boldParts[i].split('*');
+
+      for (int j = 0; j < italicParts.length; j++) {
+        final cleanChunk = italicParts[j].replaceAll('*', '').replaceAll('^', '').replaceAll('_', '');
+        if (cleanChunk.isEmpty) continue;
+        final isItalic = (j % 2 == 1);
+
+        if (isExplicitBold) {
+          spans.add(
+            TextSpan(
+              text: cleanChunk,
+              style: TextStyle(
+                fontFamily: 'Satoshi',
+                fontSize: 12.5,
+                height: 1.45,
+                fontWeight: FontWeight.w900,
+                fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
+                color: isDark ? theme.primaryColor : const Color(0xFFD97706),
+              ),
+            ),
+          );
+        } else {
+          // Auto-highlight statutory sections, laws, and physical metrics
+          _addAutoHighlightedSpans(cleanChunk, spans, isDark, theme, isItalic);
+        }
+      }
     }
 
     return RichText(
       text: TextSpan(children: spans),
     );
+  }
+
+  void _addAutoHighlightedSpans(String chunk, List<TextSpan> spans, bool isDark, ThemeData theme, bool isItalic) {
+    final autoHighlightRegExp = RegExp(
+      r'(\b(?:Section|Sec\.?|Chapter|CHAPTER)\s+[\w\(\)\d\-]+|\b(?:Factories Act \d*|DGMS Guidelines|DGMS|OISD[\-\w]*|PESO[\-\w]*|MSIHC[\-\w]*)\b|\b\d+(?:\.\d+)?\s*(?:kg/cm²|bar|PPM|ppm|%|× MOP|MOP)\b|\b\d+\s*×\s*\w+\b|^[A-Za-z0-9][\w\s\-\/\(\)]+—[\w\s\-\/\(\)]+:|^[A-Za-z0-9][\w\s\-\/\(\)]+:)',
+      caseSensitive: false,
+    );
+
+    int lastIndex = 0;
+    for (final match in autoHighlightRegExp.allMatches(chunk)) {
+      if (match.start > lastIndex) {
+        spans.add(TextSpan(
+          text: chunk.substring(lastIndex, match.start),
+          style: TextStyle(
+            fontFamily: 'Satoshi',
+            fontSize: 12.5,
+            height: 1.45,
+            fontWeight: FontWeight.w500,
+            fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
+            color: isDark ? Colors.white : const Color(0xFF1E2328),
+          ),
+        ));
+      }
+
+      spans.add(TextSpan(
+        text: match.group(0),
+        style: TextStyle(
+          fontFamily: 'Satoshi',
+          fontSize: 12.5,
+          height: 1.45,
+          fontWeight: FontWeight.w900,
+          fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
+          color: isDark ? theme.primaryColor : const Color(0xFFD97706),
+        ),
+      ));
+
+      lastIndex = match.end;
+    }
+
+    if (lastIndex < chunk.length) {
+      spans.add(TextSpan(
+        text: chunk.substring(lastIndex),
+        style: TextStyle(
+          fontFamily: 'Satoshi',
+          fontSize: 12.5,
+          height: 1.45,
+          fontWeight: FontWeight.w500,
+          fontStyle: isItalic ? FontStyle.italic : FontStyle.normal,
+          color: isDark ? Colors.white : const Color(0xFF1E2328),
+        ),
+      ));
+    }
   }
 
   @override
@@ -916,6 +1032,182 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
     );
   }
 
+  void _showModelDownloadDialog(ThemeData theme, bool isDark) {
+    double downloadProgress = 0.0;
+    String downloadedMbStr = "0";
+    String totalMbStr = "2350";
+    bool isDownloading = false;
+    String? downloadError;
+    final hfTokenController = TextEditingController();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: theme.cardColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return StatefulBuilder(
+          builder: (context, setModalState) {
+            return Padding(
+              padding: EdgeInsets.only(
+                left: 24.0,
+                right: 24.0,
+                top: 24.0,
+                bottom: MediaQuery.of(context).viewInsets.bottom + 24.0,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: isDark ? const Color(0xFF3F3517) : const Color(0xFFFFF4BD),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(Icons.memory, color: Color(0xFFD97706), size: 20),
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            "On-Device Local AI Model",
+                            style: GoogleFonts.poppins(fontSize: 15, fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close, size: 20),
+                        onPressed: () => Navigator.pop(ctx),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 12),
+                  Text(
+                    "Microsoft Phi-4 Mini (3.8B Q4_K_M GGUF) · 2.3 GB",
+                    style: GoogleFonts.poppins(fontSize: 11, fontWeight: FontWeight.w600, color: isDark ? theme.primaryColor : const Color(0xFFD97706)),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    "Enables 100% offline, zero-internet AI compliance reasoning directly on your mobile processor.",
+                    style: TextStyle(fontSize: 11, color: isDark ? Colors.grey : const Color(0xFF6B7280)),
+                  ),
+                  const SizedBox(height: 14),
+
+                  if (!isDownloading) ...[
+                    TextField(
+                      controller: hfTokenController,
+                      style: const TextStyle(fontSize: 12),
+                      decoration: InputDecoration(
+                        labelText: "Hugging Face Access Token (hf_...)",
+                        hintText: "Optional / Free token from huggingface.co/settings/tokens",
+                        isDense: true,
+                        prefixIcon: const Icon(Icons.key, size: 16),
+                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                      ),
+                    ),
+                    const SizedBox(height: 14),
+                  ],
+
+                  if (isDownloading) ...[
+                    LinearProgressIndicator(
+                      value: downloadProgress > 0 ? downloadProgress : null,
+                      backgroundColor: isDark ? Colors.grey[800] : Colors.grey[200],
+                      valueColor: AlwaysStoppedAnimation<Color>(theme.primaryColor),
+                      minHeight: 8,
+                    ),
+                    const SizedBox(height: 10),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          "${(downloadProgress * 100).toStringAsFixed(1)}% Completed",
+                          style: const TextStyle(fontSize: 11, fontWeight: FontWeight.bold),
+                        ),
+                        Text(
+                          "$downloadedMbStr MB / $totalMbStr MB",
+                          style: TextStyle(fontSize: 11, color: isDark ? Colors.grey : Colors.black54),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+
+                  if (downloadError != null) ...[
+                    Text(
+                      downloadError!,
+                      style: const TextStyle(color: Colors.redAccent, fontSize: 11),
+                    ),
+                    const SizedBox(height: 10),
+                  ],
+
+                  Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton.icon(
+                          icon: Icon(isDownloading ? Icons.cancel : Icons.download_for_offline, size: 18),
+                          label: Text(isDownloading ? "Cancel Download" : "Start One-Click Download (2.3 GB)"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: isDownloading ? Colors.redAccent : theme.primaryColor,
+                            foregroundColor: isDark ? Colors.black : const Color(0xFF1E2328),
+                            padding: const EdgeInsets.symmetric(vertical: 12),
+                          ),
+                          onPressed: () async {
+                            if (isDownloading) {
+                              OnDeviceLlmService().cancelDownload();
+                              setModalState(() {
+                                isDownloading = false;
+                              });
+                            } else {
+                              setModalState(() {
+                                isDownloading = true;
+                                downloadError = null;
+                              });
+
+                              final success = await OnDeviceLlmService().downloadModel(
+                                hfToken: hfTokenController.text,
+                                onProgress: (progress, downloaded, total) {
+                                  setModalState(() {
+                                    downloadProgress = progress;
+                                    downloadedMbStr = downloaded;
+                                    totalMbStr = total;
+                                  });
+                                },
+                                onError: (err) {
+                                  setModalState(() {
+                                    isDownloading = false;
+                                    downloadError = err;
+                                  });
+                                },
+                              );
+
+                              if (success) {
+                                setModalState(() {
+                                  isDownloading = false;
+                                });
+                                setState(() {});
+                                if (context.mounted) Navigator.pop(ctx);
+                              }
+                            }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   Widget _buildNavTab(String tab, String label, IconData icon, bool isDark, ThemeData theme) {
     final isActive = _techTab == tab;
     return Expanded(
@@ -970,8 +1262,91 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 if (_techResponse == null && !_techSearching) ...[
+                  // Offline AI Model Download Status Banner
+                  FutureBuilder<bool>(
+                    future: OnDeviceLlmService().checkModelAvailability(),
+                    builder: (context, snapshot) {
+                      final isLoaded = snapshot.data ?? false;
+                      return Container(
+                        margin: const EdgeInsets.only(top: 8, bottom: 16),
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: isDark ? const Color(0xFF1F2937) : const Color(0xFFFFFDF5),
+                          borderRadius: BorderRadius.circular(12),
+                          border: Border.all(
+                            color: isLoaded
+                                ? const Color(0xFF10B981)
+                                : (isDark ? const Color(0xFFD97706) : const Color(0xFFF59E0B)),
+                            width: 1.2,
+                          ),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: isLoaded
+                                    ? (isDark ? const Color(0xFF064E3B) : const Color(0xFFD1FAE5))
+                                    : (isDark ? const Color(0xFF3F3517) : const Color(0xFFFFF4BD)),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Icon(
+                                isLoaded ? Icons.check_circle : Icons.memory,
+                                color: isLoaded
+                                    ? const Color(0xFF10B981)
+                                    : const Color(0xFFD97706),
+                                size: 20,
+                              ),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    isLoaded
+                                        ? "On-Device Local AI (Phi-4 Mini): Active"
+                                        : "On-Device Local AI: Model Optional",
+                                    style: TextStyle(
+                                      fontFamily: 'Satoshi',
+                                      fontSize: 12,
+                                      fontWeight: FontWeight.bold,
+                                      color: isDark ? Colors.white : const Color(0xFF1E2328),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    isLoaded
+                                        ? "100% offline local reasoning enabled on phone."
+                                        : "Download Phi-4 Mini (2.3 GB) for 100% offline local AI.",
+                                    style: TextStyle(
+                                      fontFamily: 'Satoshi',
+                                      fontSize: 10,
+                                      color: isDark ? Colors.grey : const Color(0xFF6B7280),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            TextButton(
+                              onPressed: () => _showModelDownloadDialog(theme, isDark),
+                              child: Text(
+                                isLoaded ? "Manage" : "Download",
+                                style: TextStyle(
+                                  fontFamily: 'Satoshi',
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w900,
+                                  color: isDark ? theme.primaryColor : const Color(0xFFD97706),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 60.0),
+                    padding: const EdgeInsets.only(top: 30.0),
                     child: Column(
                       children: [
                         Container(
@@ -1382,8 +1757,8 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
                     ),
                     const SizedBox(height: 6),
                     Text("Q: \"${item.query}\"", style: TextStyle(fontFamily: 'Satoshi', fontSize: 11, fontWeight: FontWeight.bold, color: isDark ? Colors.white : const Color(0xFF1E2328))),
-                    const SizedBox(height: 4),
-                    Text("A: ${item.answer}", style: TextStyle(fontFamily: 'Satoshi', fontSize: 12, height: 1.3, color: isDark ? Colors.white70 : const Color(0xFF3B3F46))),
+                    const SizedBox(height: 6),
+                    _buildFormattedAnswerText(item.answer, isDark, theme),
                   ],
                 ),
               );

@@ -86,13 +86,15 @@ class OfflineSearchService {
       final source = bestMatch['source_framework'] ?? 'Statutory Standard';
       final clauseId = bestMatch['clause_id'] ?? 'General';
       final headerPathList = (bestMatch['header_path'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [];
-      final headerStr = headerPathList.isNotEmpty ? headerPathList.join(' > ') : clauseId;
-      final text = bestMatch['text'] ?? '';
+      final headerStr = headerPathList.isNotEmpty ? headerPathList.join(' > ') : clauseId.toString();
+      final text = (bestMatch['text'] ?? '').toString();
+      final cleanHeaderStr = headerStr.replaceAll('*', '').replaceAll('#', '').replaceAll('^', '').replaceAll('_', '').trim();
+      final cleanText = text.replaceAll('*', '').replaceAll('^', '').trim();
 
       final formattedAnswer = "OFFLINE STATUTORY CITATION\n\n"
           "🏛 Framework: $source\n"
-          "📜 Clause: $headerStr\n\n"
-          "Mandate Text:\n\"$text\"";
+          "📜 Clause: $cleanHeaderStr\n\n"
+          "Mandate Text:\n\"$cleanText\"";
 
       return AnswerResult(
         success: true,
@@ -101,7 +103,7 @@ class OfflineSearchService {
         source: source.toString(),
         section: clauseId.toString(),
         confidence: "Offline Statutory Match",
-        fullSectionText: text.toString(),
+        fullSectionText: cleanText,
       );
     }
 
