@@ -14,7 +14,7 @@
 3. **Real-time Status**: Integrated `connectivity_plus` to dynamically detect and swap the App Bar badge between green **`ONLINE`** and red **`OFFLINE`** indicators.
 4. **Gradle Compilation Fix**: Resolved compile SDK constraints by defining a safe `afterEvaluate` compile version override to Android SDK 35 inside root `build.gradle.kts`.
 5. **Git Commit**: Successfully committed changes with hash `90cd4bb`.
-6. **APK Release & Landing Page Integration**: Made `kApiBaseUrl` dynamic in `lib/main.dart` using build-mode fallbacks and compile-time overrides, compiled the production release APK (52.3MB), copied it to `landing/public/faktriiq.apk`, added the "Download APK" CTA button in `Hero.jsx` / `index.css`, added custom phone mock with real UI screenshot in `TwoModes.jsx`, and committed & pushed the updates to origin (commit `87d6543`).
+6. **APK Release & Landing Page Integration**: Made `kApiBaseUrl` dynamic in `lib/main.dart` using build-mode fallbacks and compile-time overrides, compiled the production release APK (52.3MB), copied it to `landing/public/faktriiq.apk`, added the "Download APK" CTA button in `Hero.jsx` / `index.css`, added custom phone mock with real UI screenshot in `TwoModes.jsx`, configured Git LFS tracking for APK files, and committed & pushed the updates to origin (commit `b1d8fd2`).
 
 ## Next Steps
 

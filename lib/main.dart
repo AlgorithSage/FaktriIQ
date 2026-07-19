@@ -13,6 +13,7 @@ import 'services/ondevice_llm_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 
 
@@ -142,7 +143,31 @@ const String kGoogleServerClientId =
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await dotenv.load(fileName: ".env");
+
+  // Android/iOS auto-detect their config from google-services.json /
+  // GoogleService-Info.plist. Desktop/web have no such file, so they need
+  // FirebaseOptions passed explicitly, sourced from .env.
+  final needsExplicitFirebaseOptions = kIsWeb ||
+      defaultTargetPlatform == TargetPlatform.windows ||
+      defaultTargetPlatform == TargetPlatform.linux ||
+      defaultTargetPlatform == TargetPlatform.macOS;
+
+  if (needsExplicitFirebaseOptions) {
+    await Firebase.initializeApp(
+      options: FirebaseOptions(
+        apiKey: dotenv.env['FIREBASE_WEB_API_KEY']!,
+        appId: dotenv.env['FIREBASE_WEB_APP_ID']!,
+        messagingSenderId: dotenv.env['FIREBASE_MESSAGING_SENDER_ID']!,
+        projectId: dotenv.env['FIREBASE_PROJECT_ID']!,
+        authDomain: dotenv.env['FIREBASE_AUTH_DOMAIN'],
+        storageBucket: dotenv.env['FIREBASE_STORAGE_BUCKET'],
+      ),
+    );
+  } else {
+    await Firebase.initializeApp();
+  }
+
   try {
     // google_sign_in has no Windows implementation; skip rather than crash startup there.
     await GoogleSignIn.instance.initialize(serverClientId: kGoogleServerClientId);

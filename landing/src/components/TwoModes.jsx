@@ -53,12 +53,19 @@ function PhoneMock() {
       {/* Speaker/Camera notch */}
       <div className="absolute top-2 left-1/2 -translate-x-1/2 h-3.5 w-16 bg-black rounded-full z-20" />
 
-      {/* Screenshot Image */}
-      <img
-        src="/faktriiq_app_ui.png"
-        alt="FaktriIQ Mobile App UI"
-        className="w-full h-full object-cover rounded-[32px] select-none pointer-events-none"
-      />
+      {/* Screenshot Image with top crop to hide system status bar */}
+      <div className="w-full h-full overflow-hidden rounded-[32px]">
+        <img
+          src="/faktriiq_app_ui.png"
+          alt="FaktriIQ Mobile App UI"
+          className="w-full select-none pointer-events-none"
+          style={{
+            height: '106.5%',
+            objectFit: 'cover',
+            transform: 'translateY(-6%)',
+          }}
+        />
+      </div>
     </div>
   );
 }
@@ -222,18 +229,18 @@ export default function TwoModes() {
                 </Check>
               </ul>
 
-              <div className="mt-6 pt-6 border-t" style={{ borderColor: 'var(--color-border)' }}>
-                <p className="text-[13px] font-medium mb-3.5 flex items-center gap-2" style={{ color: 'var(--color-muted)' }}>
+              <div className="border-t" style={{ borderColor: 'var(--color-border)', marginTop: '36px', paddingTop: '28px' }}>
+                <p className="text-[13.5px] font-medium flex items-center gap-2.5" style={{ color: 'var(--color-muted)', marginBottom: '20px' }}>
                   <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse" style={{ boxShadow: '0 0 8px #10b981' }} />
                   Latest stable release (v1.0.0) ready for instant install
                 </p>
-                <div className="flex flex-wrap gap-4 items-center">
+                <div className="flex flex-wrap gap-5 items-center">
                   <PushButton href="/faktriiq.apk" download="FaktriIQ.apk">
                     <span className="flex items-center gap-2">
-                      <Download className="h-4 w-4" /> Download Production APK
+                      <Download className="h-4 w-4" /> Download APK
                     </span>
                   </PushButton>
-                  <span className="text-[12px] font-mono" style={{ color: 'var(--color-muted)' }}>
+                  <span className="text-[12px] font-mono" style={{ color: 'var(--color-muted)', marginLeft: '4px' }}>
                     52.3 MB | Android 8.0+
                   </span>
                 </div>
