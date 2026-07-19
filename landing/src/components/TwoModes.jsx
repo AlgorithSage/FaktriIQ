@@ -52,7 +52,7 @@ function PhoneMock() {
     >
       {/* Speaker/Camera notch */}
       <div className="absolute top-2 left-1/2 -translate-x-1/2 h-3.5 w-16 bg-black rounded-full z-20" />
-      
+
       {/* Screenshot Image */}
       <img
         src="/faktriiq_app_ui.png"
