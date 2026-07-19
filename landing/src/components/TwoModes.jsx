@@ -13,6 +13,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import ScrollReveal from './ui/ScrollReveal.jsx';
+import { PushButton } from './ui/PushButton';
 
 /* ------------------------------------------------------------------
    Two operating modes - the two surfaces the role-selection gateway
@@ -40,69 +41,24 @@ function Check({ children, icon: Icon, soft }) {
 function PhoneMock() {
   return (
     <div
-      className="mx-auto w-[248px] rounded-[30px] border p-1.5"
-      style={{ background: 'var(--color-slate)', borderColor: 'var(--color-slate)', borderWidth: '1px', boxShadow: 'var(--shadow-soft)' }}
+      className="mx-auto w-[248px] rounded-[38px] border-4 p-1 relative overflow-hidden"
+      style={{
+        backgroundColor: '#000000',
+        borderColor: 'var(--color-slate)',
+        borderWidth: '4px',
+        boxShadow: 'var(--shadow-soft), 0 25px 50px -12px rgba(0,0,0,0.5)',
+        aspectRatio: '9/18.5',
+      }}
     >
-      <div className="overflow-hidden rounded-[25px]" style={{ background: 'var(--color-subtle)' }}>
-        {/* status bar */}
-        <div className="flex items-center justify-between px-4 pb-2 pt-3">
-          <span className="font-mono text-[10px]" style={{ color: 'var(--color-muted)' }}>
-            9:41
-          </span>
-          <span className="flex items-center gap-1 font-mono text-[9px] font-bold" style={{ color: 'var(--color-verify)' }}>
-            <span style={{ width: '5px', height: '5px', borderRadius: '50%', background: 'var(--color-verify)' }} /> HYBRID
-          </span>
-        </div>
-
-        {/* conversation */}
-        <div className="flex flex-col gap-2.5 px-3.5 pb-2">
-          <div className="flex justify-end">
-            <p
-              className="max-w-[82%] rounded-[12px] rounded-br-sm px-3 py-2 text-[12px] font-medium"
-              style={{ background: 'var(--cyan-soft)', color: 'var(--color-ink)' }}
-            >
-              What PPE do I need for Pump House 2?
-            </p>
-          </div>
-
-          <div
-            className="rounded-[12px] rounded-bl-sm px-3 py-2.5"
-            style={{ background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(30,35,40,0.06)' }}
-          >
-            <p className="text-[12px] leading-snug" style={{ color: 'var(--color-slate)' }}>
-              Flame-resistant coveralls, a hard hat, and an H₂S-rated respirator. See the
-              site-entry procedure, §3.
-            </p>
-            <div className="mt-2 flex items-start gap-1.5 text-[10.5px] font-bold" style={{ color: 'var(--color-verify)' }}>
-              <span className="mt-[3px] inline-block h-1.5 w-1.5 rounded-full shrink-0" style={{ background: 'var(--color-verify)' }} />
-              <span>
-                High confidence
-                <span className="font-medium" style={{ color: 'var(--color-muted)' }}>
-                  {' '}· Manual PH2-Entry · §3
-                </span>
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* input */}
-        <div className="px-3.5 pb-3.5 pt-1.5">
-          <div
-            className="flex items-center gap-2 rounded-full px-3 py-2"
-            style={{ background: 'var(--color-surface)', boxShadow: '0 1px 3px rgba(30,35,40,0.06)' }}
-          >
-            <span className="text-[11.5px]" style={{ color: 'var(--color-muted)' }}>
-              Ask about a procedure…
-            </span>
-            <span
-              className="ml-auto flex h-6 w-6 items-center justify-center rounded-full"
-              style={{ background: 'var(--cyan)' }}
-            >
-              <Send className="h-3.5 w-3.5" strokeWidth={2} style={{ color: 'var(--color-ink)' }} />
-            </span>
-          </div>
-        </div>
-      </div>
+      {/* Speaker/Camera notch */}
+      <div className="absolute top-2 left-1/2 -translate-x-1/2 h-3.5 w-16 bg-black rounded-full z-20" />
+      
+      {/* Screenshot Image */}
+      <img
+        src="/faktriiq_app_ui.png"
+        alt="FaktriIQ Mobile App UI"
+        className="w-full h-full object-cover rounded-[32px] select-none pointer-events-none"
+      />
     </div>
   );
 }
@@ -227,7 +183,7 @@ export default function TwoModes() {
 
         <div className="flex flex-col gap-10">
           {/* Technician mode */}
-          <ScrollReveal preset="fadeLeft" delay={0.1} as="article" className="card grid gap-8 p-6 md:p-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:gap-12">
+          <ScrollReveal id="technician-app" preset="fadeLeft" delay={0.1} as="article" className="card grid gap-8 p-6 md:p-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-center lg:gap-12">
             <div className="flex flex-col">
               <div className="mb-5 flex items-center gap-3">
                 <span
@@ -265,6 +221,23 @@ export default function TwoModes() {
                   <strong>Context Fallback</strong>: Instantly reveals raw SOP passages when confidence falls below safe thresholds.
                 </Check>
               </ul>
+
+              <div className="mt-6 pt-6 border-t" style={{ borderColor: 'var(--color-border)' }}>
+                <p className="text-[13px] font-medium mb-3.5 flex items-center gap-2" style={{ color: 'var(--color-muted)' }}>
+                  <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse" style={{ boxShadow: '0 0 8px #10b981' }} />
+                  Latest stable release (v1.0.0) ready for instant install
+                </p>
+                <div className="flex flex-wrap gap-4 items-center">
+                  <PushButton href="/faktriiq.apk" download="FaktriIQ.apk">
+                    <span className="flex items-center gap-2">
+                      <Download className="h-4 w-4" /> Download Production APK
+                    </span>
+                  </PushButton>
+                  <span className="text-[12px] font-mono" style={{ color: 'var(--color-muted)' }}>
+                    52.3 MB | Android 8.0+
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div className="flex items-center justify-center min-h-[360px] rounded-2xl p-4" style={{ background: 'var(--color-bg)' }}>

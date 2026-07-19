@@ -85,7 +85,7 @@ export default function Hero() {
             <PushButton href="#agents">
               See our Platform
             </PushButton>
-            <PushButton href="/faktriiq.apk" download="FaktriIQ.apk">
+            <PushButton href="#technician-app">
               Download APK
             </PushButton>
           </div>
