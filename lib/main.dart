@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:getwidget/getwidget.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -85,8 +86,16 @@ class QueryLog {
 // API CONFIGURATION
 // ==========================================
 
-/// Backend URL — set to your PC's Wi-Fi IPv4 address so your physical phone (RMX5051) can reach it.
-const String kApiBaseUrl = "http://192.168.1.4:8000";
+/// Dynamic backend API base URL:
+/// - In release builds, it defaults to the production backend API URL.
+/// - In debug/profile builds, it defaults to the local Wi-Fi IP address.
+const String _devApiUrl = "http://192.168.1.4:8000";
+const String _prodApiUrl = "https://faktriiq-backend-prod.up.railway.app"; // Default production backend URL
+
+const String kApiBaseUrl = String.fromEnvironment(
+  'API_BASE_URL',
+  defaultValue: kReleaseMode ? _prodApiUrl : _devApiUrl,
+);
 
 
 class AnswerResult {
@@ -134,7 +143,10 @@ const String kGoogleServerClientId =
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  await GoogleSignIn.instance.initialize(serverClientId: kGoogleServerClientId);
+  try {
+    // google_sign_in has no Windows implementation; skip rather than crash startup there.
+    await GoogleSignIn.instance.initialize(serverClientId: kGoogleServerClientId);
+  } catch (_) {}
   runApp(const FaktriApp());
 }
 
@@ -218,6 +230,104 @@ void _showUserMenu(BuildContext context, bool isDark) {
   );
 }
 
+class SplashScreen extends StatefulWidget {
+  const SplashScreen({super.key});
+
+  @override
+  State<SplashScreen> createState() => _SplashScreenState();
+}
+
+class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+  static const String _text = "FaktriIQ";
+  static const TextStyle _textStyle = TextStyle(
+    fontFamily: 'AnthropicSerifDisplay',
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w700,
+    fontSize: 48,
+    letterSpacing: 1,
+    color: Color(0xFFFEE715),
+  );
+
+  late final AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1600));
+    _controller.forward();
+    _controller.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        Future.delayed(const Duration(milliseconds: 500), () {
+          if (mounted) Navigator.of(context).pushReplacementNamed('/');
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final textPainter = TextPainter(
+      text: const TextSpan(text: _text, style: _textStyle),
+      textDirection: TextDirection.ltr,
+    )..layout();
+    final textWidth = textPainter.width;
+    final textHeight = textPainter.height;
+
+    return Scaffold(
+      backgroundColor: const Color(0xFF101820),
+      body: Center(
+        child: AnimatedBuilder(
+          animation: _controller,
+          builder: (context, child) {
+            final progress = Curves.easeInOut.transform(_controller.value);
+            return SizedBox(
+              width: textWidth,
+              height: textHeight,
+              child: Stack(
+                clipBehavior: Clip.none,
+                children: [
+                  ClipRect(
+                    clipper: _WipeClipper(progress),
+                    child: const Text(_text, style: _textStyle),
+                  ),
+                  Positioned(
+                    left: (textWidth * progress).clamp(0, textWidth) - 1,
+                    top: 0,
+                    child: Container(
+                      width: 2,
+                      height: textHeight,
+                      color: const Color(0xFFFEE715),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _WipeClipper extends CustomClipper<Rect> {
+  final double progress;
+  _WipeClipper(this.progress);
+
+  @override
+  Rect getClip(Size size) {
+    return Rect.fromLTRB(0, 0, size.width * progress, size.height);
+  }
+
+  @override
+  bool shouldReclip(covariant _WipeClipper oldClipper) => oldClipper.progress != progress;
+}
+
 class FaktriApp extends StatefulWidget {
   const FaktriApp({super.key});
 
@@ -274,8 +384,9 @@ class _FaktriAppState extends State<FaktriApp> {
           labelSmall: TextStyle(fontFamily: 'Satoshi', fontWeight: FontWeight.w500, color: Color(0xFF9CA3AF)), // lightened mist
         ),
       ),
-      initialRoute: '/',
+      initialRoute: '/splash',
       routes: {
+        '/splash': (context) => const SplashScreen(),
         '/': (context) => AuthGate(
               darkMode: _darkMode,
               onToggleTheme: () => setState(() => _darkMode = !_darkMode),

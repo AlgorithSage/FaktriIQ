@@ -81,9 +81,14 @@ export default function Hero() {
           </p>
         </ScrollReveal>
         <ScrollReveal preset="fadeUp" delay={0.3} duration={0.8}>
-          <PushButton href="#agents" className="hero__cta">
-            See our Platform
-          </PushButton>
+          <div className="hero__ctas">
+            <PushButton href="#agents">
+              See our Platform
+            </PushButton>
+            <PushButton href="/faktriiq.apk" download="FaktriIQ.apk">
+              Download APK
+            </PushButton>
+          </div>
         </ScrollReveal>
       </div>
 

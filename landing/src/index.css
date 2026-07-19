@@ -712,8 +712,13 @@ code {
   max-width: 62ch;
 }
 
-.hero__cta {
+.hero__ctas {
   margin-top: 36px;
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
 }
 
 /* ---------- Interactive Statutory Standards (Social Proof Tooltips) ---------- */
