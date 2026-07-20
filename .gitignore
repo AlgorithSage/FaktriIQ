@@ -53,3 +53,7 @@ backend/.env
 
 # Local development configurations
 lib/config.dart
+
+# Python bytecode compilation artifacts
+**/__pycache__/
+**/*.pyc
