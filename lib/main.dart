@@ -13,6 +13,7 @@ import 'services/ondevice_llm_service.dart';
 import 'services/api_config_service.dart';
 import 'services/desktop_google_auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -94,7 +95,7 @@ class QueryLog {
 /// Dynamic backend API base URL:
 /// - In release builds, it defaults to the production backend API URL.
 /// - In debug/profile builds, it defaults to the local Wi-Fi IP address.
-const String _devApiUrl = "http://192.168.1.4:8000";
+const String _devApiUrl = "http://$kLocalIpAddress:8000";
 const String _prodApiUrl = "https://faktriiq-backend-prod.up.railway.app"; // Default production backend URL
 
 const String kApiBaseUrl = String.fromEnvironment(

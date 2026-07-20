@@ -68,7 +68,19 @@ flutter --version
    flutter pub get
    ```
 
-3. Run the application:
+3. Set up your local configuration:
+   - Copy the template local configuration file:
+     ```bash
+     cp lib/config.dart.example lib/config.dart
+     ```
+     *(Open `lib/config.dart` and edit `kLocalIpAddress` with your computer's local Wi-Fi IPv4 address so physical mobile devices on the same Wi-Fi can communicate with your backend).*
+   - Copy the environment template file:
+     ```bash
+     cp .env.example .env
+     ```
+     *(And fill in your Firebase and OAuth configuration details inside `.env` if necessary).*
+
+4. Run the application:
    * **For Web (Chrome)**:
      ```bash
      flutter run -d chrome
