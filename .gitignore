@@ -50,3 +50,6 @@ AI_COWORKER/
 *.env
 .env
 backend/.env
+
+# Local development configurations
+lib/config.dart

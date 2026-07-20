@@ -1,0 +1,4 @@
+// Template for local configuration settings.
+// Copy this file to lib/config.dart and update it with your own settings.
+
+const String kLocalIpAddress = "192.168.1.4";
