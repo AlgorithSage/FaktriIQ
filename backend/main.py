@@ -1,6 +1,6 @@
 import os
 import sys
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -57,10 +57,29 @@ def ask_copilot(request: AskRequest):
     query = request.query.strip()
     if not query:
         raise HTTPException(status_code=400, detail="Query string cannot be empty")
-    
+
     print(f"[API Request] Query received: '{query}'")
     result = query_faktriiq_agent(query)
     return result
+
+@app.post("/ingest")
+async def ingest_document(file: UploadFile = File(...)):
+    if not file.filename.lower().endswith(".pdf"):
+        raise HTTPException(status_code=400, detail="Only PDF files are supported.")
+
+    pdf_bytes = await file.read()
+    if not pdf_bytes:
+        raise HTTPException(status_code=400, detail="Uploaded file is empty.")
+
+    print(f"[API Request] Ingesting document: '{file.filename}' ({len(pdf_bytes)} bytes)")
+    try:
+        result = knowledge_base.ingest_pdf_bytes(file.filename, pdf_bytes)
+    except ValueError as e:
+        raise HTTPException(status_code=422, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Ingestion failed: {e}")
+
+    return {"success": True, **result}
 
 if __name__ == "__main__":
     import uvicorn

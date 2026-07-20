@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import 'package:llamadart/llamadart.dart';
 import '../main.dart';
 import 'offline_search_service.dart';
 
@@ -32,6 +33,18 @@ class OnDeviceLlmService {
   bool _isDownloading = false;
   String? _modelPath;
   http.Client? _downloadClient;
+
+  LlamaEngine? _engine;
+  ChatSession? _session;
+
+  static const String _systemPrompt =
+      "You are FaktriIQ Copilot, an industrial safety compliance assistant. "
+      "Answer using ONLY the statutory context provided below — do not invent "
+      "clauses or numbers. Structure your reply with these exact section "
+      "headers, each on its own line: 📌 EXECUTIVE SUMMARY, 📜 STATUTORY MANDATE, "
+      "📋 TECHNICIAN ACTION CHECKLIST, ⚠️ SAFETY WARNING / THRESHOLD. Under each "
+      "header use short bullet points. Wrap key terms, section numbers, and "
+      "numeric limits in **double asterisks**. Be concise.";
 
   bool get isModelLoaded => _isModelLoaded;
   bool get isDownloading => _isDownloading;
@@ -263,58 +276,73 @@ class OnDeviceLlmService {
     }
   }
 
-  /// Execute local AI reasoning or fallback to BM25/TF-IDF Statutory Match
+  /// Loads the GGUF model into a real llama.cpp inference engine, reusing the
+  /// existing session across calls. Throws if no model file is present.
+  Future<ChatSession> _ensureSessionLoaded() async {
+    if (_session != null && _engine != null && _engine!.isReady) {
+      return _session!;
+    }
+    final modelPath = _modelPath;
+    if (modelPath == null) {
+      throw StateError('No local model file available.');
+    }
+    final engine = LlamaEngine(LlamaBackend());
+    await engine.loadModel(modelPath, modelParams: const ModelParams(contextSize: 2048));
+    _engine = engine;
+    _session = ChatSession(engine, systemPrompt: _systemPrompt);
+    return _session!;
+  }
+
+  /// Execute real on-device LLM reasoning (Phi-4 Mini via llama.cpp), or
+  /// fallback to BM25/TF-IDF Statutory Match if the model isn't downloaded or
+  /// inference fails.
   Future<AnswerResult> processQuery({
     required String query,
     required OfflineSearchService offlineSearch,
   }) async {
     final bool modelExists = await checkModelAvailability();
 
-    // Retrieve local BM25/TF-IDF statutory context (<10ms)
+    // Retrieve local BM25/TF-IDF statutory context (<10ms) — used as RAG
+    // grounding for the local LLM, and as the fallback answer if inference
+    // is unavailable or fails.
     final offlineResult = await offlineSearch.search(query);
 
-    if (modelExists && _modelPath != null) {
-      // Local GGUF Model is installed — synthesize local AI answer
-      try {
-        final synthesizedAnswer = _buildLocalSynthesis(query, offlineResult);
-        return AnswerResult(
-          success: true,
-          query: query,
-          answer: synthesizedAnswer,
-          source: offlineResult.source,
-          section: offlineResult.section,
-          confidence: "On-Device Phi-4 Mini Local AI",
-          fullSectionText: offlineResult.fullSectionText,
-        );
-      } catch (e) {
-        // Fallback to direct statutory match on error
-        return offlineResult;
-      }
-    } else {
-      // Model not downloaded -> Fallback to instant BM25/TF-IDF statutory citation
+    if (!modelExists || _modelPath == null) {
       return offlineResult;
     }
-  }
 
-  /// Synthesizes local statutory context into structured mobile compliance layout
-  String _buildLocalSynthesis(String query, AnswerResult match) {
-    final sectionTitle = match.section.isNotEmpty
-        ? match.section
-        : "Statutory Rule";
-    final sourceName = match.source.isNotEmpty
-        ? match.source
-        : "Indian Industrial Safety Standard";
+    try {
+      final session = await _ensureSessionLoaded();
+      final statutoryContext = offlineResult.fullSectionText ?? offlineResult.answer;
+      final prompt = "STATUTORY CONTEXT:\n$statutoryContext\n\n"
+          "TECHNICIAN QUESTION:\n\"$query\"\n\n"
+          "Provide a structured safety answer based on the statutory context above.";
 
-    return "📌 EXECUTIVE SUMMARY\n"
-        "• Primary Operational Risk: For queries regarding \"$query\", strict adherence to $sourceName ($sectionTitle) is mandated.\n"
-        "• Safety Directive: Technicians must verify all pressure ratings, atmospheric gas levels, and isolation protocols prior to commencing work.\n\n"
-        "📜 STATUTORY MANDATE\n"
-        "• $sourceName — $sectionTitle: \"${match.fullSectionText ?? match.answer}\"\n\n"
-        "📋 TECHNICIAN ACTION CHECKLIST\n"
-        "1. Atmospheric Testing: Conduct pre-entry gas testing using calibrated detectors.\n"
-        "2. Equipment Isolation: Verify lockout/tagout (LOTO) isolation on all connected lines.\n"
-        "3. PPE Compliance: Wear prescribed protective gear before opening valves or pressurized fittings.\n\n"
-        "⚠️ SAFETY WARNING / THRESHOLD\n"
-        "• CRITICAL LIMIT: Do not exceed maximum operating pressure (MOP) ratings specified by $sourceName.";
+      final buffer = StringBuffer();
+      await for (final chunk in session.create(
+        [LlamaTextContent(prompt)],
+        params: const GenerationParams(maxTokens: 400),
+      )) {
+        final text = chunk.choices.first.delta.content;
+        if (text != null) buffer.write(text);
+      }
+
+      final answer = buffer.toString().trim();
+      if (answer.isEmpty) return offlineResult;
+
+      return AnswerResult(
+        success: true,
+        query: query,
+        answer: answer,
+        source: offlineResult.source,
+        section: offlineResult.section,
+        confidence: "On-Device Phi-4 Mini Local AI",
+        fullSectionText: offlineResult.fullSectionText,
+      );
+    } catch (e) {
+      // Inference failed (e.g. model load error, OOM) -> honest fallback,
+      // not a fake "AI" answer.
+      return offlineResult;
+    }
   }
 }

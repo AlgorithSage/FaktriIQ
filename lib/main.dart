@@ -17,6 +17,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:window_manager/window_manager.dart';
+import 'package:file_picker/file_picker.dart';
 
 
 
@@ -3341,29 +3342,73 @@ class _OfficerAppHomeState extends State<OfficerAppHome> {
   String _uploadState = "idle"; // "idle" | "parsing" | "tagging" | "ready"
   String? _uploadedFilename;
   Map<String, dynamic>? _extractedMetadata;
+  String? _uploadError;
 
-  void _startAdminUploadSim(String filename) {
+  String _apiBaseUrl = kApiBaseUrl;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadApiBaseUrl();
+  }
+
+  Future<void> _loadApiBaseUrl() async {
+    final url = await ApiConfigService().getBaseUrl();
+    if (mounted) setState(() => _apiBaseUrl = url);
+  }
+
+  Future<void> _pickAndIngestFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['pdf'],
+      withData: true,
+    );
+    if (result == null || result.files.isEmpty) return;
+
+    final pickedFile = result.files.single;
+    final bytes = pickedFile.bytes;
+    if (bytes == null) {
+      setState(() => _uploadError = "Could not read the selected file.");
+      return;
+    }
+
     setState(() {
-      _uploadedFilename = filename;
+      _uploadedFilename = pickedFile.name;
       _uploadState = "parsing";
+      _extractedMetadata = null;
+      _uploadError = null;
     });
 
-    Future.delayed(const Duration(milliseconds: 1200), () {
+    try {
+      final request = http.MultipartRequest('POST', Uri.parse('$_apiBaseUrl/ingest'));
+      request.files.add(http.MultipartFile.fromBytes('file', bytes, filename: pickedFile.name));
+
       setState(() => _uploadState = "tagging");
 
-      Future.delayed(const Duration(milliseconds: 1200), () {
+      final streamedResponse = await request.send().timeout(const Duration(seconds: 60));
+      final responseBody = await streamedResponse.stream.bytesToString();
+      final json = jsonDecode(responseBody) as Map<String, dynamic>;
+
+      if (streamedResponse.statusCode == 200) {
         setState(() {
           _uploadState = "ready";
           _extractedMetadata = {
-            "filename": filename,
-            "doc_id": "SOP-NEW-304",
-            "equipment_tags": ["TK-102", "vent-valve"],
-            "clause_refs": ["Factories Act Sec 36", "OISD-STD-105"],
-            "dates": ["11-Jul-2026"]
+            "filename": json['filename'],
+            "doc_id": json['doc_id'],
+            "equipment_tags": json['equipment_tags'],
+            "clause_refs": json['clause_refs'],
+            "dates": json['dates'],
           };
         });
+      } else {
+        throw Exception(json['detail'] ?? 'Ingestion failed (${streamedResponse.statusCode})');
+      }
+    } catch (e) {
+      setState(() {
+        _uploadState = "idle";
+        _uploadError = "Ingestion failed: $e";
       });
-    });
+    }
   }
 
   @override
@@ -3985,7 +4030,7 @@ class _OfficerAppHomeState extends State<OfficerAppHome> {
             ),
             const SizedBox(height: 6),
             Text(
-              "Ingest operating logs, safety SOPs, or statutory codes (text-native/scanned PDFs).",
+              "Ingest operating logs, safety SOPs, or statutory codes (text-native PDFs).",
               style: TextStyle(
                 fontFamily: 'Satoshi',
                 fontSize: 11,
@@ -3995,7 +4040,7 @@ class _OfficerAppHomeState extends State<OfficerAppHome> {
             ),
             const SizedBox(height: 24),
             InkWell(
-              onTap: () => _startAdminUploadSim("SOP_Purging_Chamber_TK102.pdf"),
+              onTap: _uploadState == "idle" || _uploadState == "ready" ? _pickAndIngestFile : null,
               child: Container(
                 padding: const EdgeInsets.symmetric(vertical: 36, horizontal: 16),
                 decoration: BoxDecoration(
@@ -4008,18 +4053,25 @@ class _OfficerAppHomeState extends State<OfficerAppHome> {
                     const Icon(Icons.upload_file_rounded, size: 40, color: Colors.grey),
                     const SizedBox(height: 12),
                     const Text(
-                      "Tap to choose PDF from manual folder...",
+                      "Tap to choose a PDF to upload",
                       style: TextStyle(fontFamily: 'Satoshi', fontSize: 13, fontWeight: FontWeight.bold),
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      "Simulates automatic text parsing and tag indexing",
+                      "Sent to the backend for real text extraction, tagging, and indexing",
                       style: TextStyle(fontFamily: 'Satoshi', fontSize: 10, color: theme.textTheme.labelSmall?.color),
                     ),
                   ],
                 ),
               ),
             ),
+            if (_uploadError != null) ...[
+              const SizedBox(height: 12),
+              Text(
+                _uploadError!,
+                style: const TextStyle(fontFamily: 'Satoshi', fontSize: 11, color: Colors.redAccent, fontWeight: FontWeight.bold),
+              ),
+            ],
             if (_uploadState != "idle") ...[
               const SizedBox(height: 20),
               Container(
@@ -4052,7 +4104,7 @@ class _OfficerAppHomeState extends State<OfficerAppHome> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text("1. Gas Parsing", style: TextStyle(fontFamily: 'Satoshi', fontSize: 9, fontWeight: _uploadState == "parsing" ? FontWeight.bold : FontWeight.normal)),
+                        Text("1. Extracting Text", style: TextStyle(fontFamily: 'Satoshi', fontSize: 9, fontWeight: _uploadState == "parsing" ? FontWeight.bold : FontWeight.normal)),
                         Text("2. Extract Metadata", style: TextStyle(fontFamily: 'Satoshi', fontSize: 9, fontWeight: _uploadState == "tagging" ? FontWeight.bold : FontWeight.normal)),
                         Text("3. Indexed Complete", style: TextStyle(fontFamily: 'Satoshi', fontSize: 9, fontWeight: _uploadState == "ready" ? FontWeight.bold : FontWeight.normal)),
                       ],

@@ -49,4 +49,8 @@ desktop.ini
 AI_COWORKER/
 *.env
 .env
+.env.*
+!.env.example
 backend/.env
+backend/.env.*
+!backend/.env.example

@@ -48,6 +48,8 @@ dependencies:
   window_manager: ^0.5.2
   url_launcher: ^6.3.2
   crypto: ^3.0.7
+  file_picker: 10.3.10
+  llamadart: ^0.8.16
 
 dev_dependencies:
   flutter_test:
