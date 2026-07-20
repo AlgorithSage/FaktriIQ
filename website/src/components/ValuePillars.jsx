@@ -25,11 +25,11 @@ export default function ValuePillars() {
     },
     {
       title: "Field-Tested Reliability",
-      description: "Technicians access safety instructions locally on-device without needing internet connection. Enables high-speed vector lookup and search in remote refinery basements or chemical units.",
+      description: "Technicians access safety instructions locally on-device without needing internet connection. Enables high-speed local BM25 RAG lookup and query caching in remote refinery basements or chemical units.",
       nodes: [
-        { x: 250, y: 150, r: 6, color: "#0F172A", label: "Local GPU Cache" },
+        { x: 250, y: 150, r: 6, color: "#0F172A", label: "Local Cache & LLM" },
         { x: 100, y: 150, r: 3.5, color: "#CA8A04", label: "Off-Grid Agent" },
-        { x: 400, y: 150, r: 3.5, color: "#CA8A04", label: "Offline Vector Db" },
+        { x: 400, y: 150, r: 3.5, color: "#CA8A04", label: "Offline BM25 Db" },
         { x: 250, y: 60, r: 3, color: "#1E293B", label: "Intranet Gateway" },
         { x: 250, y: 240, r: 3, color: "#1E293B", label: "Remote Sync" }
       ],

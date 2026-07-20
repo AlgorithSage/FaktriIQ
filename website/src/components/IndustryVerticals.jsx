@@ -14,7 +14,7 @@ export default function IndustryVerticals() {
     {
       icon: <Smartphone className="h-6 w-6 text-industrial-accent" />,
       title: "Field Technicians",
-      description: "Get instant, cited answers from plant manuals and SOPs directly on the floor with low-connectivity mobile GPU acceleration.",
+      description: "Get instant, cited answers from plant manuals and SOPs directly on the floor using on-device local RAG and query caching.",
       action: "LEARN MORE"
     },
     {

@@ -57,11 +57,11 @@ const ROLES = [
     description:
       'Get instant, cited answers from plant manuals and SOPs on the floor - powered by cloud APIs with on-device offline fallback.',
     checklist: [
-      'Hybrid online API + offline Vulkan inference',
-      'Thumb-reachable EHS console interface',
+      'Hybrid online API + on-device offline RAG',
+      'Thumb-reachable mobile interface',
       'Original source text snippet fallbacks',
-      'Voice-to-text hybrid search query mode',
-      'Local encrypted storage for plant logs',
+      'Local query cache & search history',
+      'On-device Phi-4 Mini LLM synthesis',
     ],
     metric: '< 3s',
     metricLabel: 'Floor response latency',

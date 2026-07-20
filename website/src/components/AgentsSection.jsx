@@ -100,7 +100,7 @@ export default function AgentsSection() {
             <CardContent className="p-8 pt-0 flex-1 flex flex-col justify-between space-y-6 text-left">
               <div className="space-y-4">
                 <p className="font-sans text-sm text-industrial-muted leading-relaxed">
-                  A conversational AI interface responding in natural language, enabling field technicians to immediately retrieve operating specifications, piping diagrams, and mechanical steps directly from the plant's documentation manuals.
+                  A conversational AI interface responding in natural language, enabling field technicians to immediately retrieve operating specifications, safety checklists, and mechanical steps directly from plant manuals, safety SOPs, and 9 statutory databases.
                 </p>
                 <div className="space-y-2 border-t border-industrial-border/60 pt-4">
                   <span className="text-xs font-mono font-bold text-industrial-ink block">Safety & Trust Mechanisms:</span>
@@ -109,10 +109,16 @@ export default function AgentsSection() {
                       Verifiable Cited References
                     </Badge>
                     <Badge variant="outline" className="border-industrial-slate text-industrial-slate font-mono text-[10px]">
-                      Confidence Indexes
+                      Confidence Indicators
                     </Badge>
                     <Badge variant="outline" className="border-industrial-slate text-industrial-slate font-mono text-[10px]">
-                      No-Hallucination Fallback
+                      Zero-Hallucination Fallback
+                    </Badge>
+                    <Badge variant="outline" className="border-industrial-slate text-industrial-slate font-mono text-[10px]">
+                      On-Device Local RAG
+                    </Badge>
+                    <Badge variant="outline" className="border-industrial-slate text-industrial-slate font-mono text-[10px]">
+                      Offline Cache & History
                     </Badge>
                   </div>
                 </div>

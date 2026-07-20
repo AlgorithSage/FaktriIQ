@@ -16,11 +16,11 @@ const CASE_STUDIES = [
     partnerLogo: 'FIELD OPS',
     heading: 'Field Technicians resolve procedure questions on the floor with hybrid connectivity',
     description:
-      'Hybrid cloud API access backed by on-device Gemma 4 E2B running on llama.cpp with Vulkan acceleration gives technicians cited answers from plant manuals with or without network connectivity - every response grounded in the exact SOP page.',
+      'Hybrid cloud API access backed by on-device Phi-4 Mini (3.8B GGUF) and local BM25 RAG gives technicians cited answers from plant manuals with or without network connectivity - every response grounded in the exact SOP page.',
     metrics: [
       { value: '100%', label: 'hybrid online + offline availability on floor devices' },
       { value: '48px', label: 'minimum touch targets, glove-friendly by design' },
-      { value: '2', label: 'source citations attached to every answer' },
+      { value: '100%', label: 'verifiable citations on every answer' },
     ],
   },
   {

@@ -4,7 +4,7 @@ const TIERS = [
   {
     label: 'Hybrid Mobile & Field Deployment',
     title: 'On-Device Edge Engine',
-    tech: 'llama.cpp · Vulkan · iOS · Android',
+    tech: 'Phi-4 Mini · BM25 RAG · iOS · Android',
     logos: (
       <>
         {/* Apple Logo */}
@@ -81,8 +81,8 @@ const TIERS = [
       </>
     ),
     points: [
-      'Zero-latency local inference executed directly on field devices',
-      'Process voice notes, captured photos, and text queries in the field',
+      'On-device local synthesis via Phi-4 Mini 3.8B GGUF',
+      'Query plant operating manuals, safety SOPs, and 9 statutory databases offline',
       '100% data sovereignty - zero external network dependency',
     ],
   },

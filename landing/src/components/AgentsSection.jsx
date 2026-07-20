@@ -78,17 +78,17 @@ const AGENTS = [
     icon: MessageSquareText,
     accent: 'cyan',
     summary:
-      'Answers plain-language questions about plant procedures on the shop floor - running via hybrid cloud APIs with offline, on-device fallbacks, providing a citation on every answer.',
+      'Answers plain-language questions about plant procedures on the shop floor - running via cloud APIs when online, with cached lookup and local RAG search when offline.',
     capabilities: [
       {
         icon: WifiOff,
         title: 'Hybrid online & offline',
-        text: 'Uses fast cloud APIs when connected, falling back to local on-device GPU inference via llama.cpp + Vulkan.',
+        text: 'Uses fast cloud APIs when connected, falling back to on-device local RAG and cached query lookup when offline.',
       },
       {
-        icon: Sparkles,
-        title: 'Multimodal input',
-        text: 'Reads text, photos of equipment, and audio notes to answer hazard-log questions in the field.',
+        icon: Cpu,
+        title: 'On-device AI model',
+        text: 'Optionally downloads and runs the 2.49 GB Phi-4 Mini (3.8B GGUF) model directly on-device for local offline synthesis.',
       },
       {
         icon: Quote,
@@ -101,7 +101,7 @@ const AGENTS = [
         text: 'On low confidence it surfaces the raw SOP passage so the technician always sees the ground truth.',
       },
     ],
-    engines: ['llama.cpp + Vulkan', 'Gemma 4 E2B · GGUF', 'On-device · private'],
+    engines: ['Phi-4 Mini 3.8B · GGUF', 'BM25/TF-IDF Statutory RAG', 'On-device · private'],
     example: {
       q: 'What PPE do I need to enter Pump House 2?',
       a: 'Flame-resistant coveralls, a hard hat, and an H₂S-rated respirator are required. See the site-entry procedure, section 3.',
@@ -111,7 +111,7 @@ const AGENTS = [
     stats: [
       { value: '< 3s', label: 'avg. answer time' },
       { value: 'Hybrid', label: 'online + offline' },
-      { value: '< 1.5GB', label: 'on-device model' },
+      { value: '2.49 GB', label: 'on-device model' },
     ],
   },
   {
