@@ -10,10 +10,13 @@ import 'package:http/http.dart' as http;
 import 'services/offline_search_service.dart';
 import 'services/query_cache_service.dart';
 import 'services/ondevice_llm_service.dart';
+import 'services/api_config_service.dart';
+import 'services/desktop_google_auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:window_manager/window_manager.dart';
 
 
 
@@ -141,17 +144,31 @@ class AnswerResult {
 const String kGoogleServerClientId =
     "680070607494-0sf0jddulkpfumft9jmi0ue25lpg5da6.apps.googleusercontent.com";
 
+/// HACKATHON MODE — set true to restore real role-based access control
+/// (see AuthGate and backend/assign_role.py). False lets any signed-in user
+/// reach either app via platform-based routing, so judges aren't blocked by
+/// an unassigned role.
+const bool kEnforceRoleAccess = false;
+
+bool get isDesktopPlatform =>
+    !kIsWeb &&
+    (defaultTargetPlatform == TargetPlatform.windows ||
+        defaultTargetPlatform == TargetPlatform.linux ||
+        defaultTargetPlatform == TargetPlatform.macOS);
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
 
+  if (isDesktopPlatform) {
+    await windowManager.ensureInitialized();
+    await windowManager.setMinimumSize(const Size(1000, 700));
+  }
+
   // Android/iOS auto-detect their config from google-services.json /
   // GoogleService-Info.plist. Desktop/web have no such file, so they need
   // FirebaseOptions passed explicitly, sourced from .env.
-  final needsExplicitFirebaseOptions = kIsWeb ||
-      defaultTargetPlatform == TargetPlatform.windows ||
-      defaultTargetPlatform == TargetPlatform.linux ||
-      defaultTargetPlatform == TargetPlatform.macOS;
+  final needsExplicitFirebaseOptions = kIsWeb || isDesktopPlatform;
 
   if (needsExplicitFirebaseOptions) {
     await Firebase.initializeApp(
@@ -425,7 +442,10 @@ class _FaktriAppState extends State<FaktriApp> {
   }
 }
 
-class AuthGate extends StatelessWidget {
+/// Gates access by the user's actual assigned role (a Firebase custom claim,
+/// admin-set — see backend/assign_role.py), not by which platform they're
+/// running on. A user with no role assigned sees [PendingRoleScreen].
+class AuthGate extends StatefulWidget {
   final bool darkMode;
   final VoidCallback onToggleTheme;
 
@@ -436,28 +456,148 @@ class AuthGate extends StatelessWidget {
   });
 
   @override
+  State<AuthGate> createState() => _AuthGateState();
+}
+
+class _AuthGateState extends State<AuthGate> {
+  User? _user;
+  bool _authLoading = true;
+  String? _role; // null = not checked yet; '' = checked, no role; else the role
+  StreamSubscription<User?>? _authSub;
+
+  @override
+  void initState() {
+    super.initState();
+    _authSub = FirebaseAuth.instance.authStateChanges().listen(_onAuthChanged);
+  }
+
+  void _onAuthChanged(User? user) {
+    setState(() {
+      _user = user;
+      _authLoading = false;
+      _role = null;
+    });
+    if (user != null) _loadRole(user);
+  }
+
+  Future<void> _loadRole(User user) async {
+    try {
+      final tokenResult = await user.getIdTokenResult(true);
+      if (mounted) setState(() => _role = (tokenResult.claims?['role'] as String?) ?? '');
+    } catch (_) {
+      if (mounted) setState(() => _role = '');
+    }
+  }
+
+  @override
+  void dispose() {
+    _authSub?.cancel();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User?>(
-      stream: FirebaseAuth.instance.authStateChanges(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Scaffold(
-            body: Center(
-              child: CircularProgressIndicator(),
+    if (_authLoading) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+    final user = _user;
+    if (user == null) {
+      return LoginScreen(darkMode: widget.darkMode, onToggleTheme: widget.onToggleTheme);
+    }
+    if (_role == null) {
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
+    }
+
+    // HACKATHON MODE: role-based access is temporarily disabled so judges can
+    // reach either app without needing a role pre-assigned. Falls back to
+    // platform-based routing instead. Set kEnforceRoleAccess = true to
+    // restore real RBAC (see backend/assign_role.py) after judging.
+    if (!kEnforceRoleAccess) {
+      return isDesktopPlatform
+          ? OfficerAppHome(darkMode: widget.darkMode, onToggleTheme: widget.onToggleTheme)
+          : TechnicianAppHome(darkMode: widget.darkMode, onToggleTheme: widget.onToggleTheme);
+    }
+
+    if (_role == 'officer') {
+      return OfficerAppHome(darkMode: widget.darkMode, onToggleTheme: widget.onToggleTheme);
+    }
+    if (_role == 'technician') {
+      return TechnicianAppHome(darkMode: widget.darkMode, onToggleTheme: widget.onToggleTheme);
+    }
+    return PendingRoleScreen(darkMode: widget.darkMode, onToggleTheme: widget.onToggleTheme);
+  }
+}
+
+class PendingRoleScreen extends StatelessWidget {
+  final bool darkMode;
+  final VoidCallback onToggleTheme;
+
+  const PendingRoleScreen({
+    super.key,
+    required this.darkMode,
+    required this.onToggleTheme,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = darkMode;
+    final theme = Theme.of(context);
+
+    return Scaffold(
+      backgroundColor: theme.scaffoldBackgroundColor,
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        elevation: 0,
+        actions: [
+          IconButton(
+            icon: Icon(
+              isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+              color: theme.primaryColor,
             ),
-          );
-        }
-        if (snapshot.hasData) {
-          return TechnicianAppHome(
-            darkMode: darkMode,
-            onToggleTheme: onToggleTheme,
-          );
-        }
-        return LoginScreen(
-          darkMode: darkMode,
-          onToggleTheme: onToggleTheme,
-        );
-      },
+            onPressed: onToggleTheme,
+          ),
+        ],
+      ),
+      body: Center(
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 420),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.hourglass_top_rounded, size: 48, color: theme.primaryColor),
+                const SizedBox(height: 20),
+                Text(
+                  "Awaiting Role Assignment",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'AnthropicSerifDisplay',
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                    color: isDark ? Colors.white : const Color(0xFF1E2328),
+                  ),
+                ),
+                const SizedBox(height: 10),
+                Text(
+                  "Your account is signed in but has no role yet. Contact your administrator to be assigned as a Field Technician or Safety Officer.",
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontFamily: 'Satoshi',
+                    fontSize: 13,
+                    color: isDark ? Colors.grey : const Color(0xFF6B7280),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                OutlinedButton(
+                  onPressed: () => FirebaseAuth.instance.signOut(),
+                  child: const Text("Sign Out"),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
@@ -567,6 +707,12 @@ class _LoginScreenState extends State<LoginScreen> {
   bool _codeSent = false;
   String? _verificationId;
 
+  bool _useEmailLink = false;
+  bool _linkSent = false;
+  final _emailLinkPasteController = TextEditingController();
+
+  static const String _emailLinkContinueUrl = "https://faktri-iq.firebaseapp.com/finishSignIn";
+
   Future<void> _submit() async {
     final email = _emailController.text.trim();
     final password = _passwordController.text.trim();
@@ -602,6 +748,74 @@ class _LoginScreenState extends State<LoginScreen> {
     }
   }
 
+  Future<void> _sendSignInLink() async {
+    final email = _emailController.text.trim();
+    if (email.isEmpty || !email.contains('@')) {
+      setState(() => _errorMessage = "Enter a valid email address.");
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      await FirebaseAuth.instance.sendSignInLinkToEmail(
+        email: email,
+        actionCodeSettings: ActionCodeSettings(
+          url: _emailLinkContinueUrl,
+          handleCodeInApp: true,
+        ),
+      );
+      if (mounted) setState(() => _linkSent = true);
+    } on FirebaseAuthException catch (e) {
+      setState(() => _errorMessage = e.message ?? "Could not send sign-in link.");
+    } catch (e) {
+      setState(() => _errorMessage = "Could not send sign-in link: $e");
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  Future<void> _completeEmailLinkSignIn() async {
+    final email = _emailController.text.trim();
+    final link = _emailLinkPasteController.text.trim();
+
+    if (link.isEmpty) {
+      setState(() => _errorMessage = "Paste the sign-in link from your email.");
+      return;
+    }
+    if (!FirebaseAuth.instance.isSignInWithEmailLink(link)) {
+      setState(() => _errorMessage = "That doesn't look like a valid sign-in link.");
+      return;
+    }
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailLink(email: email, emailLink: link);
+    } on FirebaseAuthException catch (e) {
+      setState(() => _errorMessage = e.message ?? "Invalid or expired sign-in link.");
+    } catch (e) {
+      setState(() => _errorMessage = "Sign-in failed: $e");
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  void _resetEmailLinkFlow() {
+    setState(() {
+      _linkSent = false;
+      _useEmailLink = false;
+      _emailLinkPasteController.clear();
+      _errorMessage = null;
+    });
+  }
+
   Future<void> _signInWithGoogle() async {
     setState(() {
       _isLoading = true;
@@ -609,6 +823,19 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
+      if (isDesktopPlatform) {
+        final clientId = dotenv.env['GOOGLE_DESKTOP_OAUTH_CLIENT_ID'] ?? '';
+        final clientSecret = dotenv.env['GOOGLE_DESKTOP_OAUTH_CLIENT_SECRET'] ?? '';
+        if (clientId.isEmpty || clientSecret.isEmpty) {
+          setState(() => _errorMessage = "Desktop Google Sign-In isn't configured yet (missing OAuth client credentials in .env).");
+          return;
+        }
+        final result = await DesktopGoogleAuthService.signIn(clientId: clientId, clientSecret: clientSecret);
+        final credential = GoogleAuthProvider.credential(idToken: result.idToken, accessToken: result.accessToken);
+        await FirebaseAuth.instance.signInWithCredential(credential);
+        return;
+      }
+
       final GoogleSignInAccount googleUser = await GoogleSignIn.instance.authenticate();
       final GoogleSignInAuthentication googleAuth = googleUser.authentication;
       final OAuthCredential credential = GoogleAuthProvider.credential(
@@ -730,6 +957,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _passwordController.dispose();
     _phoneController.dispose();
     _otpController.dispose();
+    _emailLinkPasteController.dispose();
     super.dispose();
   }
 
@@ -868,7 +1096,19 @@ class _LoginScreenState extends State<LoginScreen> {
                             )
                           : Text(_primaryLabelForTab(), style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 14)),
                     ),
-                    if (_authTab == _AuthTab.email) ...[
+                    if (_authTab == _AuthTab.email && _useEmailLink && _linkSent) ...[
+                      const SizedBox(height: 12),
+                      TextButton(
+                        onPressed: _isLoading ? null : _resetEmailLinkFlow,
+                        child: Text(
+                          "Use a different email or method",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: isDark ? theme.primaryColor : const Color(0xFFD97706),
+                          ),
+                        ),
+                      ),
+                    ] else if (_authTab == _AuthTab.email && !_useEmailLink) ...[
                       const SizedBox(height: 12),
                       TextButton(
                         onPressed: () {
@@ -1004,12 +1244,18 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   VoidCallback _primaryActionForTab() {
-    if (_authTab == _AuthTab.email) return _submit;
+    if (_authTab == _AuthTab.email) {
+      if (_useEmailLink) return _linkSent ? _completeEmailLinkSignIn : _sendSignInLink;
+      return _submit;
+    }
     return _codeSent ? _verifyOtp : _sendOtp;
   }
 
   String _primaryLabelForTab() {
-    if (_authTab == _AuthTab.email) return _isSignUp ? "Sign Up" : "Sign In";
+    if (_authTab == _AuthTab.email) {
+      if (_useEmailLink) return _linkSent ? "Complete Sign-In" : "Send Sign-In Link";
+      return _isSignUp ? "Sign Up" : "Sign In";
+    }
     return _codeSent ? "Verify Code" : "Send OTP";
   }
 
@@ -1072,6 +1318,44 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   List<Widget> _buildEmailFields(ThemeData theme, bool isDark) {
+    final mutedColor = isDark ? Colors.grey : const Color(0xFF6B7280);
+    final linkColor = isDark ? theme.primaryColor : const Color(0xFFD97706);
+
+    if (_useEmailLink && _linkSent) {
+      return [
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF064E3B) : const Color(0xFFD1FAE5),
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: const Color(0xFF10B981), width: 1.2),
+          ),
+          child: Text(
+            "Sign-in link sent to ${_emailController.text.trim()}. Open it in your inbox, copy the full link, and paste it below.",
+            style: TextStyle(
+              fontFamily: 'Satoshi',
+              fontSize: 12,
+              color: isDark ? Colors.white : const Color(0xFF065F46),
+            ),
+          ),
+        ),
+        const SizedBox(height: 16),
+        TextField(
+          controller: _emailLinkPasteController,
+          keyboardType: TextInputType.url,
+          style: const TextStyle(fontSize: 12),
+          decoration: InputDecoration(
+            labelText: "Paste sign-in link here",
+            labelStyle: const TextStyle(fontSize: 13),
+            prefixIcon: const Icon(Icons.link, size: 18),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+      ];
+    }
+
     return [
       TextField(
         controller: _emailController,
@@ -1086,17 +1370,36 @@ class _LoginScreenState extends State<LoginScreen> {
           ),
         ),
       ),
-      const SizedBox(height: 16),
-      TextField(
-        controller: _passwordController,
-        obscureText: true,
-        style: const TextStyle(fontSize: 14),
-        decoration: InputDecoration(
-          labelText: "Password",
-          labelStyle: const TextStyle(fontSize: 13),
-          prefixIcon: const Icon(Icons.lock_outline, size: 18),
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(12),
+      if (!_useEmailLink) ...[
+        const SizedBox(height: 16),
+        TextField(
+          controller: _passwordController,
+          obscureText: true,
+          style: const TextStyle(fontSize: 14),
+          decoration: InputDecoration(
+            labelText: "Password",
+            labelStyle: const TextStyle(fontSize: 13),
+            prefixIcon: const Icon(Icons.lock_outline, size: 18),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+            ),
+          ),
+        ),
+      ],
+      const SizedBox(height: 8),
+      Align(
+        alignment: Alignment.centerRight,
+        child: TextButton(
+          onPressed: _isLoading
+              ? null
+              : () => setState(() {
+                    _useEmailLink = !_useEmailLink;
+                    _errorMessage = null;
+                  }),
+          style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: const Size(0, 0)),
+          child: Text(
+            _useEmailLink ? "Use password instead" : "Sign in with an email link instead",
+            style: TextStyle(fontSize: 11.5, color: _useEmailLink ? mutedColor : linkColor),
           ),
         ),
       ),
@@ -1484,11 +1787,13 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
   bool _showFullSection = false;
   late StreamSubscription<ConnectivityResult> _connectivitySubscription;
   bool _isOnline = true;
+  String _apiBaseUrl = kApiBaseUrl;
 
   @override
   void initState() {
     super.initState();
     _initConnectivity();
+    _loadApiBaseUrl();
     OnDeviceLlmService().checkModelAvailability();
     _connectivitySubscription = Connectivity().onConnectivityChanged.listen((ConnectivityResult result) {
       setState(() {
@@ -1504,6 +1809,82 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
         _isOnline = (result == ConnectivityResult.wifi || result == ConnectivityResult.mobile);
       });
     } catch (_) {}
+  }
+
+  Future<void> _loadApiBaseUrl() async {
+    final url = await ApiConfigService().getBaseUrl();
+    if (mounted) setState(() => _apiBaseUrl = url);
+  }
+
+  Future<void> _showServerSettingsDialog(ThemeData theme, bool isDark) async {
+    final controller = TextEditingController(text: _apiBaseUrl);
+    await showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          backgroundColor: isDark ? const Color(0xFF111827) : const Color(0xFFFFFDF5),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          title: Text(
+            "Backend Server Address",
+            style: TextStyle(
+              fontFamily: 'Satoshi',
+              fontWeight: FontWeight.bold,
+              color: isDark ? Colors.white : const Color(0xFF1E2328),
+            ),
+          ),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Point this client at a different backend without rebuilding (e.g. a shared LAN server).",
+                style: TextStyle(
+                  fontFamily: 'Satoshi',
+                  fontSize: 12,
+                  color: isDark ? Colors.grey : const Color(0xFF6B7280),
+                ),
+              ),
+              const SizedBox(height: 16),
+              TextField(
+                controller: controller,
+                keyboardType: TextInputType.url,
+                style: const TextStyle(fontSize: 13),
+                decoration: InputDecoration(
+                  hintText: "http://127.0.0.1:8000",
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () async {
+                await ApiConfigService().resetToDefault();
+                final url = await ApiConfigService().getBaseUrl();
+                if (mounted) setState(() => _apiBaseUrl = url);
+                if (ctx.mounted) Navigator.pop(ctx);
+              },
+              child: const Text("Reset to default"),
+            ),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.primaryColor,
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+              ),
+              onPressed: () async {
+                final newUrl = controller.text.trim();
+                if (newUrl.isNotEmpty) {
+                  await ApiConfigService().setBaseUrl(newUrl);
+                  if (mounted) setState(() => _apiBaseUrl = newUrl);
+                }
+                if (ctx.mounted) Navigator.pop(ctx);
+              },
+              child: Text("Save", style: TextStyle(color: isDark ? Colors.black : const Color(0xFF1E2328), fontWeight: FontWeight.bold)),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   final List<QueryLog> _techHistory = [];
@@ -1547,7 +1928,7 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
     // 2. If Online -> Call Agno FastAPI Backend (Groq 120B)
     try {
       final response = await http.post(
-        Uri.parse('$kApiBaseUrl/ask'),
+        Uri.parse('$_apiBaseUrl/ask'),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'query': queryText}),
       ).timeout(const Duration(seconds: 30));
@@ -1606,7 +1987,7 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
             : AnswerResult(
                 success: false,
                 query: queryText,
-                answer: "Could not reach backend API at $kApiBaseUrl and no offline match found.",
+                answer: "Could not reach backend API at $_apiBaseUrl and no offline match found.",
               );
       });
     }
@@ -1974,6 +2355,13 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
           ),
         ),
         actions: [
+          // Backend server settings
+          IconButton(
+            icon: Icon(Icons.dns_outlined, color: theme.primaryColor, size: 20),
+            onPressed: () => _showServerSettingsDialog(theme, isDark),
+            splashRadius: 20,
+            tooltip: "Backend server address",
+          ),
           // Theme toggle
           IconButton(
             icon: Icon(
@@ -2041,9 +2429,14 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
             Expanded(
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: _techTab == "ask"
-                    ? _buildTechAskView(theme, isDark)
-                    : _buildTechHistoryView(theme, isDark),
+                child: Center(
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 760),
+                    child: _techTab == "ask"
+                        ? _buildTechAskView(theme, isDark)
+                        : _buildTechHistoryView(theme, isDark),
+                  ),
+                ),
               ),
             ),
           ],

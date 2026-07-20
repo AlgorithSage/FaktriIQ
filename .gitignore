@@ -23,6 +23,9 @@ build/web/
 # iOS Firebase config (contains API keys — never commit)
 **/ios/Runner/GoogleService-Info.plist
 
+# Firebase Admin SDK service account key — a real secret, never commit
+backend/serviceAccountKey.json
+
 # iOS related
 **/ios/Flutter/.flutter-plugins
 **/ios/Flutter/.flutter-plugins-dependencies
