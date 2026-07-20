@@ -1,53 +1,25 @@
 # Roadmap
 
-> **Current Phase:** 1 - Implementation & Styling
-> **Status:** executing
+> **Current Phase:** 1 - Authentication UI Polish (Desktop App)
+> **Status:** completed
 
 ## Must-Haves (from SPEC)
 
-- [ ] Interactive statutory standards showcase with tooltips and custom icons
-- [ ] Interlocking 2x2 grid card layout for Value Pillars
-- [ ] Corner-cut (L-shaped) dynamic card design wrapping central star patterns modal
-- [ ] Dynamic rotation of the SVG radiating rays pointing to the active card
-- [ ] Textured grained overlay behind web page backgrounds (other than the hero section)
+- [x] Password visibility toggle with eye icon
+- [x] Hover cursor change and splash background removal for the email link sign-in text
+- [x] Hover cursor change to pointer for Google Sign-In and all other desktop buttons/links in the login screen
 
 ---
 
 ## Phases
 
-### Phase 1: Styling & Base Integration
+### Phase 1: Authentication UI Polish (Desktop App)
 **Status:** ✅ Completed
-**Objective:** Implement custom CSS rules for L-shaped cards, statutory tooltips, and central positioning. Implement interactive elements in React components.
+**Objective:** Refine the login screen interactive widgets in `lib/main.dart` with custom mouse region cursor changes, password toggle state, and custom hover text styling for Desktop Windows application.
 
 **Plans:**
-- [x] Plan 1.1: Integrate detailed statutory hover cards and SVG icons in `Hero.jsx`
-- [x] Plan 1.2: Refactor `ValuePillars.jsx` and add the 2x2 interlocking grid layout with clip-paths
-- [x] Plan 1.3: Update `index.css` with tooltip, layout, and L-shape card styles
-- [x] Plan 1.4: Verify builds and layout responsiveness
-
-### Phase 2: Textured Background Grain
-**Status:** 🔄 In Progress
-**Objective:** Implement a high-fidelity, monochrome SVG grain overlay on all page sections and the footer, excluding the Hero section.
-
-**Plans:**
-- [ ] Plan 2.1: Add grain styling to `index.css` targeting `.section` and `.footer`
-- [ ] Plan 2.2: Verify content accessibility, interaction, and readability
-- [ ] Plan 2.3: Verify responsiveness and run production build
-
----
-
-## Progress Summary
-
-| Phase | Status | Plans | Complete |
-|-------|--------|-------|----------|
-| 1     | ✅     | 4/4   | 100%     |
-| 2     | 🔄     | 0/3   | —        |
-
----
-
-## Timeline
-
-| Phase | Started | Completed | Duration |
-|-------|---------|-----------|----------|
-| 1     | 2026-07-14 | 2026-07-15 | 1 day    |
-| 2     | 2026-07-15 | — | —        |
+- [x] Plan 1.1: Add state variables `_obscurePassword` and `_isEmailLinkHovered` to `_LoginScreenState`.
+- [x] Plan 1.2: Update password field to include visibility toggle suffix icon and state change handler.
+- [x] Plan 1.3: Update "Sign in with an email link instead" widget to change text color on hover and remove background overlay by converting it to `MouseRegion` + `GestureDetector`.
+- [x] Plan 1.4: Wrap Google Sign-In button, tab buttons, primary action buttons, and text link buttons in `MouseRegion` to enforce pointer mouse cursor on hover.
+- [x] Plan 1.5: Verify layout compilation and test the interaction behaviors in the running Windows app.

@@ -50,8 +50,8 @@ AI_COWORKER/
 *.env
 .env.local
 .env
-.env.*
-!.env.example
+.env.local
+*.env.local
 backend/.env
 
 # Local development configurations
