@@ -49,6 +49,8 @@ desktop.ini
 AI_COWORKER/
 *.env
 .env
+.env.local
+*.env.local
 backend/.env
 
 # Local development configurations
