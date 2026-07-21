@@ -9,7 +9,6 @@ import {
   ScanSearch,
   CircleAlert,
   Download,
-  Send,
   ShieldCheck,
 } from 'lucide-react';
 import ScrollReveal from './ui/ScrollReveal.jsx';
@@ -235,13 +234,13 @@ export default function TwoModes() {
                   Latest stable release (v1.0.0) ready for instant install
                 </p>
                 <div className="flex flex-wrap gap-5 items-center">
-                  <PushButton href="https://github.com/AlgorithSage/FaktriIQ/releases/latest/download/faktriiq.apk" download="faktriiq.apk">
+                  <PushButton href="/faktriiq.apk" download="faktriiq.apk">
                     <span className="flex items-center gap-2">
                       <Download className="h-4 w-4" /> Download APK
                     </span>
                   </PushButton>
                   <span className="text-[12px] font-mono" style={{ color: 'var(--color-muted)', marginLeft: '4px' }}>
-                    52.3 MB | Android 8.0+
+                    Release v1.0.0 | Android 7.0+ (Android 16 Ready)
                   </span>
                 </div>
               </div>
@@ -267,7 +266,7 @@ export default function TwoModes() {
                     Safety Officer
                   </h3>
                   <p className="font-mono text-[11px] font-bold uppercase tracking-[0.12em]" style={{ color: 'var(--color-muted)' }}>
-                    Compliance Console · Web
+                    Compliance Console · Windows Desktop
                   </p>
                 </div>
               </div>
@@ -282,15 +281,32 @@ export default function TwoModes() {
                   <strong>Two-Pane Workspace</strong>: Side-by-side view of active documents and matched statutory clauses.
                 </Check>
                 <Check icon={ScanSearch} soft="var(--sky-soft)">
-                  <strong>Automatic Alignment</strong>: Maps plant procedures directly to Factories Act, OISD, and PESO clauses.
+                  <strong>Automatic Alignment</strong>: Maps plant procedures against Factories Act, OISD, PESO, DGMS, and MSIHC clauses.
                 </Check>
                 <Check icon={CircleAlert} soft="var(--sky-soft)">
                   <strong>Color-Coded Triage</strong>: Visual gap indicators (red/green) highlight compliance status instantly.
                 </Check>
-                <Check icon={Download} soft="var(--sky-soft)">
-                  <strong>Rapid Reporting</strong>: Export formatted gap audits to PDF, print, or email in a single click.
+                <Check icon={FileSearch} soft="var(--sky-soft)">
+                  <strong>Document Ingestion</strong>: Upload plant SOPs and manuals - the pipeline extracts, tags, and indexes them for instant clause matching.
                 </Check>
               </ul>
+
+              <div className="border-t" style={{ borderColor: 'var(--color-border)', marginTop: '36px', paddingTop: '28px' }}>
+                <p className="text-[13.5px] font-medium flex items-center gap-2.5" style={{ color: 'var(--color-muted)', marginBottom: '20px' }}>
+                  <span className="inline-block h-2 w-2 rounded-full bg-emerald-500 animate-pulse" style={{ boxShadow: '0 0 8px #10b981' }} />
+                  Windows desktop build (v1.0.0) - installs alongside a local backend
+                </p>
+                <div className="flex flex-wrap gap-5 items-center">
+                  <PushButton href="https://github.com/AlgorithSage/FaktriIQ/releases/latest">
+                    <span className="flex items-center gap-2">
+                      <Download className="h-4 w-4" /> Download for Windows
+                    </span>
+                  </PushButton>
+                  <span className="text-[12px] font-mono" style={{ color: 'var(--color-muted)', marginLeft: '4px' }}>
+                    Windows 10/11 · 64-bit
+                  </span>
+                </div>
+              </div>
             </div>
 
             <div className="flex items-center justify-center min-h-[360px] rounded-2xl p-4" style={{ background: 'var(--color-bg)' }}>

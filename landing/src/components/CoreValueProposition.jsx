@@ -13,11 +13,11 @@ const STEPS = [
     description:
       'Merges plant manuals, safety SOPs, and Indian statutory rules into one contextual engine with clause-level mapping and zero hallucinations.',
     bullets: [
-      'Unified ingestion across 3 frameworks',
+      'Unified ingestion across 5 statutory frameworks',
       'Clause-level auto-tagging for traceability',
       'Strictly bounded - zero hallucination guarantee',
     ],
-    metric: '3',
+    metric: '5',
     metricLabel: 'Frameworks unified',
   },
   {

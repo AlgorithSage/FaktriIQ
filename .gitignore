@@ -60,3 +60,8 @@ lib/config.dart
 # Python bytecode compilation artifacts
 **/__pycache__/
 **/*.pyc
+
+# PyInstaller backend build output (large binaries, rebuilt on demand)
+backend/build_pyinstaller/
+backend/dist/
+backend/*.spec

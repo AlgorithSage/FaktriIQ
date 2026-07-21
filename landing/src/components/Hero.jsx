@@ -41,24 +41,25 @@ const STATUTORY_DETAILS = {
       </svg>
     )
   },
-  'Process Plants': {
-    description: 'Operational safety checks for refinery, chemical processing, and general utility systems.',
-    mapping: 'LOTO (Lock-Out Tag-Out), Line Purging Procedures, Pre-Startup Safety Reviews (PSSR)',
-    checks: 'Isolation logs, nitrogen blanketing levels, equipment isolation tag-outs, startup readiness.',
+  'DGMS Guidelines': {
+    description: 'Directorate General of Mines Safety circulars governing coal, metal, and oil mining, plus electrical supply and occupational health in mines.',
+    mapping: 'Coal/Metal/Oil Mines Regulations, Electrical Supply safety measures, Occupational Safety & Health provisions',
+    checks: 'Mine ventilation, gas monitoring, winding & haulage safety, electrical isolation, statutory inspections.',
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="social-proof__badge-icon">
-        <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
+        <path d="m8 3 4 8 5-5 5 15H2L8 3z"/>
       </svg>
     )
   },
-  'EHS Safety Councils': {
-    description: 'General safety framework alignment including global Best Practice and Council recommendations.',
-    mapping: 'ISO 45001 (Occupational Health & Safety), Near-Miss reporting loops',
-    checks: 'Near-miss loop analysis, root-cause Q&A alignment, corrective action tracking (CAPA).',
+  'MSIHC Rules': {
+    description: 'Manufacture, Storage and Import of Hazardous Chemical Rules covering threshold quantities and major-accident hazard controls.',
+    mapping: 'Schedule threshold quantities, on-site emergency plans, safety reports for hazardous chemical inventories',
+    checks: 'Threshold quantity limits, major-accident-hazard unit identification, emergency preparedness, hazardous storage.',
     icon: (
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="social-proof__badge-icon">
-        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-        <polyline points="22 4 12 14.01 9 11.01"/>
+        <path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/>
+        <path d="M12 9v4"/>
+        <path d="M12 17h.01"/>
       </svg>
     )
   }

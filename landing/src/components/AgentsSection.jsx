@@ -35,7 +35,7 @@ const AGENTS = [
     icon: ShieldCheck,
     accent: 'sky',
     summary:
-      'Audits every plant SOP against Indian statutory frameworks - Factories Act 1948, OISD, and PESO - mapping each requirement clause-by-clause and flagging the gaps before an inspector does.',
+      'Audits every plant SOP against Indian statutory frameworks - Factories Act 1948, OISD, PESO, DGMS, and MSIHC - mapping each requirement clause-by-clause and flagging the gaps before an inspector does.',
     capabilities: [
       {
         icon: ScanSearch,
@@ -54,11 +54,11 @@ const AGENTS = [
       },
       {
         icon: Layers,
-        title: 'Cached audit reports',
-        text: 'High-fidelity cloud audits are cached locally so officers can review results during an outage.',
+        title: 'Cached results',
+        text: 'AI answers are cached locally, so recent results stay reviewable even during a network outage.',
       },
     ],
-    engines: ['Agno + Groq LPU', 'openai/gpt-oss-120b', 'LiteRT.js + WebGPU · local'],
+    engines: ['Agno + Groq LPU', 'openai/gpt-oss-120b', 'BM25 RAG · offline cache'],
     example: {
       q: 'Does SOP-114 meet the hot-work permit requirement?',
       a: 'Gap found. SOP-114 covers hot-work isolation but never sets a permit validity window. OISD-STD-105 §4.3.1 requires re-validation every 8 hours.',
@@ -66,8 +66,8 @@ const AGENTS = [
       status: 'gap',
     },
     stats: [
-      { value: '95%', label: 'less gap-ID time' },
-      { value: '3', label: 'frameworks mapped' },
+      { value: '5', label: 'frameworks mapped' },
+      { value: '9,803', label: 'clauses indexed' },
       { value: '0%', label: 'ungrounded claims' },
     ],
   },
@@ -121,40 +121,40 @@ const AGENTS = [
     icon: FileSearch,
     accent: 'peach',
     summary:
-      'Turns raw manuals and PDFs into clean, grounded knowledge - extracting dates, equipment tags, and clause references, then pre-computing compliance audits while the plant is online.',
+      'Turns raw manuals and PDFs into clean, grounded knowledge - extracting text, chunking it into clauses, and auto-tagging equipment IDs, dates, and regulatory references before adding it to the live search index.',
     capabilities: [
       {
         icon: ScanSearch,
         title: 'Metadata extraction',
-        text: 'Auto-tags upload date, equipment IDs, and matched regulatory references on ingest.',
+        text: 'Regex tagging auto-captures equipment IDs, revision dates, and matched statutory references on ingest.',
       },
       {
         icon: Layers,
-        title: 'Structured grounding',
-        text: 'Converts documents into logical JSON slots so even small local models answer with large-model accuracy.',
+        title: 'Clause-level chunking',
+        text: 'Splits each document into clause-sized passages so retrieval returns the exact relevant text, not whole files.',
       },
       {
         icon: Cpu,
-        title: 'Pre-computed audits',
-        text: 'While online, the Groq GPT-OSS 120B agent audits new SOPs and caches the report for offline use.',
+        title: 'Live index update',
+        text: 'New passages are added to the BM25 statutory index immediately - instantly queryable by both agents.',
       },
       {
-        icon: BadgeCheck,
-        title: 'Consent-gated cloud',
-        text: 'Any cloud-assisted audit is clearly labelled and requires explicit officer opt-in before upload.',
+        icon: FileSearch,
+        title: 'Text-native PDF parsing',
+        text: 'Extracts text from PDFs with PyMuPDF and persists it, so ingested documents survive a backend restart.',
       },
     ],
-    engines: ['Structured JSON pipeline', 'chromadb + embeddings', 'Groq pre-compute'],
+    engines: ['PyMuPDF extraction', 'Regex metadata tagging', 'BM25 live index'],
     example: {
       q: 'Ingested: Boiler-Maintenance-Manual-v4.pdf',
-      a: 'Tagged 12 equipment IDs, 3 revision dates, and 18 clause references. 2 gaps pre-flagged and cached for offline review.',
-      cite: '18 clauses · 2 gaps',
+      a: 'Extracted and chunked into clauses, tagging equipment IDs, revision dates, and 18 clause references, then added to the live search index.',
+      cite: '18 clauses indexed',
       status: 'ok',
     },
     stats: [
-      { value: '18', label: 'clauses matched' },
-      { value: '~80%', label: 'of 70B accuracy, local' },
-      { value: 'PDF', label: 'text & scanned' },
+      { value: '18', label: 'clauses indexed' },
+      { value: 'Auto', label: 'equipment tagging' },
+      { value: 'PDF', label: 'text-native' },
     ],
   },
   {
@@ -392,8 +392,8 @@ export default function AgentsSection() {
               </div>
             </div>
 
-            {/* Centre: Capabilities 2×2 */}
-            <div className="agents__capabilities">
+            {/* Centre: Capabilities (2x2 grid or Top & Bottom Stacked for 2 modals) */}
+            <div className={`agents__capabilities ${agent.capabilities.length <= 2 ? 'agents__capabilities--stacked' : ''}`}>
               {agent.capabilities.map((cap) => {
                 const CapIcon = cap.icon;
                 return (
@@ -407,12 +407,12 @@ export default function AgentsSection() {
                       style={{ background: accent.soft }}
                     >
                       <CapIcon
-                        size={18}
-                        strokeWidth={1.7}
+                        size={20}
+                        strokeWidth={1.8}
                         style={{ color: 'var(--color-ink)' }}
                       />
                     </span>
-                    <div>
+                    <div className="agents__cap-content">
                       <p className="agents__cap-title">{cap.title}</p>
                       <p className="agents__cap-text">{cap.text}</p>
                     </div>

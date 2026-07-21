@@ -1,4 +1,4 @@
-import { Scale, Flame, Fuel, Factory, HeartPulse, BadgeCheck } from 'lucide-react';
+import { Scale, Flame, Fuel, Mountain, FlaskConical } from 'lucide-react';
 import { PushButton } from './ui/PushButton';
 import ScrollReveal from './ui/ScrollReveal.jsx';
 
@@ -28,29 +28,22 @@ const FRAMEWORKS = [
       'Petroleum & Explosives Safety Organisation rules covering pressure vessels, compressed-gas cylinders, and hazardous-material storage and handling.',
   },
   {
-    icon: Factory,
-    name: 'Process Plants',
-    code: 'Process Safety Management',
+    icon: Mountain,
+    name: 'DGMS Guidelines',
+    code: 'DGMS Safety Circulars',
     description:
-      'Interlocks, management-of-change, permit-to-work, and safe shutdown procedures for chemical, refinery, and petrochemical facilities.',
+      'Directorate General of Mines Safety circulars covering coal, metal, and oil mining, electrical supply, and occupational health in mines.',
   },
   {
-    icon: HeartPulse,
-    name: 'EHS Safety Councils',
-    code: 'NSC & EHS guidance',
+    icon: FlaskConical,
+    name: 'MSIHC Rules',
+    code: 'Hazardous Chemical Rules',
     description:
-      'Environment, health & safety best-practice frameworks and National Safety Council guidance, built into every audit-readiness check.',
-  },
-  {
-    icon: BadgeCheck,
-    name: 'IS / BIS Codes',
-    code: 'Bureau of Indian Standards',
-    description:
-      'Equipment, testing, and safety Indian Standards cross-referenced wherever a procedure cites an IS code, so citations resolve to the exact spec.',
+      'Manufacture, Storage and Import of Hazardous Chemical Rules covering threshold quantities and major-accident-hazard controls.',
   },
 ];
 
-const META = ['6 frameworks', 'Clause-level mapping', 'Source text one tap away'];
+const META = ['5 statutory frameworks', '9,803 clauses indexed', 'Source text one tap away'];
 
 export default function StatutoryStandards() {
   return (

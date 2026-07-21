@@ -1,11 +1,17 @@
 import os
+import sys
 import json
 import re
 import time
 from typing import List, Dict, Any
 from rank_bm25 import BM25Okapi
 
-GUIDELINES_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "guidelines.json")
+# When frozen (PyInstaller), guidelines.json/ ships alongside the exe rather
+# than two directories up from this source file.
+if getattr(sys, "frozen", False):
+    GUIDELINES_DIR = os.path.join(os.path.dirname(sys.executable), "guidelines.json")
+else:
+    GUIDELINES_DIR = os.path.join(os.path.dirname(os.path.dirname(__file__)), "guidelines.json")
 
 EQUIPMENT_KEYWORDS = [
     "valve", "pump", "tank", "vessel", "boiler", "compressor", "pipeline",

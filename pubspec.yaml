@@ -48,8 +48,9 @@ dependencies:
   window_manager: ^0.5.2
   url_launcher: ^6.3.2
   crypto: ^3.0.7
-  file_picker: 10.3.10
+  file_selector: ^1.0.3
   llamadart: ^0.8.16
+  flutter_svg: ^2.0.10
 
 dev_dependencies:
   flutter_test:
@@ -69,7 +70,7 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-    - assets/images/FaktriIQ_sq.png
+    - assets/images/
     - guidelines.json/
     - .env
 

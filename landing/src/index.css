@@ -1949,6 +1949,7 @@ code {
   display: grid;
   grid-template-columns: 1fr;
   gap: 16px;
+  height: 100%;
 }
 
 @media (min-width: 640px) {
@@ -1962,6 +1963,31 @@ code {
     grid-template-columns: 1fr 1fr;
     gap: 14px;
     align-content: start;
+    height: 100%;
+  }
+
+  /* Top and Below Stacked Layout Mode for 2 Modals */
+  .agents__capabilities.agents__capabilities--stacked {
+    display: flex;
+    flex-direction: column;
+    grid-template-columns: none;
+    gap: 16px;
+    height: 100%;
+    justify-content: space-between;
+  }
+
+  .agents__capabilities.agents__capabilities--stacked .agents__cap-card {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 24px 28px;
+    min-height: 145px;
+    border-radius: 16px;
+    border: 1.5px solid var(--color-ink);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
   }
 }
 
@@ -1970,10 +1996,10 @@ code {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  gap: 10px;
-  padding: 18px;
-  border-radius: 12px;
-  border: 1px solid var(--color-border);
+  gap: 12px;
+  padding: 20px;
+  border-radius: 14px;
+  border: 1.5px solid var(--color-ink);
   background: #FFD966;
   position: relative;
   overflow: hidden;
@@ -1982,8 +2008,8 @@ code {
 }
 
 .agents__cap-card:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-soft);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 24px rgba(30, 35, 40, 0.12);
   border-color: var(--color-ink);
 }
 

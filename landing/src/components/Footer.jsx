@@ -22,8 +22,8 @@ export default function Footer() {
           <PushButton href="#top">
             See our Platform
           </PushButton>
-          <PushButton href="mailto:hello@faktriiq.example">
-            Book a Demo
+          <PushButton href="https://github.com/AlgorithSage/FaktriIQ">
+            View on GitHub
           </PushButton>
         </div>
       </div>

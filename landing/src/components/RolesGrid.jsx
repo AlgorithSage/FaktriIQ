@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ShieldCheck, Smartphone, Gauge, Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Smartphone, Lock, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { motion } from 'motion/react';
 import ScrollReveal from './ui/ScrollReveal.jsx';
 
@@ -35,19 +35,19 @@ const ROLES = [
     icon: ShieldCheck,
     accent: 'sky',
     title: 'Safety Officers',
-    deployment: 'Web console',
+    deployment: 'Windows desktop',
     description:
-      'Audit SOPs against statutory standards online via Groq API + GPT-OSS 120B, with cached results that keep audits running offline through LiteRT.js + WebGPU.',
+      'Audit SOPs against statutory standards via Groq API + GPT-OSS 120B, with locally cached answers and an on-device BM25 index that keep recent results available offline.',
     checklist: [
       'Cloud audits via Groq API utilizing GPT-OSS 120B',
-      'Cloud audits cached locally for offline parity',
-      'On-device LiteRT.js fallback clause matching',
+      'AI answers cached locally for offline review',
+      'On-device BM25 fallback clause matching',
       'Visual gap triage with statutory citations',
-      'Pre-computed snapshots sync on reconnect',
-      'One-tap export EHS report cards',
+      'Two-pane document & clause console',
+      'Upload & ingest new SOPs and manuals',
     ],
-    metric: '95%',
-    metricLabel: 'Reduction in gap-audit time',
+    metric: '9,803',
+    metricLabel: 'Statutory clauses indexed',
   },
   {
     icon: Smartphone,
@@ -67,38 +67,21 @@ const ROLES = [
     metricLabel: 'Floor response latency',
   },
   {
-    icon: Gauge,
-    accent: 'peach',
-    title: 'Plant Managers',
-    deployment: 'Live dashboard',
-    description:
-      'Unify institutional knowledge, surface EHS hazards early, and keep every site ready for its next audit.',
-    checklist: [
-      'Multi-site hazard monitoring feed',
-      'Pre-computed gap alerts & notifications',
-      'Clustered plant performance index',
-      'Real-time worker compliance heatmaps',
-      'Trend analytics for safety inspections',
-    ],
-    metric: '0%',
-    metricLabel: 'Ungrounded claims guaranteed',
-  },
-  {
     icon: Lock,
     accent: 'lemon',
     title: 'IT & EHS Security',
-    deployment: 'On-prem · private',
+    deployment: 'Self-hosted · private',
     description:
-      'Protect data sovereignty by running 100% private, on-device models with zero external server dependencies.',
+      'Keep data on your own infrastructure - a self-hosted backend on the plant LAN plus on-device offline models, with role-based access enforced per user.',
     checklist: [
-      'Local vector store (ChromaDB + SQLite)',
-      'Consent-gated cloud audit features',
-      'No data leaves plant perimeter',
-      'Role-based access token controls (RBAC)',
-      'Cryptographically signed audit trail logs',
+      'Self-hosted FastAPI backend on the plant LAN',
+      'Local statutory index (BM25 over bundled JSON)',
+      'On-device offline models - no data leaves the device',
+      'Role-based access control via Firebase custom claims',
+      'Firebase auth: email, phone OTP, and Google sign-in',
     ],
-    metric: '100%',
-    metricLabel: 'Private data sovereignty',
+    metric: '2',
+    metricLabel: 'Roles: technician & officer',
   },
 ];
 

@@ -3,14 +3,19 @@ import sys
 import json
 from dotenv import load_dotenv
 
-# Ensure backend directory is in python path
-sys.path.append(os.path.dirname(__file__))
+# When frozen (PyInstaller), __file__-relative paths don't point at the
+# distributable's layout — resolve against the exe's own directory instead.
+if getattr(sys, "frozen", False):
+    _BACKEND_DIR = os.path.dirname(sys.executable)
+else:
+    _BACKEND_DIR = os.path.dirname(__file__)
+    sys.path.append(_BACKEND_DIR)
 
 from knowledge import knowledge_base
 from groq import Groq
 
 # Load .env file from backend directory
-env_path = os.path.join(os.path.dirname(__file__), ".env")
+env_path = os.path.join(_BACKEND_DIR, ".env")
 load_dotenv(dotenv_path=env_path)
 
 groq_api_key = os.getenv("GROQ_API_KEY")
