@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FaktriIQ — Safety Officer Verification</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --color-bg: #FFFDF5;
+      --color-ink: #1E2328;
+      --color-slate: #2A2E34;
+      --color-surface: #F9F6EE;
+      --color-subtle-light: #FFF4BD;
+      --color-border: #E2E8F0;
+      --color-border-dark: #3B3F46;
+      --color-accent: #FEE715;
+      --color-muted: #64748B;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Geist', -apple-system, system-ui, sans-serif;
+      background: var(--color-bg);
+      color: var(--color-ink);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Soft ambient background glow matching landing page design */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 600px 400px at 20% 20%, rgba(254, 231, 21, 0.25), transparent 70%),
+        radial-gradient(ellipse 500px 350px at 80% 80%, rgba(255, 244, 189, 0.4), transparent 70%);
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .login-container {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 420px;
+      padding: 20px;
+    }
+
+    .login-card {
+      background: #FFFFFF;
+      border: 1px solid var(--color-border-dark);
+      border-radius: 24px;
+      padding: 40px 32px;
+      box-shadow:
+        0 20px 40px -15px rgba(30, 35, 40, 0.08),
+        0 0 0 1px rgba(30, 35, 40, 0.04);
+      transition: all 0.3s ease;
+    }
+
+    .logo {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      background: var(--color-subtle-light);
+      border: 1px solid rgba(254, 231, 21, 0.6);
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #92400E;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+    }
+
+    .logo h1 {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      color: var(--color-ink);
+    }
+
+    .logo h1 .yellow-accent {
+      background: #FEE715;
+      padding: 2px 6px;
+      border-radius: 6px;
+      color: #101820;
+    }
+
+    .logo p {
+      color: var(--color-muted);
+      font-size: 13.5px;
+      margin-top: 8px;
+      font-weight: 500;
+    }
+
+    .step { display: none; }
+    .step.active { display: block; }
+
+    label {
+      display: block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--color-ink);
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      margin-bottom: 8px;
+    }
+
+    .input-group {
+      display: flex;
+      align-items: center;
+      background: #FAFAFA;
+      border: 1.5px solid var(--color-border-dark);
+      border-radius: 14px;
+      padding: 0 16px;
+      transition: all 0.2s ease;
+    }
+
+    .input-group:focus-within {
+      border-color: var(--color-ink);
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(30, 35, 40, 0.08);
+    }
+
+    .input-prefix {
+      color: var(--color-ink);
+      font-size: 15px;
+      font-weight: 700;
+      margin-right: 10px;
+      user-select: none;
+    }
+
+    .input-group input {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: var(--color-ink);
+      font-size: 16px;
+      font-weight: 600;
+      padding: 14px 0;
+      font-family: inherit;
+    }
+
+    .input-group input::placeholder { color: #A1A1AA; font-weight: 400; }
+
+    .otp-inputs {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .otp-inputs input {
+      width: 48px;
+      height: 56px;
+      background: #FAFAFA;
+      border: 1.5px solid var(--color-border-dark);
+      border-radius: 12px;
+      color: var(--color-ink);
+      font-size: 22px;
+      font-weight: 800;
+      text-align: center;
+      outline: none;
+      font-family: 'Geist', monospace;
+      transition: all 0.2s ease;
+    }
+
+    .otp-inputs input:focus {
+      border-color: var(--color-ink);
+      background: #FFFFFF;
+      box-shadow: 0 0 0 3px rgba(30, 35, 40, 0.08);
+    }
+
+    /* PushButton replica matching landing page primitive */
+    .push-btn {
+      width: 100%;
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 14px 26px;
+      border-radius: 14px;
+      background: var(--color-ink);
+      color: #FFFFFF;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        0 4px 0 #0D1012;
+      transition: transform 0.08s ease, box-shadow 0.08s ease, background 0.2s ease;
+      cursor: pointer;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      margin-top: 20px;
+      font-family: inherit;
+    }
+
+    .push-btn:hover:not(:disabled) {
+      background: var(--color-slate);
+    }
+
+    .push-btn:active:not(:disabled) {
+      transform: translateY(3px);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        0 1px 0 #0D1012;
+    }
+
+    .push-btn:disabled {
+      opacity: 0.45;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    .push-btn.loading {
+      color: transparent;
+    }
+
+    .push-btn.loading::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      border: 2.5px solid #FFFFFF;
+      border-top-color: transparent;
+      border-radius: 50%;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
+
+    .error-msg {
+      background: #FEF2F2;
+      border: 1px solid #FCA5A5;
+      color: #991B1B;
+      padding: 10px 14px;
+      border-radius: 10px;
+      font-size: 12.5px;
+      font-weight: 500;
+      margin-top: 14px;
+      display: none;
+    }
+
+    .error-msg.visible { display: block; }
+
+    .change-phone {
+      display: inline-block;
+      color: var(--color-ink);
+      font-size: 12.5px;
+      font-weight: 600;
+      margin-top: 16px;
+      cursor: pointer;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    .phone-display {
+      color: var(--color-muted);
+      font-size: 13.5px;
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .phone-display strong {
+      color: var(--color-ink);
+      font-weight: 700;
+    }
+
+    .success-container {
+      text-align: center;
+      padding: 16px 0;
+    }
+
+    .success-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #DCFCE7;
+      color: #166534;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 18px;
+      font-size: 28px;
+      font-weight: 800;
+    }
+
+    .success-container h3 {
+      color: var(--color-ink);
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .success-container p {
+      color: var(--color-muted);
+      font-size: 13.5px;
+    }
+
+    #recaptcha-container { margin-top: 14px; }
+
+    .security-note {
+      text-align: center;
+      color: var(--color-muted);
+      font-size: 11.5px;
+      margin-top: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="logo">
+        <div class="logo-badge">⚡ Safety Workstation Auth</div>
+        <h1>Faktri<span class="yellow-accent">IQ</span></h1>
+        <p>Enter your phone number to authorize your desktop session</p>
+      </div>
+
+      <!-- Step 1: Phone Number -->
+      <div id="step-phone" class="step active">
+        <label for="phone-input">Mobile Number</label>
+        <div class="input-group">
+          <span class="input-prefix">+91</span>
+          <input
+            id="phone-input"
+            type="tel"
+            maxlength="10"
+            placeholder="Enter 10-digit mobile number"
+            inputmode="numeric"
+            autocomplete="tel"
+          />
+        </div>
+        <div id="recaptcha-container"></div>
+        <button id="btn-send-otp" class="push-btn" disabled>Send OTP Code</button>
+        <div id="error-phone" class="error-msg"></div>
+        <p class="security-note">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+          Secured by Firebase &amp; Play Integrity
+        </p>
+      </div>
+
+      <!-- Step 2: OTP Verification -->
+      <div id="step-otp" class="step">
+        <p class="phone-display">Verification code sent to <strong id="display-phone"></strong></p>
+        <label>6-Digit Verification Code</label>
+        <div class="otp-inputs" id="otp-inputs">
+          <input type="text" maxlength="1" inputmode="numeric" autocomplete="one-time-code" />
+          <input type="text" maxlength="1" inputmode="numeric" />
+          <input type="text" maxlength="1" inputmode="numeric" />
+          <input type="text" maxlength="1" inputmode="numeric" />
+          <input type="text" maxlength="1" inputmode="numeric" />
+          <input type="text" maxlength="1" inputmode="numeric" />
+        </div>
+        <button id="btn-verify-otp" class="push-btn" disabled>Verify &amp; Launch Workstation</button>
+        <div id="error-otp" class="error-msg"></div>
+        <div style="text-align: center;">
+          <a class="change-phone" id="btn-change-phone">← Change Phone Number</a>
+        </div>
+      </div>
+
+      <!-- Step 3: Success -->
+      <div id="step-success" class="step">
+        <div class="success-container">
+          <div class="success-icon">✓</div>
+          <h3>Session Authorized</h3>
+          <p>Redirecting authentication to your FaktriIQ desktop application…</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK (compat mode for reCAPTCHA verifier) -->
+  <script src="https://www.gstatic.com/firebasejs/11.8.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.8.1/firebase-auth-compat.js"></script>
+
+  <script>
+    // ─── Config ───
+    const firebaseConfig = {
+      apiKey: "AIzaSyAuYIsJpRRVUjjNjozZj3Rhla1L6R9ZgLM",
+      authDomain: "faktri-iq.firebaseapp.com",
+      projectId: "faktri-iq",
+      storageBucket: "faktri-iq.firebasestorage.app",
+      messagingSenderId: "680070607494",
+      appId: "1:680070607494:web:4cb123d7641ffdfbe95707",
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
+    // ─── Read callback port from URL ───
+    const urlParams = new URLSearchParams(window.location.search);
+    const callbackPort = urlParams.get('port') || '8585';
+
+    // ─── DOM refs ───
+    const phoneInput = document.getElementById('phone-input');
+    const btnSendOtp = document.getElementById('btn-send-otp');
+    const btnVerifyOtp = document.getElementById('btn-verify-otp');
+    const btnChangePhone = document.getElementById('btn-change-phone');
+    const errorPhone = document.getElementById('error-phone');
+    const errorOtp = document.getElementById('error-otp');
+    const displayPhone = document.getElementById('display-phone');
+    const otpInputsContainer = document.getElementById('otp-inputs');
+    const otpInputs = otpInputsContainer.querySelectorAll('input');
+
+    let confirmationResult = null;
+    let recaptchaVerifier = null;
+
+    // ─── Step navigation ───
+    function showStep(stepId) {
+      document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+      document.getElementById(stepId).classList.add('active');
+    }
+
+    function showError(el, msg) {
+      el.textContent = msg;
+      el.classList.add('visible');
+    }
+
+    function hideError(el) {
+      el.classList.remove('visible');
+    }
+
+    function setLoading(btn, loading) {
+      btn.classList.toggle('loading', loading);
+      btn.disabled = loading;
+    }
+
+    // ─── Phone input validation ───
+    phoneInput.addEventListener('input', () => {
+      const val = phoneInput.value.replace(/\D/g, '');
+      phoneInput.value = val;
+      btnSendOtp.disabled = val.length !== 10;
+      hideError(errorPhone);
+    });
+
+    // ─── reCAPTCHA setup ───
+    function setupRecaptcha() {
+      if (recaptchaVerifier) return;
+      recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+        size: 'invisible',
+        callback: () => {},
+        'expired-callback': () => {
+          recaptchaVerifier = null;
+          showError(errorPhone, 'reCAPTCHA expired. Please try again.');
+        },
+      });
+    }
+
+    // ─── Send OTP ───
+    btnSendOtp.addEventListener('click', async () => {
+      const phone = phoneInput.value.trim();
+      if (!/^[6-9]\d{9}$/.test(phone)) {
+        showError(errorPhone, 'Enter a valid 10-digit Indian mobile number.');
+        return;
+      }
+
+      hideError(errorPhone);
+      setLoading(btnSendOtp, true);
+      setupRecaptcha();
+
+      try {
+        confirmationResult = await auth.signInWithPhoneNumber(
+          '+91' + phone,
+          recaptchaVerifier
+        );
+        displayPhone.textContent = '+91 ' + phone;
+        showStep('step-otp');
+        otpInputs[0].focus();
+      } catch (err) {
+        console.error('Send OTP error:', err);
+        let msg = 'Could not send OTP. Please try again.';
+        if (err.code === 'auth/too-many-requests') {
+          msg = 'Too many attempts. Please wait a few minutes and try again.';
+        } else if (err.code === 'auth/invalid-phone-number') {
+          msg = 'Invalid phone number format.';
+        }
+        showError(errorPhone, msg);
+        recaptchaVerifier = null;
+      } finally {
+        setLoading(btnSendOtp, false);
+      }
+    });
+
+    // ─── OTP input auto-advance ───
+    otpInputs.forEach((input, i) => {
+      input.addEventListener('input', () => {
+        input.value = input.value.replace(/\D/g, '');
+        if (input.value && i < otpInputs.length - 1) {
+          otpInputs[i + 1].focus();
+        }
+        const otp = Array.from(otpInputs).map(inp => inp.value).join('');
+        btnVerifyOtp.disabled = otp.length !== 6;
+        hideError(errorOtp);
+      });
+
+      input.addEventListener('keydown', (e) => {
+        if (e.key === 'Backspace' && !input.value && i > 0) {
+          otpInputs[i - 1].focus();
+        }
+      });
+
+      // Paste support
+      input.addEventListener('paste', (e) => {
+        e.preventDefault();
+        const paste = (e.clipboardData.getData('text') || '').replace(/\D/g, '');
+        for (let j = 0; j < Math.min(paste.length, 6); j++) {
+          otpInputs[j].value = paste[j];
+        }
+        const lastIdx = Math.min(paste.length, 6) - 1;
+        if (lastIdx >= 0) otpInputs[lastIdx].focus();
+        const otp = Array.from(otpInputs).map(inp => inp.value).join('');
+        btnVerifyOtp.disabled = otp.length !== 6;
+      });
+    });
+
+    // ─── Verify OTP ───
+    btnVerifyOtp.addEventListener('click', async () => {
+      const otp = Array.from(otpInputs).map(inp => inp.value).join('');
+      if (otp.length !== 6 || !confirmationResult) {
+        showError(errorOtp, 'Please enter the 6-digit code.');
+        return;
+      }
+
+      hideError(errorOtp);
+      setLoading(btnVerifyOtp, true);
+
+      try {
+        const result = await confirmationResult.confirm(otp);
+        const idToken = await result.user.getIdToken();
+
+        showStep('step-success');
+
+        // Send token back to the Flutter desktop app's local HTTP server
+        setTimeout(() => {
+          window.location.href =
+            'http://127.0.0.1:' + callbackPort +
+            '/auth-callback?token=' + encodeURIComponent(idToken);
+        }, 800);
+      } catch (err) {
+        console.error('Verify OTP error:', err);
+        let msg = 'Invalid code. Please try again.';
+        if (err.code === 'auth/code-expired') {
+          msg = 'Code expired. Please request a new OTP.';
+        }
+        showError(errorOtp, msg);
+      } finally {
+        setLoading(btnVerifyOtp, false);
+      }
+    });
+
+    // ─── Change phone ───
+    btnChangePhone.addEventListener('click', () => {
+      showStep('step-phone');
+      confirmationResult = null;
+      recaptchaVerifier = null;
+      otpInputs.forEach(inp => { inp.value = ''; });
+      btnVerifyOtp.disabled = true;
+      hideError(errorOtp);
+    });
+  </script>
+</body>
+</html>

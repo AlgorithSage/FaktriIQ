@@ -13,6 +13,7 @@ import 'services/query_cache_service.dart';
 import 'services/ondevice_llm_service.dart';
 import 'services/api_config_service.dart';
 import 'services/desktop_google_auth_service.dart';
+import 'services/desktop_phone_auth_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -1112,6 +1113,16 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
+      if (isDesktopPlatform) {
+        // Desktop: open browser-based Firebase Web SDK phone auth
+        final idToken = await DesktopPhoneAuthService.signIn();
+        // Sign in to Firebase with the ID token from the web flow
+        await FirebaseAuth.instance.signInWithCustomToken(idToken);
+        // Auth state listener will handle navigation
+        return;
+      }
+
+      // Mobile: use native Firebase phone auth
       await FirebaseAuth.instance.verifyPhoneNumber(
         phoneNumber: '+91$phone',
         timeout: const Duration(seconds: 60),
@@ -1138,6 +1149,7 @@ class _LoginScreenState extends State<LoginScreen> {
         },
       );
     } catch (e) {
+      if (!mounted) return;
       setState(() {
         _isLoading = false;
         _errorMessage = "Could not send OTP: $e";
