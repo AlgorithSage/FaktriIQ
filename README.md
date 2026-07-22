@@ -40,6 +40,7 @@ Built for technicians on the shop floor and safety officers at their desks, Fakt
 The production-ready Android APK can be downloaded directly from our official landing page:
 
 * **[FaktriIQ Landing Page](https://faktriiq.com)** (Visit the website to view the app UI screenshots, details, and click the **Download APK** button)
+* **[Direct APK Download Link](https://firebasestorage.googleapis.com/v0/b/faktri-iq.firebasestorage.app/o/FaktriIQ-Field-Technician.apk?alt=media)**
 
 *Prerequisites for Mobile Installation:*
 * Android 8.0 (Oreo) or higher.
