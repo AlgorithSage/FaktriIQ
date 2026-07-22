@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 /// Phone authentication for desktop platforms (Windows/Linux/macOS).
@@ -20,8 +21,9 @@ import 'package:url_launcher/url_launcher.dart';
 class DesktopPhoneAuthService {
   /// The base URL where the login.html page is hosted.
   /// In development this is the local Vite dev server.
-  /// In production this should be the deployed landing page domain.
-  static const String _loginPageBaseUrl = 'http://localhost:5173';
+  /// In production this is the deployed landing page domain.
+  static String get _loginPageBaseUrl =>
+      kDebugMode ? 'http://localhost:5173' : 'https://faktriiq.com';
 
   /// Starts the browser-based phone auth flow and returns a Firebase ID token.
   ///

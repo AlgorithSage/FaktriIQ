@@ -98,11 +98,11 @@ class QueryLog {
 /// - In debug/profile builds, it defaults to the local Wi-Fi IP address.
 const String _devApiUrl = "http://$kLocalIpAddress:8000";
 const String _prodApiUrl =
-    "https://faktriiq-backend-prod.up.railway.app"; // Default production backend URL
+    "https://faktriiq-backend.onrender.com"; // Default production backend URL
 
 const String kApiBaseUrl = String.fromEnvironment(
   'API_BASE_URL',
-  defaultValue: _prodApiUrl,
+  defaultValue: kReleaseMode ? _prodApiUrl : _devApiUrl,
 );
 
 class AnswerResult {
