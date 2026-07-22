@@ -72,9 +72,9 @@ class RateLimiter:
         self.requests[client_ip] = timestamps
 
 
-# Configure limiters: 15 queries/min for /ask, 5 uploads/min for /ingest
-ask_limiter = RateLimiter(requests_limit=15, window_seconds=60)
-ingest_limiter = RateLimiter(requests_limit=5, window_seconds=60)
+# Configure limiters: 60 queries/min for /ask, 20 uploads/min for /ingest
+ask_limiter = RateLimiter(requests_limit=60, window_seconds=60)
+ingest_limiter = RateLimiter(requests_limit=20, window_seconds=60)
 
 class AskRequest(BaseModel):
     query: str
@@ -95,7 +95,7 @@ def read_root():
         "service": "FaktriIQ Copilot API",
         "model": "openai/gpt-oss-120b (Groq)",
         "indexed_clauses": len(knowledge_base.documents),
-        "rate_limiting": "enabled (15 req/min)"
+        "rate_limiting": "enabled (60 req/min)"
     }
 
 @app.get("/health")
