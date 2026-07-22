@@ -4752,17 +4752,18 @@ if ($d.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) { $d.FileName }
     return Stack(
       key: const ValueKey('gatewayView'),
       children: [
-        // Layer 1: Full-Bleed SVG Vector Background (gateway_bg.svg)
+        // Layer 1: Background Gradient
         Positioned.fill(
-          child: SvgPicture.asset(
-            "assets/images/gateway_bg.svg",
-            fit: BoxFit.cover,
-            colorFilter: isDark
-                ? ColorFilter.mode(
-                    Colors.black.withOpacity(0.45),
-                    BlendMode.darken,
-                  )
-                : null,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: isDark
+                    ? [const Color(0xFF0F172A), const Color(0xFF1E293B)]
+                    : [const Color(0xFFF8FAFC), const Color(0xFFE2E8F0)],
+              ),
+            ),
           ),
         ),
         // Main Station Content (Scrollbar positioned at right-most window edge)
@@ -5838,17 +5839,18 @@ if ($d.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) { $d.FileName }
     return Stack(
       key: const ValueKey('dashboardView'),
       children: [
-        // Layer 1: Full-Bleed SVG Vector Background (gateway_bg.svg)
+        // Layer 1: Background Gradient
         Positioned.fill(
-          child: SvgPicture.asset(
-            "assets/images/gateway_bg.svg",
-            fit: BoxFit.cover,
-            colorFilter: isDark
-                ? ColorFilter.mode(
-                    Colors.black.withOpacity(0.45),
-                    BlendMode.darken,
-                  )
-                : null,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: isDark
+                    ? [const Color(0xFF0F172A), const Color(0xFF1E293B)]
+                    : [const Color(0xFFF8FAFC), const Color(0xFFE2E8F0)],
+              ),
+            ),
           ),
         ),
         // Layer 2: Station Content
@@ -6339,17 +6341,18 @@ if ($d.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) { $d.FileName }
     return Stack(
       key: const ValueKey('ingestView'),
       children: [
-        // Layer 1: Full-Bleed SVG Vector Background (gateway_bg.svg)
+        // Layer 1: Background Gradient
         Positioned.fill(
-          child: SvgPicture.asset(
-            "assets/images/gateway_bg.svg",
-            fit: BoxFit.cover,
-            colorFilter: isDark
-                ? ColorFilter.mode(
-                    Colors.black.withOpacity(0.45),
-                    BlendMode.darken,
-                  )
-                : null,
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: isDark
+                    ? [const Color(0xFF0F172A), const Color(0xFF1E293B)]
+                    : [const Color(0xFFF8FAFC), const Color(0xFFE2E8F0)],
+              ),
+            ),
           ),
         ),
         // Layer 2: Station Content with Full Space Utilization

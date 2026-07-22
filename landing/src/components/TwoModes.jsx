@@ -234,7 +234,7 @@ export default function TwoModes() {
                   Latest stable release (v1.0.0) ready for instant install
                 </p>
                 <div className="flex flex-wrap gap-5 items-center">
-                  <PushButton href="/faktriiq.apk" download="faktriiq.apk">
+                  <PushButton href="https://firebasestorage.googleapis.com/v0/b/faktri-iq.firebasestorage.app/o/app-release.apk?alt=media">
                     <span className="flex items-center gap-2">
                       <Download className="h-4 w-4" /> Download APK
                     </span>
