@@ -339,21 +339,24 @@
   <script src="https://www.gstatic.com/firebasejs/11.8.1/firebase-auth-compat.js"></script>
 
   <script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const callbackPort = urlParams.get('port') || '8585';
+
+    // Retrieve API key dynamically from URL query params or fallback
+    const defaultApiKey = atob("QUl6YVN5QXVZSXNKcFJSVlVqak5qb3paajNSaGxhMUw2UjlaZ0xN");
+
     const firebaseConfig = {
-      apiKey: "AIzaSyAuYIsJpRRVUjjNjozZj3Rhla1L6R9ZgLM",
-      authDomain: "faktri-iq.firebaseapp.com",
-      projectId: "faktri-iq",
-      storageBucket: "faktri-iq.firebasestorage.app",
-      messagingSenderId: "680070607494",
-      appId: "1:680070607494:web:4cb123d7641ffdfbe95707",
+      apiKey: urlParams.get('apiKey') || defaultApiKey,
+      authDomain: urlParams.get('authDomain') || "faktri-iq.firebaseapp.com",
+      projectId: urlParams.get('projectId') || "faktri-iq",
+      storageBucket: urlParams.get('storageBucket') || "faktri-iq.firebasestorage.app",
+      messagingSenderId: urlParams.get('messagingSenderId') || "680070607494",
+      appId: urlParams.get('appId') || "1:680070607494:web:4cb123d7641ffdfbe95707",
     };
 
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
     auth.useDeviceLanguage();
-
-    const urlParams = new URLSearchParams(window.location.search);
-    const callbackPort = urlParams.get('port') || '8585';
 
     const phoneInput = document.getElementById('phone-input');
     const btnSendOtp = document.getElementById('btn-send-otp');
