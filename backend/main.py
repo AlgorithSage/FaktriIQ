@@ -1,6 +1,8 @@
 import os
 import sys
-from fastapi import FastAPI, File, HTTPException, UploadFile
+import time
+from collections import defaultdict
+from fastapi import FastAPI, File, HTTPException, UploadFile, Request
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
@@ -24,6 +26,56 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# ==========================================
+# RATE LIMITER (In-Memory Sliding Window)
+# ==========================================
+class RateLimiter:
+    def __init__(self, requests_limit: int, window_seconds: int = 60):
+        self.limit = requests_limit
+        self.window = window_seconds
+        self.requests = defaultdict(list)
+        self.last_cleanup = time.time()
+
+    def _cleanup(self, now: float):
+        if now - self.last_cleanup > 300:  # Cleanup every 5 minutes
+            for ip, timestamps in list(self.requests.items()):
+                valid_timestamps = [t for t in timestamps if now - t < self.window]
+                if valid_timestamps:
+                    self.requests[ip] = valid_timestamps
+                else:
+                    del self.requests[ip]
+            self.last_cleanup = now
+
+    def check_rate_limit(self, request: Request):
+        now = time.time()
+        self._cleanup(now)
+
+        # Respect X-Forwarded-For header when running behind reverse proxy (Render / Cloudflare)
+        forwarded = request.headers.get("X-Forwarded-For")
+        client_ip = (
+            forwarded.split(",")[0].strip()
+            if forwarded
+            else (request.client.host if request.client else "unknown")
+        )
+
+        timestamps = [t for t in self.requests[client_ip] if now - t < self.window]
+        if len(timestamps) >= self.limit:
+            oldest = timestamps[0]
+            retry_after = int(self.window - (now - oldest)) + 1
+            raise HTTPException(
+                status_code=429,
+                detail=f"Rate limit exceeded ({self.limit} req/min). Please try again in {retry_after} seconds.",
+                headers={"Retry-After": str(retry_after)}
+            )
+
+        timestamps.append(now)
+        self.requests[client_ip] = timestamps
+
+
+# Configure limiters: 15 queries/min for /ask, 5 uploads/min for /ingest
+ask_limiter = RateLimiter(requests_limit=15, window_seconds=60)
+ingest_limiter = RateLimiter(requests_limit=5, window_seconds=60)
+
 class AskRequest(BaseModel):
     query: str
 
@@ -42,7 +94,8 @@ def read_root():
         "status": "online",
         "service": "FaktriIQ Copilot API",
         "model": "openai/gpt-oss-120b (Groq)",
-        "indexed_clauses": len(knowledge_base.documents)
+        "indexed_clauses": len(knowledge_base.documents),
+        "rate_limiting": "enabled (15 req/min)"
     }
 
 @app.get("/health")
@@ -53,8 +106,9 @@ def health_check():
     }
 
 @app.post("/ask", response_model=AskResponse)
-def ask_copilot(request: AskRequest):
-    query = request.query.strip()
+def ask_copilot(request_data: AskRequest, request: Request):
+    ask_limiter.check_rate_limit(request)
+    query = request_data.query.strip()
     if not query:
         raise HTTPException(status_code=400, detail="Query string cannot be empty")
 
@@ -63,7 +117,8 @@ def ask_copilot(request: AskRequest):
     return result
 
 @app.post("/ingest")
-async def ingest_document(file: UploadFile = File(...)):
+async def ingest_document(request: Request, file: UploadFile = File(...)):
+    ingest_limiter.check_rate_limit(request)
     if not file.filename.lower().endswith(".pdf"):
         raise HTTPException(status_code=400, detail="Only PDF files are supported.")
 
