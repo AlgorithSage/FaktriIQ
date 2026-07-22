@@ -35,12 +35,12 @@ const AGENTS = [
     icon: ShieldCheck,
     accent: 'sky',
     summary:
-      'Audits every plant SOP against Indian statutory frameworks - Factories Act 1948, OISD, PESO, DGMS, and MSIHC - mapping each requirement clause-by-clause and flagging the gaps before an inspector does.',
+      'Screens ingested plant SOPs against Indian statutory frameworks - Factories Act 1948, OISD, PESO, DGMS, and MSIHC - classifying every tagged clause by chapter and flagging what needs an EHS officer\'s review.',
     capabilities: [
       {
         icon: ScanSearch,
-        title: 'Automatic clause mapping',
-        text: 'Matches each SOP passage to the exact Factories Act / OISD / PESO clause it satisfies - or flags where none does.',
+        title: 'Statutory chapter mapping',
+        text: 'Reads clause references tagged during ingestion and classifies each against its governing Factories Act / OISD / PESO chapter.',
       },
       {
         icon: CircleAlert,
@@ -49,8 +49,8 @@ const AGENTS = [
       },
       {
         icon: BadgeCheck,
-        title: 'Traceable citations',
-        text: 'Each verdict links back to the source document, page, and clause number - no unsourced claims.',
+        title: 'Chapter-level ruleset',
+        text: 'Each ingested clause reference is classified against its statutory chapter and marked ok or needs-review.',
       },
       {
         icon: Layers,
@@ -58,17 +58,17 @@ const AGENTS = [
         text: 'AI answers are cached locally, so recent results stay reviewable even during a network outage.',
       },
     ],
-    engines: ['Agno + Groq LPU', 'openai/gpt-oss-120b', 'BM25 RAG · offline cache'],
+    engines: ['Chapter-level rule classifier', 'Statutory clause tagging', 'BM25 statutory index (lookup)'],
     example: {
       q: 'Does SOP-114 meet the hot-work permit requirement?',
-      a: 'Gap found. SOP-114 covers hot-work isolation but never sets a permit validity window. OISD-STD-105 §4.3.1 requires re-validation every 8 hours.',
-      cite: 'OISD-STD-105 · §4.3.1',
+      a: 'Needs review. SOP-114 is tagged under OISD-STD-105 Chapter IV (machinery & fencing) - flagged for a human EHS officer to verify the permit validity window.',
+      cite: 'OISD-STD-105 · Chapter IV',
       status: 'gap',
     },
     stats: [
       { value: '5', label: 'frameworks mapped' },
       { value: '9,803', label: 'clauses indexed' },
-      { value: '0%', label: 'ungrounded claims' },
+      { value: 'MVP', label: 'rule-based gap engine' },
     ],
   },
   {
