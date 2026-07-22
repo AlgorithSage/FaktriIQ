@@ -102,7 +102,7 @@ const String _prodApiUrl =
 
 const String kApiBaseUrl = String.fromEnvironment(
   'API_BASE_URL',
-  defaultValue: kReleaseMode ? _prodApiUrl : _devApiUrl,
+  defaultValue: _prodApiUrl,
 );
 
 class AnswerResult {
@@ -2559,9 +2559,7 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
       ConnectivityResult result,
     ) {
       setState(() {
-        _isOnline =
-            (result == ConnectivityResult.wifi ||
-            result == ConnectivityResult.mobile);
+        _isOnline = (result != ConnectivityResult.none);
       });
     });
   }
@@ -2570,11 +2568,11 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
     try {
       final result = await Connectivity().checkConnectivity();
       setState(() {
-        _isOnline =
-            (result == ConnectivityResult.wifi ||
-            result == ConnectivityResult.mobile);
+        _isOnline = (result != ConnectivityResult.none);
       });
-    } catch (_) {}
+    } catch (_) {
+      setState(() => _isOnline = true);
+    }
   }
 
   Future<void> _loadApiBaseUrl() async {
@@ -2710,6 +2708,7 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
 
     // 2. If Online -> Call Agno FastAPI Backend (Groq 120B)
     try {
+      debugPrint("[Mobile API Request] Sending query '$queryText' to '$_apiBaseUrl/ask'");
       final response = await http
           .post(
             Uri.parse('$_apiBaseUrl/ask'),
@@ -3207,12 +3206,16 @@ class _TechnicianAppHomeState extends State<TechnicianAppHome> {
           ),
         ),
         actions: [
-          // Backend server settings
+          // On-Device Offline AI Model Status & Download
           IconButton(
-            icon: Icon(Icons.dns_outlined, color: theme.primaryColor, size: 20),
-            onPressed: () => _showServerSettingsDialog(theme, isDark),
+            icon: Icon(
+              Icons.memory_rounded,
+              color: theme.primaryColor,
+              size: 20,
+            ),
+            onPressed: () => _showModelDownloadDialog(theme, isDark),
             splashRadius: 20,
-            tooltip: "Backend server address",
+            tooltip: "On-Device Offline AI Model Status",
           ),
           // Theme toggle
           IconButton(
