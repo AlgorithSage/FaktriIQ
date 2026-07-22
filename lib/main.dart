@@ -4710,6 +4710,54 @@ if ($d.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) { $d.FileName }
           _buildAppBarTab("dashboard", "Dashboard"),
           _buildAppBarTab("ingest", "Ingest"),
           const SizedBox(width: 8),
+          FutureBuilder<bool>(
+            future: OnDeviceLlmService().checkModelAvailability(),
+            builder: (context, snapshot) {
+              final isLoaded = snapshot.data ?? false;
+              return ValueListenableBuilder<bool>(
+                valueListenable: OnDeviceLlmService().isDownloadingNotifier,
+                builder: (context, isDownloading, _) {
+                  return IconButton(
+                    tooltip: isLoaded
+                        ? "On-Device Local AI (Phi-4 Mini): Active"
+                        : (isDownloading
+                            ? "Downloading Local AI Model..."
+                            : "On-Device Local AI: Download Optional"),
+                    icon: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        Icon(
+                          isLoaded ? Icons.memory : Icons.memory_outlined,
+                          color: isLoaded
+                              ? const Color(0xFF10B981)
+                              : (isDownloading
+                                  ? const Color(0xFFD97706)
+                                  : theme.primaryColor),
+                          size: 20,
+                        ),
+                        if (isDownloading)
+                          const Positioned(
+                            right: 0,
+                            top: 0,
+                            child: SizedBox(
+                              width: 8,
+                              height: 8,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 1.5,
+                                valueColor: AlwaysStoppedAnimation<Color>(
+                                  Color(0xFFD97706),
+                                ),
+                              ),
+                            ),
+                          ),
+                      ],
+                    ),
+                    onPressed: () => _showModelDownloadDialog(theme, isDark),
+                  );
+                },
+              );
+            },
+          ),
           IconButton(
             icon: Icon(
               widget.darkMode ? Icons.light_mode : Icons.dark_mode,
@@ -4739,12 +4787,695 @@ if ($d.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) { $d.FileName }
         ],
       ),
       body: SafeArea(
-        child: _officerTab == "gateway"
-            ? _buildGatewayView(theme, isDark, isLarge)
-            : (_officerTab == "dashboard"
-                ? _buildDashboardView(theme, isDark, isLarge)
-                : _buildIngestView(theme, isDark, isLarge)),
+        child: Column(
+          children: [
+            _buildPersistentDownloadBanner(theme, isDark),
+            Expanded(
+              child: _officerTab == "gateway"
+                  ? _buildGatewayView(theme, isDark, isLarge)
+                  : (_officerTab == "dashboard"
+                      ? _buildDashboardView(theme, isDark, isLarge)
+                      : _buildIngestView(theme, isDark, isLarge)),
+            ),
+          ],
+        ),
       ),
+    );
+  }
+
+  Widget _buildLocalAiControlCard(ThemeData theme, bool isDark) {
+    return FutureBuilder<bool>(
+      future: OnDeviceLlmService().checkModelAvailability(),
+      builder: (context, snapshot) {
+        final isLoaded = snapshot.data ?? false;
+        return ValueListenableBuilder<bool>(
+          valueListenable: OnDeviceLlmService().isDownloadingNotifier,
+          builder: (context, isDownloading, _) {
+            final borderColor = isLoaded
+                ? const Color(0xFF10B981)
+                : (isDownloading
+                    ? const Color(0xFFD97706)
+                    : (isDark ? const Color(0xFF3B82F6) : const Color(0xFF2563EB)));
+
+            final statusText = isLoaded
+                ? "ON-DEVICE AI INSTALLED & ACTIVE"
+                : (isDownloading
+                    ? "DOWNLOADING MODEL IN BACKGROUND"
+                    : "LOCAL AI MODEL OPTIONAL (2.49 GB)");
+
+            final statusBg = isLoaded
+                ? (isDark ? const Color(0xFF064E3B) : const Color(0xFFD1FAE5))
+                : (isDownloading
+                    ? (isDark ? const Color(0xFF3F3517) : const Color(0xFFFFF4BD))
+                    : (isDark ? const Color(0xFF1E3A8A) : const Color(0xFFDBEAFE)));
+
+            final statusColor = isLoaded
+                ? const Color(0xFF10B981)
+                : (isDownloading
+                    ? const Color(0xFFD97706)
+                    : (isDark ? const Color(0xFF60A5FA) : const Color(0xFF1D4ED8)));
+
+            return Container(
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: isDark ? const Color(0xFF1E293B) : Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: borderColor.withOpacity(0.4), width: 1.5),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.06),
+                    blurRadius: 16,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: statusBg,
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Icon(
+                              isLoaded ? Icons.memory : Icons.memory_outlined,
+                              color: statusColor,
+                              size: 22,
+                            ),
+                          ),
+                          const SizedBox(width: 14),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "ON-DEVICE LOCAL AI ENGINE",
+                                style: GoogleFonts.poppins(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.bold,
+                                  color: isDark ? Colors.white : const Color(0xFF101820),
+                                  letterSpacing: 0.5,
+                                ),
+                              ),
+                              Text(
+                                "Microsoft Phi-4-Mini 3.8B (Q4_K_M GGUF) · 100% Offline RAG",
+                                style: TextStyle(
+                                  fontFamily: 'Satoshi',
+                                  fontSize: 11,
+                                  color: isDark ? Colors.grey[400] : const Color(0xFF64748B),
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                        decoration: BoxDecoration(
+                          color: statusBg,
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(color: statusColor.withOpacity(0.3)),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              isLoaded ? Icons.check_circle : (isDownloading ? Icons.sync : Icons.info_outline),
+                              color: statusColor,
+                              size: 13,
+                            ),
+                            const SizedBox(width: 6),
+                            Text(
+                              statusText,
+                              style: TextStyle(
+                                fontFamily: 'Satoshi',
+                                fontSize: 10,
+                                fontWeight: FontWeight.bold,
+                                color: statusColor,
+                                letterSpacing: 0.5,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 14),
+                  Text(
+                    "Run 100% air-gapped, zero-internet statutory compliance reasoning directly on your PC hardware. Operates via llama.cpp CPU/GPU acceleration with zero-overhead fallback to the pre-bundled BM25 Statutory Search (<10ms).",
+                    style: TextStyle(
+                      fontFamily: 'Satoshi',
+                      fontSize: 12,
+                      height: 1.5,
+                      color: isDark ? Colors.grey[300] : const Color(0xFF334155),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () => _showModelDownloadDialog(theme, isDark),
+                        icon: Icon(
+                          isLoaded ? Icons.check_circle_outline : Icons.download_for_offline,
+                          size: 16,
+                        ),
+                        label: Text(
+                          isLoaded
+                              ? "Manage Installed Model"
+                              : (isDownloading ? "View Download Progress" : "Download Local AI Model (2.49 GB)"),
+                          style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: isLoaded
+                              ? const Color(0xFF10B981)
+                              : (isDownloading ? const Color(0xFFD97706) : theme.primaryColor),
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      OutlinedButton.icon(
+                        onPressed: () => _showLocalAiInfoModal(theme, isDark),
+                        icon: const Icon(Icons.help_outline, size: 16),
+                        label: const Text("How Local AI Works"),
+                        style: OutlinedButton.styleFrom(
+                          foregroundColor: isDark ? Colors.white : const Color(0xFF101820),
+                          side: BorderSide(color: isDark ? Colors.grey[700]! : Colors.grey[300]!),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showLocalAiInfoModal(ThemeData theme, bool isDark) {
+    showDialog(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        backgroundColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: const Color(0xFF101820),
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: const Icon(Icons.memory, color: Color(0xFFFEE715), size: 22),
+            ),
+            const SizedBox(width: 12),
+            Text(
+              "Local AI Architecture & Specs",
+              style: GoogleFonts.poppins(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: isDark ? Colors.white : const Color(0xFF101820),
+              ),
+            ),
+          ],
+        ),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _buildInfoRow(
+                Icons.psychology,
+                "Model & Engine",
+                "Microsoft / Unsloth Phi-4-Mini 3.8B (Q4_K_M GGUF quantization) executed via native C++ llama.cpp bindings.",
+                isDark,
+              ),
+              const SizedBox(height: 14),
+              _buildInfoRow(
+                Icons.shield_outlined,
+                "100% Offline & Air-Gapped",
+                "Zero data transmitted outside your workstation. All compliance prompts, SOP texts, and clause citations are processed locally.",
+                isDark,
+              ),
+              const SizedBox(height: 14),
+              _buildInfoRow(
+                Icons.bolt,
+                "Instant Legal Search Fallback",
+                "If the 2.49 GB model is not downloaded or system memory is constrained, FaktriIQ seamlessly falls back to the embedded BM25 statutory legal index (<10ms response).",
+                isDark,
+              ),
+              const SizedBox(height: 14),
+              _buildInfoRow(
+                Icons.sd_storage_outlined,
+                "Storage Requirement",
+                "2.49 GB total disk space. Download once and use forever across all plant workstations.",
+                isDark,
+              ),
+            ],
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(
+              "Close",
+              style: TextStyle(color: isDark ? Colors.grey[400] : const Color(0xFF64748B)),
+            ),
+          ),
+          ElevatedButton.icon(
+            onPressed: () {
+              Navigator.pop(ctx);
+              _showModelDownloadDialog(theme, isDark);
+            },
+            icon: const Icon(Icons.download, size: 16),
+            label: const Text("Manage Model Download"),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: theme.primaryColor,
+              foregroundColor: Colors.white,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String title, String description, bool isDark) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Icon(icon, size: 20, color: const Color(0xFFFEE715)),
+        const SizedBox(width: 12),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                title,
+                style: TextStyle(
+                  fontFamily: 'Satoshi',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 13,
+                  color: isDark ? Colors.white : const Color(0xFF101820),
+                ),
+              ),
+              const SizedBox(height: 3),
+              Text(
+                description,
+                style: TextStyle(
+                  fontFamily: 'Satoshi',
+                  fontSize: 11,
+                  height: 1.4,
+                  color: isDark ? Colors.grey[300] : const Color(0xFF475569),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPersistentDownloadBanner(ThemeData theme, bool isDark) {
+    final llmService = OnDeviceLlmService();
+    return ValueListenableBuilder<bool>(
+      valueListenable: llmService.isDownloadingNotifier,
+      builder: (context, isDownloading, _) {
+        if (!isDownloading) return const SizedBox.shrink();
+        return ValueListenableBuilder<double>(
+          valueListenable: llmService.downloadProgressNotifier,
+          builder: (context, progress, _) {
+            return ValueListenableBuilder<String>(
+              valueListenable: llmService.downloadedMbNotifier,
+              builder: (context, downloadedMb, _) {
+                return ValueListenableBuilder<String>(
+                  valueListenable: llmService.totalMbNotifier,
+                  builder: (context, totalMb, _) {
+                    final percentStr = (progress * 100).toStringAsFixed(1);
+                    return InkWell(
+                      onTap: () => _showModelDownloadDialog(theme, isDark),
+                      child: Container(
+                        width: double.infinity,
+                        color: isDark
+                            ? const Color(0xFF3F3517)
+                            : const Color(0xFFFFF4BD),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 10,
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Row(
+                              children: [
+                                const SizedBox(
+                                  width: 14,
+                                  height: 14,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2.2,
+                                    valueColor: AlwaysStoppedAnimation<Color>(
+                                      Color(0xFFD97706),
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Text(
+                                    "Downloading AI Model · $percentStr% ($downloadedMb / $totalMb MB)",
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                      color: isDark
+                                          ? const Color(0xFFFDE68A)
+                                          : const Color(0xFF92400E),
+                                    ),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                const SizedBox(width: 8),
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 4,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFFD97706),
+                                    borderRadius: BorderRadius.circular(6),
+                                  ),
+                                  child: const Text(
+                                    "VIEW DETAILS",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 9,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 6),
+                            LinearProgressIndicator(
+                              value: progress > 0 ? progress : null,
+                              backgroundColor: isDark
+                                  ? Colors.black26
+                                  : Colors.grey[300],
+                              valueColor: const AlwaysStoppedAnimation<Color>(
+                                Color(0xFFD97706),
+                              ),
+                              minHeight: 4,
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _showModelDownloadDialog(ThemeData theme, bool isDark) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: theme.cardColor,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        final llmService = OnDeviceLlmService();
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 24.0,
+            right: 24.0,
+            top: 24.0,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 24.0,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: isDark
+                              ? const Color(0xFF3F3517)
+                              : const Color(0xFFFFF4BD),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: const Icon(
+                          Icons.memory,
+                          color: Color(0xFFD97706),
+                          size: 20,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        "On-Device Local AI Model",
+                        style: GoogleFonts.poppins(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  IconButton(
+                    icon: const Icon(Icons.close, size: 20),
+                    onPressed: () => Navigator.pop(ctx),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+              Text(
+                "Unsloth Phi-4 Mini (3.8B Dynamic Q4_K_M GGUF) · 2.49 GB",
+                style: GoogleFonts.poppins(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  color: isDark ? theme.primaryColor : const Color(0xFF92400E),
+                ),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                "Enables 100% offline, zero-internet AI compliance reasoning directly on your workstation CPU/GPU.",
+                style: TextStyle(
+                  fontSize: 11,
+                  color: isDark ? Colors.grey[300] : const Color(0xFF4B5563),
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 16),
+              ValueListenableBuilder<bool>(
+                valueListenable: llmService.isDownloadingNotifier,
+                builder: (context, isDownloading, _) {
+                  return ValueListenableBuilder<double>(
+                    valueListenable: llmService.downloadProgressNotifier,
+                    builder: (context, progress, _) {
+                      return ValueListenableBuilder<String>(
+                        valueListenable: llmService.downloadedMbNotifier,
+                        builder: (context, downloadedMb, _) {
+                          return ValueListenableBuilder<String>(
+                            valueListenable: llmService.totalMbNotifier,
+                            builder: (context, totalMb, _) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  if (isDownloading) ...[
+                                    LinearProgressIndicator(
+                                      value: progress > 0 ? progress : null,
+                                      backgroundColor: isDark
+                                          ? Colors.grey[800]
+                                          : Colors.grey[200],
+                                      valueColor: AlwaysStoppedAnimation<Color>(
+                                        theme.primaryColor,
+                                      ),
+                                      minHeight: 8,
+                                    ),
+                                    const SizedBox(height: 10),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(
+                                          "${(progress * 100).toStringAsFixed(1)}% Completed",
+                                          style: const TextStyle(
+                                            fontSize: 11,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Text(
+                                          "$downloadedMb MB / $totalMb MB",
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            color: isDark
+                                                ? Colors.grey
+                                                : Colors.black54,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    const SizedBox(height: 18),
+                                  ],
+                                  ValueListenableBuilder<String?>(
+                                    valueListenable:
+                                        llmService.downloadErrorNotifier,
+                                    builder: (context, error, _) {
+                                      if (error == null)
+                                        return const SizedBox.shrink();
+                                      return Padding(
+                                        padding: const EdgeInsets.only(
+                                          bottom: 10,
+                                        ),
+                                        child: Text(
+                                          error,
+                                          style: const TextStyle(
+                                            color: Colors.redAccent,
+                                            fontSize: 11,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                  ValueListenableBuilder<bool>(
+                                    valueListenable:
+                                        llmService.isModelLoadedNotifier,
+                                    builder: (context, isLoaded, _) {
+                                      String buttonLabel =
+                                          "Start One-Click Download (2.49 GB)";
+                                      IconData buttonIcon =
+                                          Icons.download_for_offline;
+
+                                      if (isDownloading) {
+                                        buttonLabel = "Cancel Download";
+                                        buttonIcon = Icons.cancel;
+                                      } else if (isLoaded) {
+                                        buttonLabel =
+                                            "On-Device AI Active (Installed)";
+                                        buttonIcon = Icons.check_circle;
+                                      } else if (progress > 0) {
+                                        buttonLabel =
+                                            "Resume Download ($downloadedMb / $totalMb MB)";
+                                        buttonIcon = Icons.play_arrow_rounded;
+                                      }
+
+                                      return Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Expanded(
+                                                child: ElevatedButton.icon(
+                                                  icon: Icon(
+                                                    buttonIcon,
+                                                    size: 18,
+                                                  ),
+                                                  label: Text(buttonLabel),
+                                                  style: ElevatedButton.styleFrom(
+                                                    backgroundColor:
+                                                        isDownloading
+                                                            ? Colors.redAccent
+                                                            : (isLoaded
+                                                                ? const Color(
+                                                                    0xFF10B981,
+                                                                  )
+                                                                : theme
+                                                                      .primaryColor),
+                                                    foregroundColor:
+                                                        (isDownloading ||
+                                                            isLoaded)
+                                                            ? Colors.white
+                                                            : (isDark
+                                                                ? Colors.black
+                                                                : const Color(
+                                                                    0xFF1E2328,
+                                                                  )),
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          vertical: 12,
+                                                        ),
+                                                  ),
+                                                  onPressed: isLoaded
+                                                      ? null
+                                                      : () async {
+                                                          if (isDownloading) {
+                                                            llmService
+                                                                .cancelDownload();
+                                                          } else {
+                                                            final success =
+                                                                await llmService
+                                                                    .downloadModel();
+                                                            if (success) {
+                                                              setState(() {});
+                                                              if (context
+                                                                  .mounted)
+                                                                Navigator.pop(
+                                                                  ctx,
+                                                                );
+                                                            }
+                                                          }
+                                                        },
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          if (isLoaded) ...[
+                                            const SizedBox(height: 10),
+                                            TextButton.icon(
+                                              icon: const Icon(
+                                                Icons.delete_outline,
+                                                size: 16,
+                                                color: Colors.redAccent,
+                                              ),
+                                              label: const Text(
+                                                "Delete Local Model to Free Storage",
+                                                style: TextStyle(
+                                                  color: Colors.redAccent,
+                                                  fontSize: 11,
+                                                ),
+                                              ),
+                                              onPressed: () async {
+                                                await llmService.deleteModel();
+                                                setState(() {});
+                                                if (context.mounted)
+                                                  Navigator.pop(ctx);
+                                              },
+                                            ),
+                                          ],
+                                        ],
+                                      );
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 
@@ -4916,6 +5647,10 @@ if ($d.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) { $d.FileName }
                               ],
                             ),
                           ),
+                          const SizedBox(height: 16),
+
+                          // DEDICATED PROMINENT SECTION: ON-DEVICE LOCAL AI MODEL CONTROL CARD
+                          _buildLocalAiControlCard(theme, isDark),
                         ],
                       ),
                     ),
