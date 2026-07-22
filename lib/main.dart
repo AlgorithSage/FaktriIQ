@@ -102,7 +102,7 @@ const String _prodApiUrl =
 
 const String kApiBaseUrl = String.fromEnvironment(
   'API_BASE_URL',
-  defaultValue: kReleaseMode ? _prodApiUrl : _devApiUrl,
+  defaultValue: _prodApiUrl,
 );
 
 class AnswerResult {
